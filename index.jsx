@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-// --- Icons Component (Inline SVGs to prevent dependency errors) ---
 const Icons = {
   Shield: ({ size = 24, className = "" }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -111,137 +110,159 @@ const Icons = {
   ),
 };
 
+const MAX_CHARS = 200_000;
+
+const encodeBase64 = (s) => {
+  const bytes = new TextEncoder().encode(s);
+  const bin = Array.from(bytes, (b) => String.fromCharCode(b)).join("");
+  return btoa(bin);
+};
+
+const decodeBase64 = (b64) => {
+  const bin = atob(b64);
+  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+};
+
+const toHex = (str) =>
+  Array.from(str, (c) => c.charCodeAt(0).toString(16).padStart(2, "0")).join("");
+
+const fromHex = (hex) => {
+  const clean = hex.replace(/\s|0x/gi, "");
+  if (!/^[0-9a-fA-F]*$/.test(clean) || clean.length % 2 !== 0) {
+    throw new Error("Invalid hex");
+  }
+  let out = "";
+  for (let i = 0; i < clean.length; i += 2) {
+    out += String.fromCharCode(parseInt(clean.slice(i, i + 2), 16));
+  }
+  return out;
+};
+
+const toBinary = (str) =>
+  Array.from(str, (c) => c.charCodeAt(0).toString(2).padStart(8, "0")).join(" ");
+
+const fromBinary = (bin) => {
+  const clean = bin.trim();
+  if (!/^[01\s]*$/.test(clean)) throw new Error("Invalid binary chars");
+  const bytes = clean.split(/\s+/).filter(Boolean);
+  for (const b of bytes) {
+    if (b.length !== 8) throw new Error("Binary bytes must be 8 bits");
+  }
+  return bytes.map((b) => String.fromCharCode(parseInt(b, 2))).join("");
+};
+
+const toUnicode = (str) =>
+  Array.from(str, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0")).join("");
+
+const fromUnicode = (str) =>
+  str.replace(/\\u([\dA-Fa-f]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
+
+const rot13 = (str) =>
+  str.replace(/[a-zA-Z]/g, (c) =>
+    String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26)
+  );
+
+const reverseStr = (str) => str.split("").reverse().join("");
+
 export default function CyberEncoder() {
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
-  const [mode, setMode] = useState('encode'); // 'encode' or 'decode'
-  const [algo, setAlgo] = useState('base64');
-  const [theme, setTheme] = useState('light'); // Default to light mode
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+  const [mode, setMode] = useState("encode");
+  const [algo, setAlgo] = useState("base64");
+  const [theme, setTheme] = useState("light");
   const [toast, setToast] = useState(null);
 
-  // Algorithms definition
   const algorithms = [
-    { id: 'base64', name: 'Base64 (Standard)', icon: <Icons.Code size={16} /> },
-    { id: 'base64url', name: 'Base64 (URL Safe)', icon: <Icons.Lock size={16} /> },
-    { id: 'url', name: 'URL Encode', icon: <Icons.Globe size={16} /> },
-    { id: 'hex', name: 'Hex / Hexdump', icon: <Icons.Hash size={16} /> },
-    { id: 'binary', name: 'Binary (8-bit)', icon: <Icons.Binary size={16} /> },
-    { id: 'unicode', name: 'Unicode Escape', icon: <Icons.FileCode size={16} /> },
-    { id: 'html', name: 'HTML Entity', icon: <Icons.Terminal size={16} /> },
-    { id: 'rot13', name: 'ROT13 Cipher', icon: <Icons.Shield size={16} /> },
-    { id: 'reverse', name: 'Reverse String', icon: <Icons.AlignLeft size={16} /> },
+    { id: "base64", name: "Base64 (Standard)", icon: <Icons.Code size={16} /> },
+    { id: "base64url", name: "Base64 (URL Safe)", icon: <Icons.Lock size={16} /> },
+    { id: "url", name: "URL Encode", icon: <Icons.Globe size={16} /> },
+    { id: "hex", name: "Hex / Hexdump", icon: <Icons.Hash size={16} /> },
+    { id: "binary", name: "Binary (8-bit)", icon: <Icons.Binary size={16} /> },
+    { id: "unicode", name: "Unicode Escape", icon: <Icons.FileCode size={16} /> },
+    { id: "html", name: "HTML Entity", icon: <Icons.Terminal size={16} /> },
+    { id: "rot13", name: "ROT13 Cipher", icon: <Icons.Shield size={16} /> },
+    { id: "reverse", name: "Reverse String", icon: <Icons.AlignLeft size={16} /> },
   ];
 
-  // Helper functions
-  const toHex = (str) => {
-    let result = '';
-    for (let i = 0; i < str.length; i++) {
-      result += str.charCodeAt(i).toString(16).padStart(2, '0');
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 1800);
+  };
+
+  const copyToClipboard = async (text) => {
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("Copied!");
+    } catch {
+      showToast("Clipboard blocked. Use HTTPS/permissions.");
     }
-    return result;
   };
 
-  const fromHex = (hex) => {
-    let str = '';
-    hex = hex.replace(/\s|0x/g, ''); 
-    for (let i = 0; i < hex.length; i += 2) {
-      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    }
-    return str;
+  const clearAll = () => {
+    setInput("");
+    setOutput("");
   };
 
-  const toBinary = (str) => {
-    return str.split('').map(char => 
-      char.charCodeAt(0).toString(2).padStart(8, '0')
-    ).join(' ');
+  const swapContent = () => {
+    if (!output) return;
+    setInput(output);
+    setMode(mode === "encode" ? "decode" : "encode");
   };
 
-  const fromBinary = (bin) => {
-    return bin.split(/\s+/).map(byte => 
-      String.fromCharCode(parseInt(byte, 2))
-    ).join('');
-  };
+  const toggleTheme = () => setTheme((p) => (p === "light" ? "dark" : "light"));
 
-  const toUnicode = (str) => {
-    return str.split('').map(char => {
-      const hex = char.charCodeAt(0).toString(16).padStart(4, '0');
-      return `\\u${hex}`;
-    }).join('');
-  };
-
-  const fromUnicode = (str) => {
-    return str.replace(/\\u[\dA-F]{4}/gi, (match) => 
-       String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16))
-    );
-  };
-
-  const rot13 = (str) => {
-    return str.replace(/[a-zA-Z]/g, function (c) {
-      return String.fromCharCode(
-        (c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
-      );
-    });
-  };
-
-  const reverseStr = (str) => str.split('').reverse().join('');
-
-  // Main Logic
   useEffect(() => {
     try {
       if (!input) {
-        setOutput('');
+        setOutput("");
+        return;
+      }
+      if (input.length > MAX_CHARS) {
+        setOutput(`Error: input too large (> ${MAX_CHARS} chars)`);
         return;
       }
 
-      let result = '';
-
+      let result = "";
       switch (algo) {
-        case 'base64':
-          if (mode === 'encode') {
-            result = btoa(unescape(encodeURIComponent(input)));
+        case "base64":
+          result = mode === "encode" ? encodeBase64(input) : decodeBase64(input);
+          break;
+        case "base64url":
+          if (mode === "encode") {
+            result = encodeBase64(input).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
           } else {
-            result = decodeURIComponent(escape(atob(input)));
+            if (!/^[A-Za-z0-9\-_]+$/.test(input)) throw new Error("Invalid base64url chars");
+            let b64 = input.replace(/-/g, "+").replace(/_/g, "/");
+            while (b64.length % 4) b64 += "=";
+            result = decodeBase64(b64);
           }
           break;
-        case 'base64url':
-          if (mode === 'encode') {
-            const b64 = btoa(unescape(encodeURIComponent(input)));
-            result = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        case "url":
+          result = mode === "encode" ? encodeURIComponent(input) : decodeURIComponent(input);
+          break;
+        case "hex":
+          result = mode === "encode" ? toHex(input) : fromHex(input);
+          break;
+        case "binary":
+          result = mode === "encode" ? toBinary(input) : fromBinary(input);
+          break;
+        case "unicode":
+          result = mode === "encode" ? toUnicode(input) : fromUnicode(input);
+          break;
+        case "html":
+          if (mode === "encode") {
+            result = input.replace(/[\u00A0-\u9999<>&]/g, (i) => "&#" + i.charCodeAt(0) + ";");
           } else {
-            let b64 = input.replace(/-/g, '+').replace(/_/g, '/');
-            while (b64.length % 4) { b64 += '='; }
-            result = decodeURIComponent(escape(atob(b64)));
+            const doc = new DOMParser().parseFromString(input, "text/html");
+            result = doc.documentElement.textContent || "";
           }
           break;
-        case 'url':
-          result = mode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input);
-          break;
-        case 'hex':
-          result = mode === 'encode' ? toHex(input) : fromHex(input);
-          break;
-        case 'binary':
-          if (mode === 'encode') {
-            result = toBinary(input);
-          } else {
-            const sanitized = input.replace(/[^01\s]/g, '');
-            result = fromBinary(sanitized);
-          }
-          break;
-        case 'unicode':
-           result = mode === 'encode' ? toUnicode(input) : fromUnicode(input);
-           break;
-        case 'html':
-          if (mode === 'encode') {
-            result = input.replace(/[\u00A0-\u9999<>&]/g, i => '&#'+i.charCodeAt(0)+';');
-          } else {
-            const doc = new DOMParser().parseFromString(input, 'text/html');
-            result = doc.documentElement.textContent;
-          }
-          break;
-        case 'rot13':
+        case "rot13":
           result = rot13(input);
           break;
-        case 'reverse':
+        case "reverse":
           result = reverseStr(input);
           break;
         default:
@@ -249,63 +270,32 @@ export default function CyberEncoder() {
       }
       setOutput(result);
     } catch (e) {
-      setOutput(`Error: Unable to ${mode} with ${algo}. Check input format.`);
+      setOutput(`Error: ${e.message || "conversion failed"}`);
     }
   }, [input, mode, algo]);
 
-  // Actions
-  const copyToClipboard = (text) => {
-    if (!text) return;
-    navigator.clipboard.writeText(text);
-    showToast('Copied to clipboard!');
-  };
-
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 2000);
-  };
-
-  const clearAll = () => {
-    setInput('');
-    setOutput('');
-  };
-
-  const swapContent = () => {
-    setInput(output);
-    setMode(mode === 'encode' ? 'decode' : 'encode');
-  };
-
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
-
-  // Theme Styles Configuration
-  const isDark = theme === 'dark';
-  
+  const isDark = theme === "dark";
   const styles = {
-    pageBg: isDark ? 'bg-[#0f172a]' : 'bg-gray-50',
-    textMain: isDark ? 'text-slate-200' : 'text-gray-800',
-    textMuted: isDark ? 'text-slate-400' : 'text-gray-500',
-    cardBg: isDark ? 'bg-slate-800/50' : 'bg-white',
-    cardBorder: isDark ? 'border-slate-700/50' : 'border-gray-200',
-    headerBg: isDark ? 'bg-slate-800/50' : 'bg-white/80',
-    inputBg: isDark ? 'bg-slate-900/30' : 'bg-gray-50',
-    inputBorderFocus: isDark ? 'focus:border-cyan-500/50' : 'focus:border-blue-500',
-    primaryBtn: isDark 
-      ? 'bg-slate-700 text-cyan-400 hover:bg-slate-600' 
-      : 'bg-white text-blue-600 border border-gray-200 hover:bg-gray-50 hover:border-blue-300 shadow-sm',
+    pageBg: isDark ? "bg-[#0f172a]" : "bg-gray-50",
+    textMain: isDark ? "text-slate-200" : "text-gray-800",
+    textMuted: isDark ? "text-slate-400" : "text-gray-500",
+    cardBg: isDark ? "bg-slate-800/50" : "bg-white",
+    cardBorder: isDark ? "border-slate-700/50" : "border-gray-200",
+    headerBg: isDark ? "bg-slate-800/50" : "bg-white/80",
+    inputBg: isDark ? "bg-slate-900/30" : "bg-gray-50",
+    primaryBtn: isDark
+      ? "bg-slate-700 text-cyan-400 hover:bg-slate-600"
+      : "bg-white text-blue-600 border border-gray-200 hover:bg-gray-50 hover:border-blue-300 shadow-sm",
     primaryBtnActive: isDark
-      ? 'bg-cyan-900/30 text-cyan-300 ring-1 ring-cyan-500/50'
-      : 'bg-blue-50 text-blue-700 ring-1 ring-blue-500 border-blue-500',
-    accentText: isDark ? 'text-cyan-400' : 'text-blue-600',
-    accentTextSec: isDark ? 'text-emerald-400' : 'text-emerald-600',
-    selectBg: isDark ? 'bg-slate-900' : 'bg-white',
+      ? "bg-cyan-900/30 text-cyan-300 ring-1 ring-cyan-500/50"
+      : "bg-blue-50 text-blue-700 ring-1 ring-blue-500 border-blue-500",
+    accentText: isDark ? "text-cyan-400" : "text-blue-600",
+    accentTextSec: isDark ? "text-emerald-400" : "text-emerald-600",
+    selectBg: isDark ? "bg-slate-900" : "bg-white",
   };
 
   return (
     <div className={`min-h-screen ${styles.pageBg} ${styles.textMain} font-sans transition-colors duration-300 p-4 md:p-6 flex flex-col items-center`}>
-      
-      {/* Background Ambience (Visible only in Dark Mode) */}
       {isDark && (
         <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-900/10 rounded-full blur-[100px]"></div>
@@ -314,25 +304,24 @@ export default function CyberEncoder() {
       )}
 
       <div className="w-full max-w-5xl relative z-10 flex flex-col space-y-4 md:space-y-6">
-        
-        {/* Header Section */}
         <div className={`flex flex-col md:flex-row items-center justify-between ${styles.headerBg} backdrop-blur-md p-4 rounded-xl border ${styles.cardBorder} shadow-sm gap-4`}>
           <div className="flex items-center space-x-3 w-full md:w-auto justify-center md:justify-start">
-             <div className={`w-10 h-10 ${isDark ? 'bg-gradient-to-br from-cyan-500 to-blue-600' : 'bg-blue-600'} rounded-lg flex items-center justify-center shadow-md shrink-0`}>
-               <Icons.Shield size={20} className="text-white" />
-             </div>
-             <div>
-               <h1 className="text-2xl font-black tracking-tighter uppercase">Decoder<span className={styles.accentText}>X</span></h1>
-             </div>
+            <div className={`w-10 h-10 ${isDark ? "bg-gradient-to-br from-cyan-500 to-blue-600" : "bg-blue-600"} rounded-lg flex items-center justify-center shadow-md shrink-0`}>
+              <Icons.Shield size={20} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black tracking-tighter uppercase">
+                Decoder<span className={styles.accentText}>X</span>
+              </h1>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-            {/* Algorithm Select Dropdown */}
             <div className="relative w-full sm:w-64">
               <select
                 value={algo}
                 onChange={(e) => setAlgo(e.target.value)}
-                className={`w-full appearance-none pl-10 pr-8 py-2.5 rounded-lg text-sm font-medium border ${styles.cardBorder} ${styles.selectBg} focus:outline-none focus:ring-2 focus:ring-opacity-50 ${isDark ? 'focus:ring-cyan-500' : 'focus:ring-blue-500'} transition-shadow cursor-pointer`}
+                className={`w-full appearance-none pl-10 pr-8 py-2.5 rounded-lg text-sm font-medium border ${styles.cardBorder} ${styles.selectBg} focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-blue-400`}
               >
                 {algorithms.map((a) => (
                   <option key={a.id} value={a.id}>
@@ -341,126 +330,122 @@ export default function CyberEncoder() {
                 ))}
               </select>
               <div className={`absolute left-3 top-1/2 -translate-y-1/2 ${styles.textMuted} pointer-events-none`}>
-                 {algorithms.find(a => a.id === algo)?.icon}
+                {algorithms.find((a) => a.id === algo)?.icon}
               </div>
               <div className={`absolute right-3 top-1/2 -translate-y-1/2 ${styles.textMuted} pointer-events-none`}>
                 <Icons.ArrowDown size={14} />
               </div>
             </div>
 
-            {/* Theme Toggle */}
-            <button 
+            <button
               onClick={toggleTheme}
-              className={`w-full sm:w-auto flex items-center justify-center p-2.5 rounded-lg border ${styles.cardBorder} ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'} transition-colors shrink-0`}
-              title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+              className={`w-full sm:w-auto flex items-center justify-center p-2.5 rounded-lg border ${styles.cardBorder} ${isDark ? "hover:bg-slate-700" : "hover:bg-gray-100"} transition-colors shrink-0`}
+              title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
             >
               {isDark ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
-              <span className="ml-2 sm:hidden text-sm font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+              <span className="ml-2 sm:hidden text-sm font-medium">{isDark ? "Light Mode" : "Dark Mode"}</span>
             </button>
           </div>
         </div>
 
-        {/* Controls & Mode Selection */}
         <div className={`flex flex-col sm:flex-row items-center justify-between gap-3 ${styles.cardBg} p-2 rounded-xl border ${styles.cardBorder} shadow-sm`}>
-            <div className={`flex w-full sm:w-auto p-1 rounded-lg ${isDark ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
-              <button 
-                onClick={() => setMode('encode')}
-                className={`flex-1 sm:flex-none px-6 py-2 rounded-md text-sm font-semibold transition-all ${
-                  mode === 'encode' ? styles.primaryBtnActive : `${styles.textMuted} hover:${styles.textMain}`
-                }`}
-              >
-                Encode
-              </button>
-              <button 
-                onClick={() => setMode('decode')}
-                className={`flex-1 sm:flex-none px-6 py-2 rounded-md text-sm font-semibold transition-all ${
-                  mode === 'decode' ? (isDark ? 'bg-emerald-900/30 text-emerald-300 ring-1 ring-emerald-500/50' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500 border-emerald-500') : `${styles.textMuted} hover:${styles.textMain}`
-                }`}
-              >
-                Decode
-              </button>
-            </div>
-
-            <button 
-              onClick={clearAll}
-              className={`w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 text-xs font-bold text-red-500 hover:text-red-600 ${isDark ? 'hover:bg-red-900/20' : 'hover:bg-red-50'} rounded-lg transition-colors`}
+          <div className={`flex w-full sm:w-auto p-1 rounded-lg ${isDark ? "bg-slate-900/50" : "bg-gray-100"}`}>
+            <button
+              onClick={() => setMode("encode")}
+              className={`flex-1 sm:flex-none px-6 py-2 rounded-md text-sm font-semibold transition-all ${
+                mode === "encode" ? styles.primaryBtnActive : `${styles.textMuted} hover:${styles.textMain}`
+              }`}
             >
-              <Icons.Trash2 size={14} />
-              <span>CLEAR</span>
+              Encode
             </button>
-        </div>
-
-        {/* Main I/O Area */}
-        <div className="flex flex-col space-y-4">
-            
-          {/* Input Box */}
-          <div className={`flex flex-col ${styles.cardBg} backdrop-blur-sm rounded-xl border ${styles.cardBorder} shadow-sm overflow-hidden transition-all duration-300`}>
-              <div className={`px-5 py-3 border-b ${styles.cardBorder} flex justify-between items-center`}>
-                <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${styles.accentText}`}>
-                  Input <span className={`px-2 py-0.5 rounded text-[10px] ${isDark ? 'bg-slate-700' : 'bg-gray-200 text-gray-600'}`}>RAW</span>
-                </label>
-                <div className="flex items-center gap-3">
-                  <span className={`text-[10px] ${styles.textMuted} font-mono`}>
-                    {input.length} chars
-                  </span>
-                  <button onClick={() => copyToClipboard(input)} className={`${styles.textMuted} hover:${styles.accentText} transition-colors`} title="Copy">
-                    <Icons.Copy size={14} />
-                  </button>
-                </div>
-              </div>
-              <textarea 
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={`Paste your text here to ${mode}...`}
-                className={`w-full bg-transparent p-5 text-sm font-mono ${styles.textMain} placeholder-gray-400 resize-none focus:outline-none ${styles.inputBg} transition-colors`}
-                spellCheck="false"
-                style={{ minHeight: '200px' }} 
-              />
+            <button
+              onClick={() => setMode("decode")}
+              className={`flex-1 sm:flex-none px-6 py-2 rounded-md text-sm font-semibold transition-all ${
+                mode === "decode"
+                  ? isDark
+                    ? "bg-emerald-900/30 text-emerald-300 ring-1 ring-emerald-500/50"
+                    : "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500 border-emerald-500"
+                  : `${styles.textMuted} hover:${styles.textMain}`
+              }`}
+            >
+              Decode
+            </button>
           </div>
 
-          {/* Swap Button */}
+          <button
+            onClick={clearAll}
+            className={`w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 text-xs font-bold text-red-500 hover:text-red-600 ${isDark ? "hover:bg-red-900/20" : "hover:bg-red-50"} rounded-lg transition-colors`}
+          >
+            <Icons.Trash2 size={14} />
+            <span>CLEAR</span>
+          </button>
+        </div>
+
+        <div className="flex flex-col space-y-4">
+          <div className={`flex flex-col ${styles.cardBg} backdrop-blur-sm rounded-xl border ${styles.cardBorder} shadow-sm overflow-hidden transition-all duration-300`}>
+            <div className={`px-5 py-3 border-b ${styles.cardBorder} flex justify-between items-center`}>
+              <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${styles.accentText}`}>
+                Input{" "}
+                <span className={`px-2 py-0.5 rounded text-[10px] ${isDark ? "bg-slate-700" : "bg-gray-200 text-gray-600"}`}>RAW</span>
+              </label>
+              <div className="flex items-center gap-3">
+                <span className={`text-[10px] ${styles.textMuted} font-mono`}>{input.length} chars</span>
+                <button onClick={() => copyToClipboard(input)} className={`${styles.textMuted} hover:${styles.accentText} transition-colors`} title="Copy">
+                  <Icons.Copy size={14} />
+                </button>
+              </div>
+            </div>
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={`Paste your text here to ${mode}...`}
+              className={`w-full bg-transparent p-5 text-sm font-mono ${styles.textMain} placeholder-gray-400 resize-none focus:outline-none ${styles.inputBg} transition-colors`}
+              spellCheck="false"
+              style={{ minHeight: "200px" }}
+            />
+          </div>
+
           <div className="flex justify-center -my-6 relative z-10">
-              <button 
+            <button
               onClick={swapContent}
-              className={`${isDark ? 'bg-slate-700 hover:bg-cyan-600 border-[#0f172a]' : 'bg-white hover:bg-blue-600 hover:text-white border-gray-50 text-gray-500'} p-2 rounded-full shadow-lg border-4 transition-all hover:scale-110 active:scale-95`}
+              className={`${isDark ? "bg-slate-700 hover:bg-cyan-600 border-[#0f172a]" : "bg-white hover:bg-blue-600 hover:text-white border-gray-50 text-gray-500"} p-2 rounded-full shadow-lg border-4 transition-colors`}
               title="Swap Input & Output"
             >
               <Icons.ArrowDown size={18} />
             </button>
           </div>
 
-          {/* Output Box */}
           <div className={`flex flex-col ${styles.cardBg} backdrop-blur-sm rounded-xl border ${styles.cardBorder} shadow-sm overflow-hidden transition-all duration-300`}>
-              <div className={`px-5 py-3 border-b ${styles.cardBorder} flex justify-between items-center`}>
-                <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${styles.accentTextSec}`}>
-                  Output <span className={`px-2 py-0.5 rounded text-[10px] ${isDark ? 'bg-slate-700' : 'bg-gray-200 text-gray-600'}`}>{algo}</span>
-                </label>
-                <div className="flex items-center gap-3">
-                  <span className={`text-[10px] ${styles.textMuted} font-mono`}>
-                    {output.length} chars
-                  </span>
-                  <button onClick={() => copyToClipboard(output)} className={`${styles.textMuted} hover:${styles.accentTextSec} transition-colors`} title="Copy">
-                    <Icons.Copy size={14} />
-                  </button>
-                </div>
+            <div className={`px-5 py-3 border-b ${styles.cardBorder} flex justify-between items-center`}>
+              <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${styles.accentTextSec}`}>
+                Output{" "}
+                <span className={`px-2 py-0.5 rounded text-[10px] ${isDark ? "bg-slate-700" : "bg-gray-200 text-gray-600"}`}>{algo}</span>
+              </label>
+              <div className="flex items-center gap-3">
+                <span className={`text-[10px] ${styles.textMuted} font-mono`}>{output.length} chars</span>
+                <button onClick={() => copyToClipboard(output)} className={`${styles.textMuted} hover:${styles.accentTextSec} transition-colors`} title="Copy">
+                  <Icons.Copy size={14} />
+                </button>
               </div>
-              <textarea 
-                value={output}
-                readOnly
-                placeholder="Result will appear here..."
-                className={`w-full ${styles.inputBg} p-5 text-sm font-mono ${styles.textMain} resize-none focus:outline-none`}
-                spellCheck="false"
-                style={{ minHeight: '200px' }}
-              />
+            </div>
+            <textarea
+              value={output}
+              readOnly
+              placeholder="Result will appear here..."
+              className={`w-full ${styles.inputBg} p-5 text-sm font-mono ${styles.textMain} resize-none focus:outline-none`}
+              spellCheck="false"
+              style={{ minHeight: "200px" }}
+            />
           </div>
-
         </div>
-
       </div>
 
-      {/* Toast */}
       {toast && (
-        <div className={`fixed bottom-8 px-6 py-3 rounded-xl shadow-xl flex items-center space-x-3 animate-bounce z-50 ${isDark ? 'bg-slate-800 text-cyan-400 border border-cyan-500/20' : 'bg-gray-900 text-white'}`}>
+        <div
+          className={`fixed bottom-8 px-6 py-3 rounded-xl shadow-xl flex items-center space-x-3 animate-bounce z-50 ${
+            isDark ? "bg-slate-800 text-cyan-400 border border-cyan-500/20" : "bg-gray-900 text-white border border-gray-800"
+          }`}
+        >
           <Icons.Check size={16} />
           <span className="text-sm font-semibold">{toast}</span>
         </div>
