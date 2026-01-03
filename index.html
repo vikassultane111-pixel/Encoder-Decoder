@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecoderX - Security Tools</title>
+    
+    <!-- React & ReactDOM (via CDN) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel (to handle JSX in browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Scrollbar for Hacker Vibe */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(6, 182, 212, 0.6);
+        }
+        body {
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons Component (Inline SVGs) ---
+        const Icons = {
+            Shield: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+            ),
+            Code: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+                </svg>
+            ),
+            Lock: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+            ),
+            Globe: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+            ),
+            Hash: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="4" y1="9" x2="20" y2="9" />
+                <line x1="4" y1="15" x2="20" y2="15" />
+                <line x1="10" y1="3" x2="8" y2="21" />
+                <line x1="16" y1="3" x2="14" y2="21" />
+                </svg>
+            ),
+            Binary: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect x="14" y="14" width="4" height="6" rx="2" />
+                <rect x="6" y="4" width="4" height="6" rx="2" />
+                <path d="M6 20h4" />
+                <path d="M14 10h4" />
+                <path d="M6 14h2v6" />
+                <path d="M14 4h2v6" />
+                </svg>
+            ),
+            FileCode: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                <polyline points="14 2 14 8 20 8" />
+                <path d="m10 13-2 2 2 2" />
+                <path d="m14 17 2-2-2-2" />
+                </svg>
+            ),
+            Terminal: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="4 17 10 11 4 5" />
+                <line x1="12" y1="19" x2="20" y2="19" />
+                </svg>
+            ),
+            AlignLeft: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="17" y1="10" x2="3" y2="10" />
+                <line x1="21" y1="6" x2="3" y2="6" />
+                <line x1="21" y1="14" x2="3" y2="14" />
+                <line x1="17" y1="18" x2="3" y2="18" />
+                </svg>
+            ),
+            Sun: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+            ),
+            Moon: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            ),
+            ArrowDown: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <polyline points="19 12 12 19 5 12" />
+                </svg>
+            ),
+            Trash2: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+            ),
+            Copy: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+            ),
+            Check: ({ size = 24, className = "" }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="20 6 9 17 4 12" />
+                </svg>
+            ),
+        };
+
+        function CyberEncoder() {
+            const [input, setInput] = useState('');
+            const [output, setOutput] = useState('');
+            const [mode, setMode] = useState('encode');
+            const [algo, setAlgo] = useState('base64');
+            const [theme, setTheme] = useState('light');
+            const [toast, setToast] = useState(null);
+
+            // Algorithms definition
+            const algorithms = [
+                { id: 'base64', name: 'Base64 (Standard)', icon: <Icons.Code size={16} /> },
+                { id: 'base64url', name: 'Base64 (URL Safe)', icon: <Icons.Lock size={16} /> },
+                { id: 'url', name: 'URL Encode', icon: <Icons.Globe size={16} /> },
+                { id: 'hex', name: 'Hex / Hexdump', icon: <Icons.Hash size={16} /> },
+                { id: 'binary', name: 'Binary (8-bit)', icon: <Icons.Binary size={16} /> },
+                { id: 'unicode', name: 'Unicode Escape', icon: <Icons.FileCode size={16} /> },
+                { id: 'html', name: 'HTML Entity', icon: <Icons.Terminal size={16} /> },
+                { id: 'rot13', name: 'ROT13 Cipher', icon: <Icons.Shield size={16} /> },
+                { id: 'reverse', name: 'Reverse String', icon: <Icons.AlignLeft size={16} /> },
+            ];
+
+            // Helper functions
+            const toHex = (str) => {
+                let result = '';
+                for (let i = 0; i < str.length; i++) {
+                    result += str.charCodeAt(i).toString(16).padStart(2, '0');
+                }
+                return result;
+            };
+
+            const fromHex = (hex) => {
+                let str = '';
+                hex = hex.replace(/\s|0x/g, ''); 
+                for (let i = 0; i < hex.length; i += 2) {
+                    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+                }
+                return str;
+            };
+
+            const toBinary = (str) => {
+                return str.split('').map(char => 
+                    char.charCodeAt(0).toString(2).padStart(8, '0')
+                ).join(' ');
+            };
+
+            const fromBinary = (bin) => {
+                return bin.split(/\s+/).map(byte => 
+                    String.fromCharCode(parseInt(byte, 2))
+                ).join('');
+            };
+
+            const toUnicode = (str) => {
+                return str.split('').map(char => {
+                    const hex = char.charCodeAt(0).toString(16).padStart(4, '0');
+                    return `\\u${hex}`;
+                }).join('');
+            };
+
+            const fromUnicode = (str) => {
+                return str.replace(/\\u[\dA-F]{4}/gi, (match) => 
+                    String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16))
+                );
+            };
+
+            const rot13 = (str) => {
+                return str.replace(/[a-zA-Z]/g, function (c) {
+                    return String.fromCharCode(
+                        (c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
+                    );
+                });
+            };
+
+            const reverseStr = (str) => str.split('').reverse().join('');
+
+            // Main Logic
+            useEffect(() => {
+                try {
+                    if (!input) {
+                        setOutput('');
+                        return;
+                    }
+
+                    let result = '';
+
+                    switch (algo) {
+                        case 'base64':
+                            if (mode === 'encode') {
+                                result = btoa(unescape(encodeURIComponent(input)));
+                            } else {
+                                result = decodeURIComponent(escape(atob(input)));
+                            }
+                            break;
+                        case 'base64url':
+                            if (mode === 'encode') {
+                                const b64 = btoa(unescape(encodeURIComponent(input)));
+                                result = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+                            } else {
+                                let b64 = input.replace(/-/g, '+').replace(/_/g, '/');
+                                while (b64.length % 4) { b64 += '='; }
+                                result = decodeURIComponent(escape(atob(b64)));
+                            }
+                            break;
+                        case 'url':
+                            result = mode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input);
+                            break;
+                        case 'hex':
+                            result = mode === 'encode' ? toHex(input) : fromHex(input);
+                            break;
+                        case 'binary':
+                            if (mode === 'encode') {
+                                result = toBinary(input);
+                            } else {
+                                const sanitized = input.replace(/[^01\s]/g, '');
+                                result = fromBinary(sanitized);
+                            }
+                            break;
+                        case 'unicode':
+                            result = mode === 'encode' ? toUnicode(input) : fromUnicode(input);
+                            break;
+                        case 'html':
+                            if (mode === 'encode') {
+                                result = input.replace(/[\u00A0-\u9999<>&]/g, i => '&#'+i.charCodeAt(0)+';');
+                            } else {
+                                const doc = new DOMParser().parseFromString(input, 'text/html');
+                                result = doc.documentElement.textContent;
+                            }
+                            break;
+                        case 'rot13':
+                            result = rot13(input);
+                            break;
+                        case 'reverse':
+                            result = reverseStr(input);
+                            break;
+                        default:
+                            result = input;
+                    }
+                    setOutput(result);
+                } catch (e) {
+                    setOutput(`Error: Unable to ${mode} with ${algo}. Check input format.`);
+                }
+            }, [input, mode, algo]);
+
+            // Actions
+            const copyToClipboard = (text) => {
+                if (!text) return;
+                navigator.clipboard.writeText(text);
+                showToast('Copied to clipboard!');
+            };
+
+            const showToast = (msg) => {
+                setToast(msg);
+                setTimeout(() => setToast(null), 2000);
+            };
+
+            const clearAll = () => {
+                setInput('');
+                setOutput('');
+            };
+
+            const swapContent = () => {
+                setInput(output);
+                setMode(mode === 'encode' ? 'decode' : 'encode');
+            };
+
+            const toggleTheme = () => {
+                setTheme(prev => prev === 'light' ? 'dark' : 'light');
+            };
+
+            // Theme Styles Configuration
+            const isDark = theme === 'dark';
+            
+            const styles = {
+                pageBg: isDark ? 'bg-[#0f172a]' : 'bg-gray-50',
+                textMain: isDark ? 'text-slate-200' : 'text-gray-800',
+                textMuted: isDark ? 'text-slate-400' : 'text-gray-500',
+                cardBg: isDark ? 'bg-slate-800/50' : 'bg-white',
+                cardBorder: isDark ? 'border-slate-700/50' : 'border-gray-200',
+                headerBg: isDark ? 'bg-slate-800/50' : 'bg-white/80',
+                inputBg: isDark ? 'bg-slate-900/30' : 'bg-gray-50',
+                inputBorderFocus: isDark ? 'focus:border-cyan-500/50' : 'focus:border-blue-500',
+                primaryBtn: isDark 
+                    ? 'bg-slate-700 text-cyan-400 hover:bg-slate-600' 
+                    : 'bg-white text-blue-600 border border-gray-200 hover:bg-gray-50 hover:border-blue-300 shadow-sm',
+                primaryBtnActive: isDark
+                    ? 'bg-cyan-900/30 text-cyan-300 ring-1 ring-cyan-500/50'
+                    : 'bg-blue-50 text-blue-700 ring-1 ring-blue-500 border-blue-500',
+                accentText: isDark ? 'text-cyan-400' : 'text-blue-600',
+                accentTextSec: isDark ? 'text-emerald-400' : 'text-emerald-600',
+                selectBg: isDark ? 'bg-slate-900' : 'bg-white',
+            };
+
+            return (
+                <div className={`min-h-screen ${styles.pageBg} ${styles.textMain} font-sans transition-colors duration-300 p-4 md:p-6 flex flex-col items-center`}>
+                    
+                    {/* Background Ambience (Visible only in Dark Mode) */}
+                    {isDark && (
+                        <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-900/10 rounded-full blur-[100px]"></div>
+                            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/10 rounded-full blur-[100px]"></div>
+                        </div>
+                    )}
+
+                    <div className="w-full max-w-5xl relative z-10 flex flex-col space-y-4 md:space-y-6">
+                        
+                        {/* Header Section */}
+                        <div className={`flex flex-col md:flex-row items-center justify-between ${styles.headerBg} backdrop-blur-md p-4 rounded-xl border ${styles.cardBorder} shadow-sm gap-4`}>
+                            <div className="flex items-center space-x-3 w-full md:w-auto justify-center md:justify-start">
+                                <div className={`w-10 h-10 ${isDark ? 'bg-gradient-to-br from-cyan-500 to-blue-600' : 'bg-blue-600'} rounded-lg flex items-center justify-center shadow-md shrink-0`}>
+                                    <Icons.Shield size={20} className="text-white" />
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl font-black tracking-tighter uppercase">Decoder<span className={styles.accentText}>X</span></h1>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                                {/* Algorithm Select Dropdown */}
+                                <div className="relative w-full sm:w-64">
+                                    <select
+                                        value={algo}
+                                        onChange={(e) => setAlgo(e.target.value)}
+                                        className={`w-full appearance-none pl-10 pr-8 py-2.5 rounded-lg text-sm font-medium border ${styles.cardBorder} ${styles.selectBg} focus:outline-none focus:ring-2 focus:ring-opacity-50 ${isDark ? 'focus:ring-cyan-500' : 'focus:ring-blue-500'} transition-shadow cursor-pointer`}
+                                    >
+                                        {algorithms.map((a) => (
+                                            <option key={a.id} value={a.id}>
+                                                {a.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div className={`absolute left-3 top-1/2 -translate-y-1/2 ${styles.textMuted} pointer-events-none`}>
+                                        {/* Simplified Icon rendering for standalone HTML */}
+                                        {algorithms.find(a => a.id === algo) ? algorithms.find(a => a.id === algo).icon : null}
+                                    </div>
+                                    <div className={`absolute right-3 top-1/2 -translate-y-1/2 ${styles.textMuted} pointer-events-none`}>
+                                        <Icons.ArrowDown size={14} />
+                                    </div>
+                                </div>
+
+                                {/* Theme Toggle */}
+                                <button 
+                                    onClick={toggleTheme}
+                                    className={`w-full sm:w-auto flex items-center justify-center p-2.5 rounded-lg border ${styles.cardBorder} ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'} transition-colors shrink-0`}
+                                    title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+                                >
+                                    {isDark ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
+                                    <span className="ml-2 sm:hidden text-sm font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Controls & Mode Selection */}
+                        <div className={`flex flex-col sm:flex-row items-center justify-between gap-3 ${styles.cardBg} p-2 rounded-xl border ${styles.cardBorder} shadow-sm`}>
+                            <div className={`flex w-full sm:w-auto p-1 rounded-lg ${isDark ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
+                                <button 
+                                    onClick={() => setMode('encode')}
+                                    className={`flex-1 sm:flex-none px-6 py-2 rounded-md text-sm font-semibold transition-all ${
+                                        mode === 'encode' ? styles.primaryBtnActive : `${styles.textMuted} hover:${styles.textMain}`
+                                    }`}
+                                >
+                                    Encode
+                                </button>
+                                <button 
+                                    onClick={() => setMode('decode')}
+                                    className={`flex-1 sm:flex-none px-6 py-2 rounded-md text-sm font-semibold transition-all ${
+                                        mode === 'decode' ? (isDark ? 'bg-emerald-900/30 text-emerald-300 ring-1 ring-emerald-500/50' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500 border-emerald-500') : `${styles.textMuted} hover:${styles.textMain}`
+                                    }`}
+                                >
+                                    Decode
+                                </button>
+                            </div>
+
+                            <button 
+                                onClick={clearAll}
+                                className={`w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 text-xs font-bold text-red-500 hover:text-red-600 ${isDark ? 'hover:bg-red-900/20' : 'hover:bg-red-50'} rounded-lg transition-colors`}
+                            >
+                                <Icons.Trash2 size={14} />
+                                <span>CLEAR</span>
+                            </button>
+                        </div>
+
+                        {/* Main I/O Area */}
+                        <div className="flex flex-col space-y-4">
+                            
+                            {/* Input Box */}
+                            <div className={`flex flex-col ${styles.cardBg} backdrop-blur-sm rounded-xl border ${styles.cardBorder} shadow-sm overflow-hidden transition-all duration-300`}>
+                                <div className={`px-5 py-3 border-b ${styles.cardBorder} flex justify-between items-center`}>
+                                    <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${styles.accentText}`}>
+                                        Input <span className={`px-2 py-0.5 rounded text-[10px] ${isDark ? 'bg-slate-700' : 'bg-gray-200 text-gray-600'}`}>RAW</span>
+                                    </label>
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-[10px] ${styles.textMuted} font-mono`}>
+                                            {input.length} chars
+                                        </span>
+                                        <button onClick={() => copyToClipboard(input)} className={`${styles.textMuted} hover:${styles.accentText} transition-colors`} title="Copy">
+                                            <Icons.Copy size={14} />
+                                        </button>
+                                    </div>
+                                </div>
+                                <textarea 
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    placeholder={`Paste your text here to ${mode}...`}
+                                    className={`w-full bg-transparent p-5 text-sm font-mono ${styles.textMain} placeholder-gray-400 resize-none focus:outline-none ${styles.inputBg} transition-colors`}
+                                    spellCheck="false"
+                                    style={{ minHeight: '200px' }} 
+                                />
+                            </div>
+
+                            {/* Swap Button */}
+                            <div className="flex justify-center -my-6 relative z-10">
+                                <button 
+                                onClick={swapContent}
+                                className={`${isDark ? 'bg-slate-700 hover:bg-cyan-600 border-[#0f172a]' : 'bg-white hover:bg-blue-600 hover:text-white border-gray-50 text-gray-500'} p-2 rounded-full shadow-lg border-4 transition-all hover:scale-110 active:scale-95`}
+                                title="Swap Input & Output"
+                                >
+                                <Icons.ArrowDown size={18} />
+                                </button>
+                            </div>
+
+                            {/* Output Box */}
+                            <div className={`flex flex-col ${styles.cardBg} backdrop-blur-sm rounded-xl border ${styles.cardBorder} shadow-sm overflow-hidden transition-all duration-300`}>
+                                <div className={`px-5 py-3 border-b ${styles.cardBorder} flex justify-between items-center`}>
+                                    <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${styles.accentTextSec}`}>
+                                        Output <span className={`px-2 py-0.5 rounded text-[10px] ${isDark ? 'bg-slate-700' : 'bg-gray-200 text-gray-600'}`}>{algo}</span>
+                                    </label>
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-[10px] ${styles.textMuted} font-mono`}>
+                                            {output.length} chars
+                                        </span>
+                                        <button onClick={() => copyToClipboard(output)} className={`${styles.textMuted} hover:${styles.accentTextSec} transition-colors`} title="Copy">
+                                            <Icons.Copy size={14} />
+                                        </button>
+                                    </div>
+                                </div>
+                                <textarea 
+                                    value={output}
+                                    readOnly
+                                    placeholder="Result will appear here..."
+                                    className={`w-full ${styles.inputBg} p-5 text-sm font-mono ${styles.textMain} resize-none focus:outline-none`}
+                                    spellCheck="false"
+                                    style={{ minHeight: '200px' }}
+                                />
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {/* Toast */}
+                    {toast && (
+                        <div className={`fixed bottom-8 px-6 py-3 rounded-xl shadow-xl flex items-center space-x-3 animate-bounce z-50 ${isDark ? 'bg-slate-800 text-cyan-400 border border-cyan-500/20' : 'bg-gray-900 text-white'}`}>
+                            <Icons.Check size={16} />
+                            <span className="text-sm font-semibold">{toast}</span>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<CyberEncoder />);
+    </script>
+</body>
+</html>
