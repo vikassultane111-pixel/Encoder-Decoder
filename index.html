@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DecoderX Pro - Advanced Security Tools</title>
+    <title>DecoderX Pro Suite - Advanced Security Tools</title>
     
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -32,6 +32,7 @@
                         'fade-in': 'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                         'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                         'bounce-in': 'bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.26, 1.55)',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -57,12 +58,8 @@
     </script>
     
     <style>
-        /* Force native dark mode styling for dropdowns to fix ugly blue highlights */
-        html.dark {
-            color-scheme: dark;
-        }
+        html.dark { color-scheme: dark; }
 
-        /* Modern Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 99px; }
@@ -73,57 +70,38 @@
             transition: background-color 0.4s ease, color 0.4s ease;
         }
 
-        /* Glassmorphism Utilities */
         .glass-panel {
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
         
-        /* Gradient Text */
         .text-gradient-primary {
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-image: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
         }
-        .dark .text-gradient-primary {
-            background-image: linear-gradient(135deg, #60A5FA 0%, #34D399 100%);
-        }
+        .dark .text-gradient-primary { background-image: linear-gradient(135deg, #60A5FA 0%, #34D399 100%); }
 
-        /* Custom Dropdown Option Styling */
-        select option {
-            background-color: #0f172a; 
-            color: #10b981; 
-            font-weight: 600;
-            padding: 10px;
-        }
+        select option { background-color: #0f172a; color: #10b981; font-weight: 600; padding: 10px; }
         
-        /* Custom Range Slider */
-        input[type=range] {
-            -webkit-appearance: none;
-            background: transparent;
-        }
+        input[type=range] { -webkit-appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 14px;
-            width: 14px;
-            border-radius: 50%;
-            background: #3B82F6;
-            cursor: pointer;
-            margin-top: -5px;
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
+            background: #3B82F6; cursor: pointer; margin-top: -5px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
         }
-        .dark input[type=range]::-webkit-slider-thumb {
-            background: #22D3EE;
-            box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
-            background: rgba(148, 163, 184, 0.3);
-            border-radius: 2px;
-        }
+        .dark input[type=range]::-webkit-slider-thumb { background: #22D3EE; box-shadow: 0 0 8px rgba(34, 211, 238, 0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(148, 163, 184, 0.3); border-radius: 2px; }
+
+        /* Syntax Highlighting for Deep Decoder */
+        .json-key { color: #0284c7; }
+        .dark .json-key { color: #79c0ff; }
+        .json-string { color: #059669; }
+        .dark .json-string { color: #a5d6ff; }
+        .json-number { color: #9333ea; }
+        .dark .json-number { color: #d2a8ff; }
+        .json-boolean { color: #e11d48; }
+        .dark .json-boolean { color: #ff7b72; }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-900 dark:selection:text-cyan-100 min-h-screen bg-[#030712]">
@@ -132,7 +110,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // All SVGs mapped as React components
+        // --- ICONS ---
         const Icons = {
             Shield: ({ size = 24, className, ...props }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> ),
             ArrowRight: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> ),
@@ -162,38 +140,34 @@
             X: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> ),
             Fingerprint: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10"></path><path d="M5 12c0-3.87 3.13-7 7-7s7 3.13 7 7"></path><path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4"></path><path d="M12 12c0 0 0 0 0 0"></path><path d="M12 15v.01"></path><path d="M12 18v.01"></path><path d="M12 21v.01"></path><path d="M8 18v.01"></path><path d="M8 21v.01"></path><path d="M16 18v.01"></path><path d="M16 21v.01"></path></svg> ),
             Wifi: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg> ),
+            Layers: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> ),
+            Cpu: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg> ),
+            Unlock: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg> ),
+            AlertTriangle: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ),
         };
 
+        // --- SHARED HELPERS (DECODERX) ---
         const algorithms = [
-            // Network & Security
             { id: 'defang', category: 'network', name: 'Defang IP / URL', icon: <Icons.Wifi size={16} />, description: 'Encode: Defang [.] | Decode: Refang .' },
-
-            // Encoders
             { id: 'base64', category: 'encoders', name: 'Base64', icon: <Icons.Code size={16} /> },
             { id: 'base64url', category: 'encoders', name: 'Base64 (URL Safe)', icon: <Icons.Lock size={16} /> },
             { id: 'url', category: 'encoders', name: 'URL / URI', icon: <Icons.Globe size={16} /> },
             { id: 'hex', category: 'encoders', name: 'Hexadecimal', icon: <Icons.Hash size={16} /> },
             { id: 'binary', category: 'encoders', name: 'Binary', icon: <Icons.Binary size={16} /> },
-            { id: 'octal', category: 'encoders', name: 'Octal Escaping', icon: <Icons.FileCode size={16} />, description: 'Encodes characters to \\OOO' },
+            { id: 'octal', category: 'encoders', name: 'Octal Escaping', icon: <Icons.FileCode size={16} /> },
             { id: 'html', category: 'encoders', name: 'HTML Entity', icon: <Icons.Terminal size={16} /> },
-            
-            // Ciphers
-            { id: 'rot47', category: 'ciphers', name: 'ROT47 Cipher', icon: <Icons.Shield size={16} />, description: 'ASCII shift cipher (Self-inverting)' },
+            { id: 'rot47', category: 'ciphers', name: 'ROT47 Cipher', icon: <Icons.Shield size={16} /> },
             { id: 'caesar', category: 'ciphers', name: 'Caesar Cipher', icon: <Icons.Shield size={16} /> },
             { id: 'vigenere', category: 'ciphers', name: 'Vigenère Cipher', icon: <Icons.Lock size={16} /> },
             { id: 'atbash', category: 'ciphers', name: 'Atbash Cipher', icon: <Icons.Code size={16} /> },
             { id: 'morse', category: 'ciphers', name: 'Morse Code', icon: <Icons.Activity size={16} /> },
             { id: 'reverse', category: 'ciphers', name: 'Reverse Text', icon: <Icons.AlignLeft size={16} /> },
-            
-            // Hashes
-            { id: 'sha256', category: 'hashes', name: 'SHA-256', icon: <Icons.Fingerprint size={16} />, description: 'Cryptographic Hash (Encode Only)' },
-            { id: 'sha512', category: 'hashes', name: 'SHA-512', icon: <Icons.Fingerprint size={16} />, description: 'Cryptographic Hash (Encode Only)' },
-            { id: 'sha1', category: 'hashes', name: 'SHA-1', icon: <Icons.Fingerprint size={16} />, description: 'Legacy Hash (Encode Only)' },
-
-            // Parsers
-            { id: 'urlparse', category: 'parsers', name: 'URL Parser', icon: <Icons.Link size={16} />, description: 'Extracts Protocol, Host & Params (Decode Only)' },
-            { id: 'jwt', category: 'parsers', name: 'JWT Parser', icon: <Icons.Key size={16} />, description: 'Decodes JSON Web Tokens (Decode Only)' },
-            { id: 'json', category: 'parsers', name: 'JSON Formatter', icon: <Icons.Database size={16} />, description: 'Encode: Minify | Decode: Pretty Print' },
+            { id: 'sha256', category: 'hashes', name: 'SHA-256', icon: <Icons.Fingerprint size={16} /> },
+            { id: 'sha512', category: 'hashes', name: 'SHA-512', icon: <Icons.Fingerprint size={16} /> },
+            { id: 'sha1', category: 'hashes', name: 'SHA-1', icon: <Icons.Fingerprint size={16} /> },
+            { id: 'urlparse', category: 'parsers', name: 'URL Parser', icon: <Icons.Link size={16} /> },
+            { id: 'jwt', category: 'parsers', name: 'JWT Parser', icon: <Icons.Key size={16} /> },
+            { id: 'json', category: 'parsers', name: 'JSON Formatter', icon: <Icons.Database size={16} /> },
         ];
 
         const toolCategories = [
@@ -203,80 +177,6 @@
             { id: 'hashes', name: 'Hashes', icon: <Icons.Fingerprint size={16} /> },
             { id: 'parsers', name: 'Parsers & Formatters', icon: <Icons.Database size={16} /> },
         ];
-
-        // --- Core Logic Helpers ---
-        const toHex = s => { let r=''; for(let i=0;i<s.length;i++) r+=s.charCodeAt(i).toString(16).padStart(2,'0'); return r; };
-        const fromHex = h => { let s=''; h=h.replace(/\s|0x/g,''); for(let i=0;i<h.length;i+=2) s+=String.fromCharCode(parseInt(h.substr(i,2),16)); return s; };
-        const toBin = s => s.split('').map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
-        const fromBin = b => b.split(/\s+/).map(y=>String.fromCharCode(parseInt(y,2))).join('');
-        const toOctal = s => s.split('').map(c => '\\' + c.charCodeAt(0).toString(8).padStart(3, '0')).join('');
-        const fromOctal = s => s.replace(/\\([0-7]{1,3})/g, (m, p1) => String.fromCharCode(parseInt(p1, 8)));
-        const rev = s => s.split('').reverse().join('');
-        const atbash = s => s.replace(/[a-zA-Z]/g, c => String.fromCharCode((c <= 'Z' ? 90 + 65 : 122 + 97) - c.charCodeAt(0)));
-        const rot47 = s => s.replace(/[!-~]/g, c => String.fromCharCode((c.charCodeAt(0) - 33 + 47) % 94 + 33));
-        
-        // Defang / Refang
-        const defang = s => s.replace(/\./g, '[.]').replace(/http/gi, 'hxxp');
-        const refang = s => s.replace(/\[\.\]/g, '.').replace(/hxxp/gi, 'http');
-
-        // Vigenere Cipher
-        const vigenereCipher = (str, key, decode = false) => {
-            let k = key.toUpperCase().replace(/[^A-Z]/g, '');
-            if(!k) k = 'A';
-            let ki = 0;
-            return str.replace(/[a-zA-Z]/g, c => {
-                const base = c <= 'Z' ? 65 : 97;
-                const shift = k.charCodeAt(ki % k.length) - 65;
-                ki++;
-                const s = decode ? (26 - shift) : shift;
-                return String.fromCharCode(((c.charCodeAt(0) - base + s) % 26) + base);
-            });
-        };
-
-        // URL Parser
-        const parseUrl = s => {
-            try {
-                const urlString = s.startsWith('http') ? s : `https://${s}`;
-                const url = new URL(urlString);
-                const params = Object.fromEntries(url.searchParams);
-                return JSON.stringify({ Protocol: url.protocol.replace(':', ''), Host: url.host, Path: url.pathname, Parameters: Object.keys(params).length > 0 ? params : "None" }, null, 4);
-            } catch(e) { throw new Error("Invalid URL format"); }
-        };
-
-        // Caesar Cipher
-        const caesarCipher = (str, shift, decode = false) => {
-            const s = decode ? (26 - (shift % 26)) : (shift % 26);
-            return str.replace(/[a-zA-Z]/g, c => {
-                const base = c <= 'Z' ? 65 : 97;
-                return String.fromCharCode(((c.charCodeAt(0) - base + s) % 26) + base);
-            });
-        };
-
-        // Morse Code Dictionary
-        const morseDict = {
-            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..',
-            '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----',
-            ' ': '/', '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.'
-        };
-        const revMorseDict = Object.fromEntries(Object.entries(morseDict).map(([k, v]) => [v, k]));
-        
-        const toMorse = str => str.toUpperCase().split('').map(c => morseDict[c] || c).join(' ');
-        const fromMorse = str => str.split(' ').map(c => revMorseDict[c] || c).join('').replace(/\//g, ' ');
-
-        const formatJSON = (str, minify = false) => {
-            try { return minify ? JSON.stringify(JSON.parse(str)) : JSON.stringify(JSON.parse(str), null, 4); } 
-            catch (e) { throw new Error("Invalid JSON structure"); }
-        };
-
-        const parseJWT = (token) => {
-            try {
-                const parts = token.split('.');
-                if (parts.length !== 3) throw new Error("Invalid JWT format (requires 3 parts)");
-                const header = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')));
-                const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-                return JSON.stringify({ Header: header, Payload: payload, Signature: "VERIFICATION_REQUIRED" }, null, 4);
-            } catch (e) { throw new Error("Invalid or malformed JWT"); }
-        };
 
         const getStats = (text) => {
             if (!text) return { chars: 0, words: 0, lines: 0, bytes: 0 };
@@ -288,33 +188,374 @@
             };
         };
 
-        function CyberEncoder() {
+        // --- DEEP CURL PARSER ENGINE (REACTIFIED) ---
+        function safeUrlDecode(str) {
+            try { return decodeURIComponent(str.replace(/\+/g, ' ')); } 
+            catch(e) { return str; }
+        }
+
+        function syntaxHighlight(jsonStr) {
+            let formatted = jsonStr.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return formatted.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'json-number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) cls = 'json-key';
+                    else cls = 'json-string';
+                } else if (/true|false/.test(match)) cls = 'json-boolean';
+                else if (/null/.test(match)) cls = 'text-slate-500';
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        function analyzeData(inputStr) {
+            if (!inputStr || typeof inputStr !== 'string') return { original: inputStr, final: inputStr, steps: [], isEncoded: false, b64Count: 0, urlCount: 0, isJson: false };
+
+            let current = inputStr.trim();
+            let steps = [];
+            let b64Count = 0;
+            let urlCount = 0;
+            let loopLimit = 10;
+
+            while (loopLimit > 0) {
+                let changed = false;
+
+                // 1. Try URL Decoding
+                let urlDec = safeUrlDecode(current);
+                if (urlDec !== current && urlDec !== "") {
+                    current = urlDec;
+                    urlCount++;
+                    steps.push({ method: 'URL Decode', value: current });
+                    changed = true;
+                    continue; 
+                }
+
+                // 2. Try Base64 Decoding
+                if (/^[A-Za-z0-9\+\/\-\_]+={0,2}$/.test(current) && current.length >= 16) {
+                    try {
+                        let b64 = current.replace(/-/g, '+').replace(/_/g, '/');
+                        while (b64.length % 4) b64 += '='; 
+                        let decoded = decodeURIComponent(escape(window.atob(b64)));
+                        
+                        if (decoded && decoded !== current && /^[\x20-\x7E\n\r\t\u00A0-\uFFFF]+$/.test(decoded)) {
+                            current = decoded;
+                            b64Count++;
+                            steps.push({ method: `Base64 Decode (Level ${b64Count})`, value: current });
+                            changed = true;
+                            continue; 
+                        }
+                    } catch(e) {}
+                }
+
+                if (!changed) break;
+                loopLimit--;
+            }
+
+            let isJson = false;
+            try {
+                let j = JSON.parse(current);
+                if (typeof j === 'object' && j !== null) {
+                    current = JSON.stringify(j, null, 2);
+                    isJson = true;
+                }
+            } catch(e) {}
+
+            return {
+                original: inputStr,
+                final: current,
+                steps: steps,
+                b64Count: b64Count,
+                urlCount: urlCount,
+                isJson: isJson,
+                isEncoded: steps.length > 0
+            };
+        }
+
+
+        // ==========================================
+        // COMPONENT 1: DEEP CURL DECODER TAB
+        // ==========================================
+        function CurlDecoderTab({ isDark, setToast }) {
+            const [curlInput, setCurlInput] = useState('');
+            const [parsedResults, setParsedResults] = useState(null);
+
+            const processRequest = () => {
+                if (!curlInput.trim()) return;
+
+                let results = {
+                    url: 'No URL found',
+                    queryParams: [],
+                    cookies: [],
+                    headers: [],
+                    bodyDump: null,
+                    bodyParams: []
+                };
+
+                // URL
+                const urlMatch = curlInput.match(/['"](https?:\/\/[^'"]+)['"]/);
+                if (urlMatch) {
+                    results.url = urlMatch[1];
+                    if (results.url.includes('?')) {
+                        const qString = results.url.split('?')[1];
+                        const params = new URLSearchParams(qString);
+                        for (const [key, value] of params.entries()) {
+                            results.queryParams.push({ key, analysis: analyzeData(value) });
+                        }
+                    }
+                }
+
+                // Headers & Cookies
+                let cookiesMap = new Map();
+                const headerRegex = /(?:-H|--header)\s*(['"])(.*?)\1/g;
+                let match;
+                while ((match = headerRegex.exec(curlInput)) !== null) {
+                    let headerLine = match[2];
+                    let splitIdx = headerLine.indexOf(':');
+                    if (splitIdx > -1) {
+                        let hName = headerLine.substring(0, splitIdx).trim();
+                        let hVal = headerLine.substring(splitIdx + 1).trim();
+                        
+                        if (hName.toLowerCase() === 'cookie') {
+                            hVal.split(';').forEach(pair => {
+                                let eqIdx = pair.indexOf('=');
+                                if(eqIdx > -1) cookiesMap.set(pair.substring(0, eqIdx).trim(), pair.substring(eqIdx + 1).trim());
+                            });
+                        } else {
+                            if(hName.toLowerCase() === 'authorization') {
+                                let parts = hVal.split(' ');
+                                if(parts.length === 2) {
+                                    let an = analyzeData(parts[1]);
+                                    if(an.isEncoded) {
+                                        an.original = hVal; 
+                                        results.headers.push({ key: hName, analysis: an });
+                                        continue;
+                                    }
+                                }
+                            }
+                            results.headers.push({ key: hName, analysis: analyzeData(hVal) });
+                        }
+                    }
+                }
+                
+                // -b or --cookie flags
+                const cookieRegex = /(?:-b|--cookie)\s*(['"])(.*?)\1/g;
+                let cMatch;
+                while ((cMatch = cookieRegex.exec(curlInput)) !== null) {
+                    cMatch[2].split(';').forEach(pair => {
+                        let eqIdx = pair.indexOf('=');
+                        if(eqIdx > -1) cookiesMap.set(pair.substring(0, eqIdx).trim(), pair.substring(eqIdx + 1).trim());
+                    });
+                }
+                cookiesMap.forEach((val, key) => results.cookies.push({ key, analysis: analyzeData(val) }));
+
+                // Body
+                const bodyRegex = /(?:--data-raw|--data|-d)\s*(?:\$)?(['"])([\s\S]*?)\1/g;
+                let bMatch = bodyRegex.exec(curlInput);
+                if (bMatch) {
+                    let rawData = bMatch[2].replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+
+                    if (rawData.includes('WebKitFormBoundary') || rawData.includes('Content-Disposition: form-data')) {
+                        const partsRegex = /name="([^"]+)"\r?\n\r?\n([\s\S]*?)(?=\r?\n--|$)/g;
+                        let pMatch;
+                        let foundParts = false;
+                        while ((pMatch = partsRegex.exec(rawData)) !== null) {
+                            foundParts = true;
+                            results.bodyParams.push({ key: pMatch[1], analysis: analyzeData(pMatch[2].trim()) });
+                        }
+                        if (!foundParts) results.bodyDump = analyzeData(rawData);
+                    } 
+                    else if (rawData.includes('&') && rawData.includes('=')) {
+                        const params = new URLSearchParams(rawData);
+                        for (const [key, value] of params.entries()) {
+                            results.bodyParams.push({ key, analysis: analyzeData(value) });
+                        }
+                    }
+                    else {
+                        results.bodyDump = analyzeData(rawData);
+                    }
+                }
+
+                setParsedResults(results);
+                setToast("Payload Deep-Decoded! 🕵️‍♀️");
+                setTimeout(() => setToast(null), 2500);
+            };
+
+            const AnalysisRow = ({ itemKey, analysis }) => {
+                if (!analysis.isEncoded) {
+                    return (
+                        <div className={`flex flex-col md:flex-row bg-[#161b22] hover:bg-[#1c2128] transition-colors border-b border-[#30363d]`}>
+                            <div className="md:w-1/4 p-3 md:p-4 border-r border-[#30363d]"><span className="font-semibold text-[#8b949e] break-words text-sm md:text-base">{itemKey}</span></div>
+                            <div className="md:w-3/4 p-3 md:p-4 font-mono text-xs md:text-sm">
+                                {analysis.isJson ? (
+                                    <div className="bg-[#0d1117] p-3 rounded overflow-x-auto" dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} />
+                                ) : (
+                                    <div className="break-words text-slate-300">{analysis.final}</div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                }
+
+                let badge = null;
+                if (analysis.b64Count >= 3) {
+                    badge = <span className="px-2 py-0.5 rounded text-xs font-bold bg-red-600 text-white border border-red-500 shadow-[0_0_10px_rgba(220,38,38,0.5)] animate-pulse">⚠️ TRIPLE BASE64 ENCODED!</span>;
+                } else if (analysis.b64Count === 2) {
+                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/50">🚨 DOUBLE BASE64 ENCODED</span>;
+                } else if (analysis.b64Count === 1 && analysis.urlCount > 0) {
+                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-orange-500/20 text-orange-400 border border-orange-500/50">MIXED ENCODED</span>;
+                } else if (analysis.b64Count === 1) {
+                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">Base64 Encoded</span>;
+                } else if (analysis.urlCount > 0) {
+                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">URL Encoded</span>;
+                }
+
+                return (
+                    <div className={`flex flex-col md:flex-row bg-[#161b22] hover:bg-[#1c2128] transition-colors border-b border-[#30363d]`}>
+                        <div className="md:w-1/4 p-3 md:p-4 border-r border-[#30363d]"><span className="font-semibold text-[#8b949e] break-words text-sm md:text-base">{itemKey}</span></div>
+                        <div className="md:w-3/4 p-3 md:p-4">
+                            <div className="flex items-center gap-2 mb-3">{badge}</div>
+                            
+                            <div className="text-[10px] text-gray-500 uppercase mb-2 ml-1 tracking-wider">Original Raw Value:</div>
+                            <div className="bg-[#0d1117] p-2 rounded text-[10px] md:text-xs font-mono text-gray-500 break-words mb-4 border border-[#30363d] max-h-24 overflow-y-auto">
+                                {analysis.original}
+                            </div>
+                            
+                            <div className="text-[10px] text-gray-500 uppercase mb-2 ml-1 tracking-wider">Decoding Steps:</div>
+                            {analysis.steps.map((step, i) => {
+                                const isLast = i === analysis.steps.length - 1;
+                                const isJSONView = isLast && analysis.isJson;
+                                const icon = step.method.includes('Base64') ? <Icons.Unlock size={12}/> : <Icons.Link size={12}/>;
+                                return (
+                                    <div key={i} className="ml-2 md:ml-4 pl-3 md:pl-4 border-l-2 border-[#30363d] pb-4 relative">
+                                        <div className="absolute w-2 h-2 bg-blue-500 rounded-full -left-[5px] top-1"></div>
+                                        <span className="text-[10px] md:text-xs uppercase tracking-wider font-bold text-blue-400 flex items-center gap-1 mb-2">
+                                            {icon} {step.method}
+                                        </span>
+                                        {isJSONView ? (
+                                            <div className="bg-[#0d1117] p-3 rounded mt-2 overflow-x-auto max-h-[400px] font-mono text-[11px] md:text-xs" dangerouslySetInnerHTML={{ __html: syntaxHighlight(step.value) }} />
+                                        ) : (
+                                            <div className="bg-[#0d1117] px-3 py-2 rounded text-gray-400 break-words font-mono text-[11px] md:text-xs">
+                                                {step.value}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="flex flex-col gap-4 animate-fade-in">
+                    <div className="panel p-1 shadow-lg bg-[#161b22] border border-[#30363d] rounded-xl">
+                        <textarea 
+                            value={curlInput}
+                            onChange={(e) => setCurlInput(e.target.value)}
+                            className="w-full bg-[#0d1117] text-gray-300 font-mono p-4 rounded-t-xl outline-none border-none focus:ring-2 focus:ring-emerald-500/50 resize-y min-h-[200px] md:min-h-[250px] lg:min-h-[30vh]" 
+                            placeholder="Paste your nasty cURL command here... (Double-encoded Base64 Cookies are welcome! 🍪)"
+                            spellCheck="false"
+                        ></textarea>
+                        <div className="p-3 bg-[#161b22] border-t border-[#30363d] flex flex-col sm:flex-row justify-between items-center rounded-b-xl gap-3">
+                            <span className="text-xs text-gray-400 flex items-center gap-1"><Icons.Layers size={16} className="text-emerald-400" /> Identifies 2x, 3x nested encodings in body & cookies automatically.</span>
+                            <button onClick={processRequest} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-6 rounded-lg transition flex justify-center items-center gap-2 shadow-lg shadow-emerald-900/20">
+                                <Icons.Cpu size={18} /> Deep Decode Everything
+                            </button>
+                        </div>
+                    </div>
+
+                    {parsedResults && (
+                        <div className="space-y-6 pb-12 animate-slide-up">
+                            {/* URL Panel */}
+                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
+                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
+                                    <Icons.Link size={16} className="text-gray-400" />
+                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Request Target</h2>
+                                </div>
+                                <div className="p-4 font-mono text-emerald-400 break-words bg-[#0d1117]">
+                                    {parsedResults.url}
+                                </div>
+                            </div>
+
+                            {/* Query Params */}
+                            {parsedResults.queryParams.length > 0 && (
+                                <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
+                                    <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
+                                        <Icons.Code size={16} className="text-gray-400" />
+                                        <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Query Parameters</h2>
+                                    </div>
+                                    <div className="divide-y divide-[#30363d]">
+                                        {parsedResults.queryParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Cookies */}
+                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
+                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
+                                    <Icons.Lock size={16} className="text-yellow-400" />
+                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Cookies</h2>
+                                </div>
+                                <div className="divide-y divide-[#30363d]">
+                                    {parsedResults.cookies.length > 0 
+                                        ? parsedResults.cookies.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
+                                        : <div className="p-4 text-gray-500 text-center text-sm">No cookies found in request</div>
+                                    }
+                                </div>
+                            </div>
+
+                            {/* Headers */}
+                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
+                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
+                                    <Icons.AlignLeft size={16} className="text-blue-400" />
+                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">HTTP Headers</h2>
+                                </div>
+                                <div className="divide-y divide-[#30363d]">
+                                    {parsedResults.headers.length > 0 
+                                        ? parsedResults.headers.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
+                                        : <div className="p-4 text-gray-500 text-center text-sm">No headers found in request</div>
+                                    }
+                                </div>
+                            </div>
+
+                            {/* Body Panel */}
+                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
+                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
+                                    <Icons.Database size={16} className="text-purple-400" />
+                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Body Payload</h2>
+                                </div>
+                                <div className="divide-y divide-[#30363d]">
+                                    {parsedResults.bodyParams.length > 0 
+                                        ? parsedResults.bodyParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
+                                        : parsedResults.bodyDump 
+                                            ? <AnalysisRow itemKey="Raw Body / Multipart Dump" analysis={parsedResults.bodyDump} />
+                                            : <div className="p-4 text-gray-500 text-center text-sm">No body payload found</div>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // ==========================================
+        // COMPONENT 2: DECODERX (ORIGINAL TOOL)
+        // ==========================================
+        function StandardDecoderTab({ isDark, setToast, AlgorithmsLib }) {
+            const { defang, refang, toHex, fromHex, toBin, fromBin, toOctal, fromOctal, htmlEncode, htmlDecode, rev, atbash, rot47, caesarCipher, vigenereCipher, toMorse, fromMorse, formatJSON, parseJWT } = AlgorithmsLib;
+            
             const [input, setInput] = useState('');
             const [output, setOutput] = useState('');
             const [mode, setMode] = useState('encode');
             const [category, setCategory] = useState('encoders');
             const [algo, setAlgo] = useState('base64');
-            const [theme, setTheme] = useState('dark');
-            const [toast, setToast] = useState(null);
             const [animating, setAnimating] = useState(false);
             const [errorMsg, setErrorMsg] = useState(null);
             const [showQR, setShowQR] = useState(false);
-            
-            // Algorithm Specific States
             const [caesarShift, setCaesarShift] = useState(13);
             const [vigenereKey, setVigenereKey] = useState('ZYRA');
-            
             const fileInputRef = useRef(null);
-
-            const toggleTheme = () => {
-                setTheme(t => t === 'light' ? 'dark' : 'light');
-            };
-
-            // Force dark class on document element so native dropdowns look dark
-            useEffect(() => { 
-                if (theme === 'dark') document.documentElement.classList.add('dark');
-                else document.documentElement.classList.remove('dark');
-            }, [theme]);
 
             const handleCategoryChange = (e) => {
                 const newCat = e.target.value;
@@ -327,33 +568,23 @@
                 }
             };
 
-            // Async Core Conversion Engine
             useEffect(() => {
                 let isMounted = true;
-                
                 const processConversion = async () => {
-                    setErrorMsg(null);
-                    setShowQR(false); 
-                    
-                    if (!input) { 
-                        if (isMounted) setOutput(''); 
-                        return; 
-                    }
+                    setErrorMsg(null); setShowQR(false); 
+                    if (!input) { if (isMounted) setOutput(''); return; }
 
                     try {
                         let res = '';
                         let effectiveMode = mode;
-                        // Force mode based on limits
                         if (category === 'hashes') effectiveMode = 'encode';
                         if (algo === 'jwt' || algo === 'urlparse') effectiveMode = 'decode';
 
-                        // Web Crypto API for Hashes
                         if (category === 'hashes') {
                             const msgUint8 = new TextEncoder().encode(input);
                             let hashName = 'SHA-256';
                             if(algo === 'sha512') hashName = 'SHA-512';
                             if(algo === 'sha1') hashName = 'SHA-1';
-                            
                             const hashBuffer = await crypto.subtle.digest(hashName, msgUint8);
                             const hashArray = Array.from(new Uint8Array(hashBuffer));
                             res = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -361,7 +592,6 @@
                             return;
                         }
 
-                        // Synchronous Operations
                         switch (algo) {
                             case 'defang': res = effectiveMode === 'encode' ? defang(input) : refang(input); break;
                             case 'base64': res = effectiveMode === 'encode' ? btoa(unescape(encodeURIComponent(input))) : decodeURIComponent(escape(atob(input))); break;
@@ -369,11 +599,15 @@
                                 if(effectiveMode==='encode') res = btoa(unescape(encodeURIComponent(input))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
                                 else { let b=input.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4)b+='='; res=decodeURIComponent(escape(atob(b))); } break;
                             case 'url': res = effectiveMode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input); break;
-                            case 'urlparse': res = parseUrl(input); break;
+                            case 'urlparse': 
+                                const urlObj = new URL(input.startsWith('http') ? input : `https://${input}`);
+                                const params = Object.fromEntries(urlObj.searchParams);
+                                res = JSON.stringify({ Protocol: urlObj.protocol.replace(':', ''), Host: urlObj.host, Path: urlObj.pathname, Parameters: Object.keys(params).length > 0 ? params : "None" }, null, 4);
+                                break;
                             case 'hex': res = effectiveMode === 'encode' ? toHex(input) : fromHex(input); break;
                             case 'binary': res = effectiveMode === 'encode' ? toBin(input) : fromBin(input.replace(/[^01\s]/g,'')); break;
                             case 'octal': res = effectiveMode === 'encode' ? toOctal(input) : fromOctal(input); break;
-                            case 'html': res = effectiveMode === 'encode' ? input.replace(/[\u00A0-\u9999<>&]/g,i=>'&#'+i.charCodeAt(0)+';') : new DOMParser().parseFromString(input,'text/html').documentElement.textContent; break;
+                            case 'html': res = effectiveMode === 'encode' ? htmlEncode(input) : htmlDecode(input); break;
                             case 'reverse': res = rev(input); break;
                             case 'atbash': res = atbash(input); break;
                             case 'rot47': res = rot47(input); break;
@@ -386,94 +620,231 @@
                         }
                         if (isMounted) setOutput(res);
                     } catch (e) { 
-                        if (isMounted) {
-                            setOutput('');
-                            setErrorMsg(e.message || `Error processing payload! Check format.`);
-                        }
+                        if (isMounted) { setOutput(''); setErrorMsg(e.message || `Error processing payload! Check format.`); }
                     }
                 };
-                
                 processConversion();
                 return () => { isMounted = false; };
             }, [input, mode, algo, category, caesarShift, vigenereKey]);
 
-            // Handlers
             const copy = (txt) => {
-                if(!txt) return;
-                navigator.clipboard.writeText(txt);
-                setToast('Copied to clipboard');
-                setTimeout(()=>setToast(null), 2500);
+                if(!txt) return; navigator.clipboard.writeText(txt);
+                setToast('Copied to clipboard'); setTimeout(()=>setToast(null), 2500);
             };
 
             const downloadOutput = () => {
                 if(!output || errorMsg) return;
                 const blob = new Blob([output], { type: "text/plain" });
                 const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `decoderx_output_${algo}.txt`;
-                a.click();
-                URL.revokeObjectURL(url);
-                setToast('File downloaded! 🚀');
-                setTimeout(()=>setToast(null), 2500);
+                const a = document.createElement("a"); a.href = url; a.download = `decoderx_output_${algo}.txt`;
+                a.click(); URL.revokeObjectURL(url);
+                setToast('File downloaded! 🚀'); setTimeout(()=>setToast(null), 2500);
             };
 
             const toggleQR = () => {
                 if(!output || errorMsg) return;
-                if(output.length > 900) {
-                    setToast("Output too long for QR Code! (Max ~900 chars)");
-                    setTimeout(()=>setToast(null), 3000);
-                    return;
-                }
+                if(output.length > 900) { setToast("Output too long for QR! (Max ~900 chars)"); setTimeout(()=>setToast(null), 3000); return; }
                 setShowQR(!showQR);
             };
             
-            const clear = () => { 
-                setInput(''); setOutput(''); setErrorMsg(null); setShowQR(false);
-            };
+            const clear = () => { setInput(''); setOutput(''); setErrorMsg(null); setShowQR(false); };
             
             const swap = () => {
                 if(algo === 'jwt' || algo === 'urlparse' || category === 'hashes') {
-                    setToast(`Cannot swap ${algorithms.find(a=>a.id===algo).name}`);
-                    setTimeout(()=>setToast(null), 2000);
-                    return;
+                    setToast(`Cannot swap ${algorithms.find(a=>a.id===algo).name}`); setTimeout(()=>setToast(null), 2000); return;
                 }
-                setAnimating(true);
-                setInput(output);
-                setMode(mode === 'encode' ? 'decode' : 'encode');
-                setShowQR(false);
+                setAnimating(true); setInput(output); setMode(mode === 'encode' ? 'decode' : 'encode'); setShowQR(false);
                 setTimeout(() => setAnimating(false), 500);
             };
 
             const handleFileUpload = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                if(file.size > 1024 * 1024) {
-                    setToast("File too large (Max 1MB)");
-                    setTimeout(()=>setToast(null), 2500);
-                    return;
-                }
+                const file = e.target.files[0]; if (!file) return;
+                if(file.size > 1024 * 1024) { setToast("File too large (Max 1MB)"); setTimeout(()=>setToast(null), 2500); return; }
                 const reader = new FileReader();
-                reader.onload = (ev) => {
-                    setInput(ev.target.result);
-                    setToast(`Loaded: ${file.name}`);
-                    setTimeout(()=>setToast(null), 2500);
-                };
-                reader.readAsText(file);
-                e.target.value = null; 
+                reader.onload = (ev) => { setInput(ev.target.result); setToast(`Loaded: ${file.name}`); setTimeout(()=>setToast(null), 2500); };
+                reader.readAsText(file); e.target.value = null; 
             };
 
-            const isDark = theme === 'dark';
             const inputStats = getStats(input);
             const outputStats = getStats(output);
             const currentAlgoData = algorithms.find(a=>a.id===algo);
             const isLockMode = (algo === 'jwt' || algo === 'urlparse' || category === 'hashes');
 
             return (
+                <div className="flex flex-col gap-3 animate-fade-in">
+                    {/* Controls Bar */}
+                    <div className={`flex flex-col md:flex-row flex-wrap items-center justify-between gap-3 px-3 py-2 rounded-2xl border glass-panel shadow-sm animate-slide-up ${isDark ? 'bg-slate-900/40 border-slate-800/80' : 'bg-white/60 border-white/80'}`}>
+                        {/* Dropdowns */}
+                        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+                            <div className="relative w-full sm:w-40 group z-20">
+                                <select value={category} onChange={handleCategoryChange} className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-bold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${isDark ? 'bg-[#0f172a] border-emerald-500/40 text-emerald-400 hover:bg-[#1e293b] focus:border-emerald-400 focus:ring-1 focus:ring-emerald-500/40' : 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:border-emerald-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'}`}>
+                                    {toolCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                </select>
+                                <div className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                                    {toolCategories.find(c=>c.id===category)?.icon}
+                                </div>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none"><Icons.ChevronDown size={14} /></div>
+                            </div>
+                            <div className="relative w-full sm:w-52 group z-10">
+                                <select value={algo} onChange={e => { setAlgo(e.target.value); if(category === 'hashes') setMode('encode'); else if(e.target.value === 'jwt' || e.target.value === 'urlparse') setMode('decode'); }} className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-semibold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${isDark ? 'bg-[#0f172a] border-blue-500/40 text-blue-300 hover:bg-[#1e293b] focus:border-blue-400 focus:ring-1 focus:ring-blue-500/40' : 'bg-blue-50 border-blue-300 text-blue-700 hover:border-blue-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30'}`}>
+                                    {algorithms.filter(a => a.category === category).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                                </select>
+                                <div className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>
+                                    {algorithms.find(a=>a.id===algo)?.icon}
+                                </div>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none"><Icons.ChevronDown size={14} /></div>
+                            </div>
+                        </div>
+
+                        {/* Mode Toggle & Extra Settings */}
+                        <div className="flex items-center gap-2 w-full md:w-auto">
+                            <div className={`flex p-1 rounded-xl w-full md:w-auto justify-center ${isDark ? 'bg-slate-950/80' : 'bg-slate-100/80'} ${isLockMode ? 'opacity-50 pointer-events-none' : ''}`}>
+                                {['encode', 'decode'].map(m => (
+                                    <button key={m} onClick={() => setMode(m)} className={`flex-1 md:flex-none px-4 py-1.5 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-slate-800 text-emerald-400 shadow-md shadow-emerald-900/20 ring-1 ring-emerald-500/30' : 'bg-white text-blue-600 shadow-sm ring-1 ring-black/5') : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
+                                        {m}
+                                    </button>
+                                ))}
+                            </div>
+                            
+                            {algo === 'caesar' && (
+                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border flex-grow justify-center ${isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white border-slate-200'}`}>
+                                    <Icons.Settings size={14} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
+                                    <input type="range" min="1" max="25" value={caesarShift} onChange={(e) => setCaesarShift(e.target.value)} className="w-20" />
+                                    <span className={`font-mono font-bold w-4 text-center text-xs ${isDark ? 'text-emerald-400' : 'text-blue-600'}`}>{caesarShift}</span>
+                                </div>
+                            )}
+                            {algo === 'vigenere' && (
+                                <div className={`flex items-center gap-2 px-3 py-1 rounded-xl border flex-grow justify-center ${isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white border-slate-200'}`}>
+                                    <Icons.Settings size={14} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
+                                    <input type="text" value={vigenereKey} onChange={(e) => setVigenereKey(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))} placeholder="KEY" className={`w-20 bg-transparent border-b outline-none font-mono font-bold text-center text-xs uppercase tracking-widest px-1 py-0.5 ${isDark ? 'border-slate-700 focus:border-emerald-500 text-emerald-400' : 'border-slate-300 focus:border-blue-500 text-blue-600'}`}/>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* File Load & Clear */}
+                        <div className="flex items-center justify-center gap-2 w-full md:w-auto ml-auto">
+                            <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".txt,.json,.xml,.csv,.log,.md" />
+                            <button onClick={() => fileInputRef.current.click()} className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold tracking-wide rounded-xl transition-all border flex-1 md:flex-none justify-center ${isDark ? 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400'}`}>
+                                <Icons.Upload size={14} /> <span>LOAD</span>
+                            </button>
+                            <button onClick={clear} className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold tracking-wide rounded-xl transition-all border flex-1 md:flex-none justify-center ${isDark ? 'border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50' : 'border-red-200 bg-red-50 text-red-500 hover:bg-red-100 hover:border-red-300'}`}>
+                                <Icons.Trash2 size={14} /> <span>CLEAR</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Main Editor Section */}
+                    <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-3 lg:gap-4 items-stretch animate-slide-up" style={{animationDelay: '0.1s'}}>
+                        {/* Input Box Wrapper */}
+                        <div className={`flex flex-col rounded-2xl border glass-panel shadow-lg overflow-hidden transition-all duration-300 focus-within:ring-1 ${isDark ? 'bg-slate-900/60 border-slate-700/60 focus-within:ring-blue-500/50 focus-within:border-blue-500/50' : 'bg-white border-slate-200 focus-within:ring-blue-500/50 focus-within:border-blue-400'}`}>
+                            <div className={`flex-shrink-0 flex items-center justify-between px-4 py-2 border-b ${isDark ? 'border-slate-800 bg-slate-950/50' : 'border-slate-200 bg-slate-50/80'}`}>
+                                <div className="flex items-center gap-2.5">
+                                    <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'bg-blue-500'}`}></div>
+                                    <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>Input</span>
+                                </div>
+                                <button onClick={() => copy(input)} disabled={!input} className={`p-1 rounded-md transition-colors ${!input ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-blue-400' : 'hover:bg-blue-50 text-slate-400 hover:text-blue-600')}`} title="Copy Input">
+                                    <Icons.Copy size={14}/>
+                                </button>
+                            </div>
+                            <div className="relative flex-grow flex flex-col">
+                                <textarea value={input} onChange={e => setInput(e.target.value)} placeholder="Paste payload or type here..." className={`w-full flex-grow p-4 bg-transparent resize-none outline-none font-mono text-sm leading-relaxed custom-scrollbar placeholder-opacity-40 min-h-[300px] md:min-h-[400px] lg:min-h-[500px] xl:min-h-[65vh] ${isDark ? 'placeholder-slate-500 text-slate-200' : 'placeholder-slate-400 text-slate-800'}`} spellCheck="false" />
+                            </div>
+                            <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
+                                <div className="flex gap-3"><span>Ln: {inputStats.lines}</span><span>Wd: {inputStats.words}</span><span>Ch: {inputStats.chars}</span></div>
+                                <span>{inputStats.bytes} B</span>
+                            </div>
+                        </div>
+
+                        {/* Swap Action Wrapper */}
+                        <div className="flex items-center justify-center relative z-10 -my-4 lg:my-0 lg:-mx-4">
+                            <button onClick={swap} disabled={isLockMode} className={`p-3 rounded-full shadow-xl border-4 transition-all hover:scale-110 active:scale-95 group relative overflow-hidden z-10 ${isLockMode ? 'opacity-50 cursor-not-allowed' : ''} ${isDark ? 'bg-slate-800 border-[#030712] text-emerald-400 hover:text-white' : 'bg-white border-[#F8FAFC] text-blue-600 hover:text-white'}`} title="Swap Input/Output">
+                                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isDark ? 'bg-gradient-to-br from-emerald-500 to-blue-600' : 'bg-gradient-to-br from-blue-500 to-emerald-500'}`}></div>
+                                <div className={`relative z-10 transition-transform duration-500 ${animating ? 'rotate-180' : ''}`}>
+                                    <div className="hidden lg:block"><Icons.ArrowRight size={20} strokeWidth={2.5} /></div>
+                                    <div className="lg:hidden"><Icons.ArrowDown size={20} strokeWidth={2.5} /></div>
+                                </div>
+                            </button>
+                        </div>
+
+                        {/* Output Box Wrapper */}
+                        <div className={`flex flex-col rounded-2xl border glass-panel shadow-lg overflow-hidden transition-all duration-300 focus-within:ring-1 relative ${errorMsg ? (isDark ? 'border-red-500/50 ring-1 ring-red-500/30' : 'border-red-400 ring-1 ring-red-500/30') : (isDark ? 'bg-slate-900/60 border-slate-700/60 focus-within:ring-emerald-500/50 focus-within:border-emerald-500/50' : 'bg-white border-slate-200 focus-within:ring-emerald-500/50 focus-within:border-emerald-400')}`}>
+                            <div className={`flex-shrink-0 flex items-center justify-between px-4 py-2 border-b z-20 relative ${isDark ? 'border-slate-800 bg-slate-950/50' : 'border-slate-200 bg-slate-50/80'}`}>
+                                <div className="flex items-center gap-2.5">
+                                    <div className={`w-2 h-2 rounded-full ${errorMsg ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]' : (isDark ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-emerald-500')}`}></div>
+                                    <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>Output</span>
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold border ${errorMsg ? 'bg-red-900/40 text-red-400 border-red-500/40' : (isDark ? 'bg-slate-800/80 text-emerald-400 border-emerald-500/30' : 'bg-emerald-50 text-emerald-700 border-emerald-300')}`}>
+                                        {errorMsg ? 'ERROR' : currentAlgoData?.name || algo}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <button onClick={toggleQR} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? (showQR ? 'bg-emerald-500/20 text-emerald-400' : 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400') : (showQR ? 'bg-emerald-100 text-emerald-700' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700'))}`} title="View as QR Code"><Icons.QrCode size={14}/></button>
+                                    <button onClick={downloadOutput} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700')}`} title="Download as .txt"><Icons.Download size={14}/></button>
+                                    <div className={`w-px h-3 mx-1 ${isDark ? 'bg-slate-700' : 'bg-slate-300'}`}></div>
+                                    <button onClick={() => copy(output)} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700')}`} title="Copy Output"><Icons.Copy size={14}/></button>
+                                </div>
+                            </div>
+                            <div className="relative flex-grow flex flex-col">
+                                <textarea value={errorMsg || output} readOnly placeholder={errorMsg ? '' : "Result awaits..."} className={`w-full flex-grow p-4 bg-transparent resize-none outline-none font-mono text-sm leading-relaxed custom-scrollbar min-h-[300px] md:min-h-[400px] lg:min-h-[500px] xl:min-h-[65vh] ${errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-emerald-400' : 'text-emerald-700')}`} />
+                                {showQR && (
+                                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 animate-bounce-in glass-panel bg-black/20">
+                                        <div className={`p-4 rounded-xl shadow-2xl relative ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-slate-200'}`}>
+                                            <button onClick={toggleQR} className={`absolute -top-2.5 -right-2.5 p-1 rounded-full shadow-md ${isDark ? 'bg-slate-700 text-slate-200 hover:bg-red-500' : 'bg-white text-slate-600 hover:bg-red-500 hover:text-white'}`}><Icons.X size={12} /></button>
+                                            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(output)}`} alt="QR Code" className="w-44 h-44 rounded-lg" />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t z-20 relative ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
+                                <div className="flex gap-3"><span>Ln: {outputStats.lines}</span><span>Wd: {outputStats.words}</span><span>Ch: {outputStats.chars}</span></div>
+                                <span>{outputStats.bytes} B</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // MAIN APP (TABS + THEME)
+        // ==========================================
+        function App() {
+            const [theme, setTheme] = useState('dark');
+            const [activeTab, setActiveTab] = useState('decoderx'); // 'decoderx' | 'curl'
+            const [toast, setToast] = useState(null);
+
+            useEffect(() => { 
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+            }, [theme]);
+
+            const isDark = theme === 'dark';
+            
+            const algosLib = {
+                toHex: s => { let r=''; for(let i=0;i<s.length;i++) r+=s.charCodeAt(i).toString(16).padStart(2,'0'); return r; },
+                fromHex: h => { let s=''; h=h.replace(/\s|0x/g,''); for(let i=0;i<h.length;i+=2) s+=String.fromCharCode(parseInt(h.substr(i,2),16)); return s; },
+                toBin: s => s.split('').map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' '),
+                fromBin: b => b.split(/\s+/).map(y=>String.fromCharCode(parseInt(y,2))).join(''),
+                toOctal: s => s.split('').map(c => '\\' + c.charCodeAt(0).toString(8).padStart(3, '0')).join(''),
+                fromOctal: s => s.replace(/\\([0-7]{1,3})/g, (m, p1) => String.fromCharCode(parseInt(p1, 8))),
+                htmlEncode: s => s.replace(/[\u00A0-\u9999<>&]/g, i => '&#'+i.charCodeAt(0)+';'),
+                htmlDecode: s => new DOMParser().parseFromString(s,'text/html').documentElement.textContent,
+                rev: s => s.split('').reverse().join(''),
+                atbash: s => s.replace(/[a-zA-Z]/g, c => String.fromCharCode((c <= 'Z' ? 90 + 65 : 122 + 97) - c.charCodeAt(0))),
+                rot47: s => s.replace(/[!-~]/g, c => String.fromCharCode((c.charCodeAt(0) - 33 + 47) % 94 + 33)),
+                defang: s => s.replace(/\./g, '[.]').replace(/http/gi, 'hxxp'),
+                refang: s => s.replace(/\[\.\]/g, '.').replace(/hxxp/gi, 'http'),
+                caesarCipher: (str, shift, dec) => str.replace(/[a-zA-Z]/g, c => String.fromCharCode(((c.charCodeAt(0)-(c<='Z'?65:97)+(dec?(26-(shift%26)):(shift%26)))%26)+(c<='Z'?65:97))),
+                vigenereCipher: (str, key, dec) => { let k=key.toUpperCase().replace(/[^A-Z]/g,'')||'A', ki=0; return str.replace(/[a-zA-Z]/g, c => { const shift = k.charCodeAt(ki%k.length)-65; ki++; return String.fromCharCode(((c.charCodeAt(0)-(c<='Z'?65:97)+(dec?(26-shift):shift))%26)+(c<='Z'?65:97));}); },
+                toMorse: s => s.toUpperCase().split('').map(c => ({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}[c]||c)).join(' '),
+                fromMorse: s => { const d = Object.entries({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}).reduce((a,[k,v])=>(a[v]=k,a),{}); return s.split(' ').map(c=>d[c]||c).join('').replace(/\//g,' '); },
+                formatJSON: (str, min) => { try { return min ? JSON.stringify(JSON.parse(str)) : JSON.stringify(JSON.parse(str), null, 4); } catch(e){ throw new Error("Invalid JSON"); } },
+                parseJWT: t => { try { const p=t.split('.'); return JSON.stringify({Header:JSON.parse(atob(p[0].replace(/-/g,'+').replace(/_/g,'/'))),Payload:JSON.parse(atob(p[1].replace(/-/g,'+').replace(/_/g,'/'))),Signature:"VERIFICATION_REQUIRED"},null,4);} catch(e){ throw new Error("Invalid JWT"); } }
+            };
+
+            return (
                 <div className={`min-h-screen font-sans transition-colors duration-500 flex flex-col ${isDark ? 'bg-[#030712] text-slate-300' : 'bg-[#F8FAFC] text-slate-600'}`}>
-                    
                     {/* Background Ambience */}
-                    <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
                         <div className={`absolute -top-[20%] -left-[10%] w-[60%] h-[60%] rounded-full blur-[140px] opacity-30 mix-blend-screen ${isDark ? 'bg-blue-900/40' : 'bg-blue-300/40'}`}></div>
                         <div className={`absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] rounded-full blur-[140px] opacity-30 mix-blend-screen ${isDark ? 'bg-emerald-900/30' : 'bg-emerald-300/40'}`}></div>
                         <div className={`absolute inset-0 opacity-[0.04] ${isDark ? 'bg-grid-dark' : 'bg-grid-light'}`}></div>
@@ -481,289 +852,64 @@
 
                     <main className="flex-grow w-full max-w-[90rem] mx-auto px-3 py-3 md:py-4 relative z-10 flex flex-col gap-3 animate-fade-in">
                         
-                        {/* Compact Header */}
-                        <header className={`flex flex-col md:flex-row items-center justify-between gap-3 px-4 py-2.5 rounded-2xl border glass-panel shadow-md transition-all duration-300 ${isDark ? 'bg-slate-900/50 border-slate-700/50' : 'bg-white/70 border-white shadow-slate-200/50'}`}>
+                        {/* Header & Tab Switcher */}
+                        <header className={`flex flex-col xl:flex-row items-center justify-between gap-4 px-4 py-3 rounded-2xl border glass-panel shadow-md transition-all duration-300 ${isDark ? 'bg-slate-900/50 border-slate-700/50' : 'bg-white/70 border-white shadow-slate-200/50'}`}>
+                            
                             {/* Logo */}
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 w-full xl:w-1/4">
                                 <div className={`p-2 rounded-xl shadow-lg transition-transform hover:scale-105 ${isDark ? 'bg-gradient-to-br from-blue-600 to-emerald-500 shadow-emerald-900/20' : 'bg-gradient-to-br from-blue-600 to-emerald-500 shadow-blue-200'} text-white`}>
                                     <Icons.Shield size={22} strokeWidth={2.5} />
                                 </div>
-                                <div className="flex flex-col">
-                                    <h1 className="text-xl md:text-2xl font-bold tracking-tight text-gradient-primary leading-none">DecoderX <span className="font-light">Pro</span></h1>
-                                </div>
+                                <h1 className="text-xl md:text-2xl font-bold tracking-tight text-gradient-primary leading-none">
+                                    DecoderX <span className="font-light">Pro</span>
+                                </h1>
                             </div>
 
-                            {/* Controls Right - Reduced Height */}
-                            <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
-                                {/* Category Selector */}
-                                <div className="relative w-full sm:w-40 group z-20">
-                                    <select 
-                                        value={category} 
-                                        onChange={handleCategoryChange}
-                                        className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-bold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${
-                                            isDark 
-                                            ? 'bg-[#0f172a] border-emerald-500/40 text-emerald-400 hover:bg-[#1e293b] focus:border-emerald-400 focus:ring-1 focus:ring-emerald-500/40' 
-                                            : 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:border-emerald-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
-                                        }`}
-                                    >
-                                        {toolCategories.map(c => (
-                                            <option key={c.id} value={c.id}>
-                                                {c.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <div className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                                        {toolCategories.find(c=>c.id===category)?.icon}
-                                    </div>
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none transition-transform group-hover:translate-y-0.5">
-                                        <Icons.ChevronDown size={14} />
-                                    </div>
-                                </div>
-
-                                {/* Algo Selector */}
-                                <div className="relative w-full sm:w-52 group z-10">
-                                    <select 
-                                        value={algo} 
-                                        onChange={e => {
-                                            setAlgo(e.target.value);
-                                            if(category === 'hashes') setMode('encode');
-                                            else if(e.target.value === 'jwt' || e.target.value === 'urlparse') setMode('decode');
-                                        }}
-                                        className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-semibold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${
-                                            isDark 
-                                            ? 'bg-[#0f172a] border-blue-500/40 text-blue-300 hover:bg-[#1e293b] focus:border-blue-400 focus:ring-1 focus:ring-blue-500/40' 
-                                            : 'bg-blue-50 border-blue-300 text-blue-700 hover:border-blue-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30'
-                                        }`}
-                                    >
-                                        {algorithms.filter(a => a.category === category).map(a => (
-                                            <option key={a.id} value={a.id}>
-                                                {a.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <div className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>
-                                        {algorithms.find(a=>a.id===algo)?.icon}
-                                    </div>
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none transition-transform group-hover:translate-y-0.5">
-                                        <Icons.ChevronDown size={14} />
-                                    </div>
-                                </div>
-
-                                {/* Theme Toggle */}
+                            {/* Center Tab Switcher */}
+                            <div className={`flex p-1 rounded-xl w-full xl:w-auto shadow-inner ${isDark ? 'bg-slate-950/80 border border-slate-800' : 'bg-slate-200/80 border border-slate-300'}`}>
                                 <button 
-                                    onClick={toggleTheme} 
-                                    className={`h-10 w-10 flex items-center justify-center rounded-xl border outline-none focus:outline-none transition-all active:scale-95 shadow-sm flex-shrink-0 ${
+                                    onClick={() => setActiveTab('decoderx')}
+                                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
+                                        activeTab === 'decoderx' 
+                                        ? (isDark ? 'bg-slate-800 text-blue-400 shadow-md ring-1 ring-blue-500/30' : 'bg-white text-blue-600 shadow-sm ring-1 ring-black/5') 
+                                        : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                                    }`}
+                                >
+                                    <Icons.Terminal size={16}/> DecoderX
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('curl')}
+                                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
+                                        activeTab === 'curl' 
+                                        ? (isDark ? 'bg-slate-800 text-emerald-400 shadow-md ring-1 ring-emerald-500/30' : 'bg-white text-emerald-600 shadow-sm ring-1 ring-black/5') 
+                                        : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                                    }`}
+                                >
+                                    <Icons.Layers size={16}/> Deep cURL & Cookies
+                                </button>
+                            </div>
+
+                            {/* Theme Toggle (Right) */}
+                            <div className="flex justify-end w-full xl:w-1/4">
+                                <button 
+                                    onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} 
+                                    className={`h-10 w-10 flex items-center justify-center rounded-xl border outline-none transition-all active:scale-95 shadow-sm ${
                                         isDark 
                                         ? 'bg-slate-900 border-slate-700 text-yellow-400 hover:bg-slate-800 hover:border-yellow-500/50' 
                                         : 'bg-white border-slate-300 text-slate-500 hover:text-slate-800 hover:border-slate-400'
                                     }`}
-                                    title="Toggle Theme"
                                 >
                                     {isDark ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
                                 </button>
                             </div>
                         </header>
 
-                        {/* Compact Action Bar */}
-                        <div className={`flex flex-col md:flex-row flex-wrap items-center justify-between gap-3 px-3 py-1.5 rounded-2xl border glass-panel shadow-sm animate-slide-up ${isDark ? 'bg-slate-900/40 border-slate-800/80' : 'bg-white/60 border-white/80'}`}>
-                            
-                            <div className="flex items-center gap-2 w-full md:w-auto">
-                                {/* Encode / Decode Toggle */}
-                                <div className={`flex p-1 rounded-xl w-full md:w-auto justify-center ${isDark ? 'bg-slate-950/80' : 'bg-slate-100/80'} ${isLockMode ? 'opacity-50 pointer-events-none' : ''}`}>
-                                    {['encode', 'decode'].map(m => (
-                                        <button
-                                            key={m}
-                                            onClick={() => setMode(m)}
-                                            className={`flex-1 md:flex-none px-4 py-1.5 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${
-                                                mode === m 
-                                                ? (isDark ? 'bg-slate-800 text-emerald-400 shadow-md shadow-emerald-900/20 ring-1 ring-emerald-500/30' : 'bg-white text-blue-600 shadow-sm ring-1 ring-black/5') 
-                                                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                                            }`}
-                                        >
-                                            {m}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                        {/* Content Area */}
+                        {activeTab === 'decoderx' 
+                            ? <StandardDecoderTab isDark={isDark} setToast={setToast} AlgorithmsLib={algosLib} />
+                            : <CurlDecoderTab isDark={isDark} setToast={setToast} />
+                        }
 
-                            {/* Dynamic Options Area */}
-                            {algo === 'caesar' && (
-                                <div className={`flex items-center gap-3 px-4 py-1.5 rounded-xl border flex-grow justify-center w-full md:w-auto ${isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white border-slate-200'}`}>
-                                    <div className="flex items-center gap-1.5 text-sm font-medium">
-                                        <Icons.Settings size={14} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
-                                        <span>Shift:</span>
-                                    </div>
-                                    <input type="range" min="1" max="25" value={caesarShift} onChange={(e) => setCaesarShift(e.target.value)} className="w-24 md:w-40" />
-                                    <span className={`font-mono font-bold w-6 text-center text-sm ${isDark ? 'text-emerald-400' : 'text-blue-600'}`}>{caesarShift}</span>
-                                </div>
-                            )}
-
-                            {algo === 'vigenere' && (
-                                <div className={`flex items-center gap-3 px-4 py-1 rounded-xl border flex-grow justify-center w-full md:w-auto ${isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white border-slate-200'}`}>
-                                    <div className="flex items-center gap-1.5 text-sm font-medium">
-                                        <Icons.Settings size={14} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
-                                        <span>Key:</span>
-                                    </div>
-                                    <input 
-                                        type="text" 
-                                        value={vigenereKey} 
-                                        onChange={(e) => setVigenereKey(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))} 
-                                        placeholder="TEXT KEY"
-                                        className={`w-24 md:w-40 bg-transparent border-b-2 outline-none font-mono font-bold text-center text-sm uppercase tracking-widest px-1 py-0.5 transition-colors ${isDark ? 'border-slate-700 focus:border-emerald-500 text-emerald-400 placeholder-slate-600' : 'border-slate-300 focus:border-blue-500 text-blue-600 placeholder-slate-400'}`}
-                                    />
-                                </div>
-                            )}
-
-                            {/* Secondary Actions */}
-                            <div className="flex items-center justify-center gap-2 w-full md:w-auto ml-auto">
-                                <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".txt,.json,.xml,.csv,.log,.md" />
-                                <button 
-                                    onClick={() => fileInputRef.current.click()}
-                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold tracking-wide rounded-xl transition-all border flex-1 md:flex-none justify-center ${
-                                        isDark ? 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400'
-                                    }`}
-                                >
-                                    <Icons.Upload size={14} /> <span>LOAD</span>
-                                </button>
-                                <button 
-                                    onClick={clear} 
-                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold tracking-wide rounded-xl transition-all border flex-1 md:flex-none justify-center ${
-                                        isDark ? 'border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50' : 'border-red-200 bg-red-50 text-red-500 hover:bg-red-100 hover:border-red-300'
-                                    }`}
-                                >
-                                    <Icons.Trash2 size={14} /> <span>CLEAR</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Main Editor Section */}
-                        <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-3 lg:gap-4 items-stretch animate-slide-up" style={{animationDelay: '0.1s'}}>
-                            
-                            {/* Input Box Wrapper */}
-                            <div className={`flex flex-col rounded-2xl border glass-panel shadow-lg overflow-hidden transition-all duration-300 focus-within:ring-1 ${
-                                isDark ? 'bg-slate-900/60 border-slate-700/60 focus-within:ring-blue-500/50 focus-within:border-blue-500/50' : 'bg-white border-slate-200 focus-within:ring-blue-500/50 focus-within:border-blue-400'
-                            }`}>
-                                <div className={`flex-shrink-0 flex items-center justify-between px-4 py-2 border-b ${isDark ? 'border-slate-800 bg-slate-950/50' : 'border-slate-200 bg-slate-50/80'}`}>
-                                    <div className="flex items-center gap-2.5">
-                                        <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'bg-blue-500'}`}></div>
-                                        <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>Input</span>
-                                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold border ${isDark ? 'bg-slate-800/80 text-blue-400 border-blue-500/30' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>RAW</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button onClick={() => copy(input)} disabled={!input} className={`p-1 rounded-md transition-colors ${!input ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-blue-400' : 'hover:bg-blue-50 text-slate-400 hover:text-blue-600')}`} title="Copy Input">
-                                            <Icons.Copy size={14}/>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div className="relative flex-grow flex flex-col">
-                                    <textarea 
-                                        value={input}
-                                        onChange={e => setInput(e.target.value)}
-                                        placeholder="Paste payload or type here..."
-                                        className={`w-full flex-grow p-4 bg-transparent resize-none outline-none font-mono text-sm leading-relaxed custom-scrollbar placeholder-opacity-40 min-h-[200px] ${isDark ? 'placeholder-slate-500 text-slate-200' : 'placeholder-slate-400 text-slate-800'}`}
-                                        spellCheck="false"
-                                    />
-                                </div>
-
-                                {/* Stats Footer */}
-                                <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
-                                    <div className="flex gap-3">
-                                        <span>Ln: {inputStats.lines}</span>
-                                        <span>Wd: {inputStats.words}</span>
-                                        <span>Ch: {inputStats.chars}</span>
-                                    </div>
-                                    <span>{inputStats.bytes} B</span>
-                                </div>
-                            </div>
-
-                            {/* Swap Action Wrapper */}
-                            <div className="flex items-center justify-center relative z-10 -my-4 lg:my-0 lg:-mx-4">
-                                <button 
-                                    onClick={swap}
-                                    disabled={isLockMode}
-                                    className={`p-3 rounded-full shadow-xl border-4 transition-all hover:scale-110 active:scale-95 group relative overflow-hidden z-10 ${
-                                        isLockMode ? 'opacity-50 cursor-not-allowed' : ''
-                                    } ${
-                                        isDark 
-                                        ? 'bg-slate-800 border-[#030712] text-emerald-400 hover:text-white' 
-                                        : 'bg-white border-[#F8FAFC] text-blue-600 hover:text-white'
-                                    }`}
-                                    title="Swap Input/Output & Mode"
-                                >
-                                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isDark ? 'bg-gradient-to-br from-emerald-500 to-blue-600' : 'bg-gradient-to-br from-blue-500 to-emerald-500'}`}></div>
-                                    <div className={`relative z-10 transition-transform duration-500 ${animating ? 'rotate-180' : ''}`}>
-                                        <div className="hidden lg:block"><Icons.ArrowRight size={20} strokeWidth={2.5} /></div>
-                                        <div className="lg:hidden"><Icons.ArrowDown size={20} strokeWidth={2.5} /></div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            {/* Output Box Wrapper */}
-                            <div className={`flex flex-col rounded-2xl border glass-panel shadow-lg overflow-hidden transition-all duration-300 focus-within:ring-1 relative ${
-                                errorMsg 
-                                ? (isDark ? 'border-red-500/50 ring-1 ring-red-500/30' : 'border-red-400 ring-1 ring-red-500/30')
-                                : (isDark ? 'bg-slate-900/60 border-slate-700/60 focus-within:ring-emerald-500/50 focus-within:border-emerald-500/50' : 'bg-white border-slate-200 focus-within:ring-emerald-500/50 focus-within:border-emerald-400')
-                            }`}>
-                                <div className={`flex-shrink-0 flex items-center justify-between px-4 py-2 border-b z-20 relative ${isDark ? 'border-slate-800 bg-slate-950/50' : 'border-slate-200 bg-slate-50/80'}`}>
-                                    <div className="flex items-center gap-2.5">
-                                        <div className={`w-2 h-2 rounded-full ${errorMsg ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]' : (isDark ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-emerald-500')}`}></div>
-                                        <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>Output</span>
-                                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold border ${errorMsg ? 'bg-red-900/40 text-red-400 border-red-500/40' : (isDark ? 'bg-slate-800/80 text-emerald-400 border-emerald-500/30' : 'bg-emerald-50 text-emerald-700 border-emerald-300')}`}>
-                                            {errorMsg ? 'ERROR' : currentAlgoData?.name || algo}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <button onClick={toggleQR} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? (showQR ? 'bg-emerald-500/20 text-emerald-400' : 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400') : (showQR ? 'bg-emerald-100 text-emerald-700' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700'))}`} title="View as QR Code">
-                                            <Icons.QrCode size={14}/>
-                                        </button>
-                                        <button onClick={downloadOutput} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700')}`} title="Download as .txt">
-                                            <Icons.Download size={14}/>
-                                        </button>
-                                        <div className={`w-px h-3 mx-1 ${isDark ? 'bg-slate-700' : 'bg-slate-300'}`}></div>
-                                        <button onClick={() => copy(output)} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700')}`} title="Copy Output">
-                                            <Icons.Copy size={14}/>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div className="relative flex-grow flex flex-col">
-                                    <textarea 
-                                        value={errorMsg || output}
-                                        readOnly
-                                        placeholder={errorMsg ? '' : "Result awaits..."}
-                                        className={`w-full flex-grow p-4 bg-transparent resize-none outline-none font-mono text-sm leading-relaxed custom-scrollbar min-h-[200px] ${
-                                            errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-emerald-400' : 'text-emerald-700')
-                                        }`}
-                                    />
-                                    
-                                    {/* QR Code Overlay Overlay */}
-                                    {showQR && (
-                                        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 animate-bounce-in glass-panel bg-black/20">
-                                            <div className={`p-4 rounded-xl shadow-2xl relative ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-slate-200'}`}>
-                                                <button onClick={toggleQR} className={`absolute -top-2.5 -right-2.5 p-1 rounded-full shadow-md ${isDark ? 'bg-slate-700 text-slate-200 hover:bg-red-500' : 'bg-white text-slate-600 hover:bg-red-500 hover:text-white'}`}>
-                                                    <Icons.X size={12} />
-                                                </button>
-                                                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(output)}`} alt="QR Code" className="w-44 h-44 rounded-lg" />
-                                                <p className={`text-center text-[10px] mt-2 font-mono font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>Scan me!</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                                
-                                {/* Stats Footer */}
-                                <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t z-20 relative ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
-                                    <div className="flex gap-3">
-                                        <span>Ln: {outputStats.lines}</span>
-                                        <span>Wd: {outputStats.words}</span>
-                                        <span>Ch: {outputStats.chars}</span>
-                                    </div>
-                                    <span>{outputStats.bytes} B</span>
-                                </div>
-                            </div>
-
-                        </div>
-                        
                         {/* Footer */}
                         <footer className="text-center py-2 mt-auto">
                             <p className={`text-[10px] font-bold tracking-widest uppercase opacity-70 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
@@ -772,15 +918,11 @@
                         </footer>
                     </main>
 
-                    {/* Toast Notification */}
+                    {/* Toast */}
                     {toast && (
                         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
-                            <div className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl shadow-2xl border font-semibold text-xs backdrop-blur-md ${
-                                isDark ? 'bg-slate-800/90 border-emerald-500/30 text-emerald-300' : 'bg-white/95 border-slate-200 text-slate-700 shadow-slate-300/50'
-                            }`}>
-                                <div className={`p-1 rounded-full ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100 text-emerald-600'}`}>
-                                    <Icons.Check size={14} />
-                                </div>
+                            <div className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl shadow-2xl border font-semibold text-xs backdrop-blur-md ${isDark ? 'bg-slate-800/90 border-emerald-500/30 text-emerald-300' : 'bg-white/95 border-slate-200 text-slate-700 shadow-slate-300/50'}`}>
+                                <div className={`p-1 rounded-full ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100 text-emerald-600'}`}><Icons.Check size={14} /></div>
                                 {toast}
                             </div>
                         </div>
@@ -790,7 +932,7 @@
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<CyberEncoder />);
+        root.render(<App />);
     </script>
 </body>
 </html>
