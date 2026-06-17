@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DecoderX Pro Suite - Advanced Security Tools</title>
     
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <!-- React & ReactDOM (Production Minified) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>   
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Babel Standalone (Pinned version to avoid unstable releases) -->
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (Fixed CDN config for production warning mitigation where possible) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -33,20 +33,13 @@
                         'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                         'bounce-in': 'bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.26, 1.55)',
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'scanline': 'scanline 8s linear infinite',
                     },
                     keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        bounceIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.8)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
-                        }
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        bounceIn: { '0%': { opacity: '0', transform: 'scale(0.8)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+                        scanline: { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100vh)' } }
                     },
                     backgroundImage: {
                         'grid-dark': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.15)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
@@ -59,7 +52,6 @@
     
     <style>
         html.dark { color-scheme: dark; }
-
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 99px; }
@@ -102,12 +94,20 @@
         .dark .json-number { color: #d2a8ff; }
         .json-boolean { color: #e11d48; }
         .dark .json-boolean { color: #ff7b72; }
+
+        .scanline {
+            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.4), transparent);
+            z-index: 50; opacity: 0.3;
+        }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-900 dark:selection:text-cyan-100 min-h-screen bg-[#030712]">
     <div id="root"></div>
 
-    <script type="text/babel">
+    <!-- Added data-type="module" to instruct Babel to append the compiled script as a module, fixing the 'Cannot use import statement' error -->
+    <script type="text/babel" data-presets="react" data-type="module">
         const { useState, useEffect, useRef } = React;
 
         // --- ICONS ---
@@ -143,14 +143,15 @@
             Layers: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> ),
             Cpu: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg> ),
             Unlock: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg> ),
-            AlertTriangle: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ),
+            Search: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> ),
         };
 
         // --- SHARED HELPERS (DECODERX) ---
         const algorithms = [
-            { id: 'defang', category: 'network', name: 'Defang IP / URL', icon: <Icons.Wifi size={16} />, description: 'Encode: Defang [.] | Decode: Refang .' },
+            { id: 'defang', category: 'network', name: 'Defang IP / URL', icon: <Icons.Wifi size={16} /> },
             { id: 'base64', category: 'encoders', name: 'Base64', icon: <Icons.Code size={16} /> },
             { id: 'base64url', category: 'encoders', name: 'Base64 (URL Safe)', icon: <Icons.Lock size={16} /> },
+            { id: 'base32', category: 'encoders', name: 'Base32', icon: <Icons.Code size={16} /> },
             { id: 'url', category: 'encoders', name: 'URL / URI', icon: <Icons.Globe size={16} /> },
             { id: 'hex', category: 'encoders', name: 'Hexadecimal', icon: <Icons.Hash size={16} /> },
             { id: 'binary', category: 'encoders', name: 'Binary', icon: <Icons.Binary size={16} /> },
@@ -168,23 +169,35 @@
             { id: 'urlparse', category: 'parsers', name: 'URL Parser', icon: <Icons.Link size={16} /> },
             { id: 'jwt', category: 'parsers', name: 'JWT Parser', icon: <Icons.Key size={16} /> },
             { id: 'json', category: 'parsers', name: 'JSON Formatter', icon: <Icons.Database size={16} /> },
+            { id: 'hexdump', category: 'parsers', name: 'Hexdump Generator', icon: <Icons.Hash size={16} /> },
+            { id: 'extract_ips', category: 'extractors', name: 'Extract IPs (v4/v6)', icon: <Icons.Search size={16} /> },
+            { id: 'extract_urls', category: 'extractors', name: 'Extract URLs', icon: <Icons.Search size={16} /> },
         ];
 
         const toolCategories = [
             { id: 'network', name: 'Network Tools', icon: <Icons.Wifi size={16} /> },
-            { id: 'encoders', name: 'Encoders', icon: <Icons.Code size={16} /> },
+            { id: 'encoders', name: 'Encoders & Decoders', icon: <Icons.Code size={16} /> },
             { id: 'ciphers', name: 'Ciphers', icon: <Icons.Shield size={16} /> },
             { id: 'hashes', name: 'Hashes', icon: <Icons.Fingerprint size={16} /> },
             { id: 'parsers', name: 'Parsers & Formatters', icon: <Icons.Database size={16} /> },
+            { id: 'extractors', name: 'Data Extractors', icon: <Icons.Search size={16} /> },
         ];
 
+        const getEntropy = (str) => {
+            if (!str) return '0.00';
+            const len = str.length;
+            const frequencies = Array.from(str).reduce((freq, c) => (freq[c] = (freq[c] || 0) + 1, freq), {});
+            return Object.values(frequencies).reduce((sum, f) => sum - f / len * Math.log2(f / len), 0).toFixed(2);
+        };
+
         const getStats = (text) => {
-            if (!text) return { chars: 0, words: 0, lines: 0, bytes: 0 };
+            if (!text) return { chars: 0, words: 0, lines: 0, bytes: 0, entropy: '0.00' };
             return {
                 chars: text.length,
                 words: text.trim().split(/\s+/).filter(w => w.length > 0).length,
                 lines: text.split(/\r\n|\r|\n/).length,
-                bytes: new Blob([text]).size
+                bytes: new Blob([text]).size,
+                entropy: getEntropy(text)
             };
         };
 
@@ -386,7 +399,7 @@
                             <div className="md:w-1/4 p-3 md:p-4 border-r border-[#30363d]"><span className="font-semibold text-[#8b949e] break-words text-sm md:text-base">{itemKey}</span></div>
                             <div className="md:w-3/4 p-3 md:p-4 font-mono text-xs md:text-sm">
                                 {analysis.isJson ? (
-                                    <div className="bg-[#0d1117] p-3 rounded overflow-x-auto" dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} />
+                                    <div className="bg-[#0d1117] p-3 rounded overflow-x-auto border border-[#30363d]" dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} />
                                 ) : (
                                     <div className="break-words text-slate-300">{analysis.final}</div>
                                 )}
@@ -431,9 +444,9 @@
                                             {icon} {step.method}
                                         </span>
                                         {isJSONView ? (
-                                            <div className="bg-[#0d1117] p-3 rounded mt-2 overflow-x-auto max-h-[400px] font-mono text-[11px] md:text-xs" dangerouslySetInnerHTML={{ __html: syntaxHighlight(step.value) }} />
+                                            <div className="bg-[#0d1117] p-3 rounded mt-2 overflow-x-auto max-h-[400px] font-mono text-[11px] md:text-xs border border-[#30363d]" dangerouslySetInnerHTML={{ __html: syntaxHighlight(step.value) }} />
                                         ) : (
-                                            <div className="bg-[#0d1117] px-3 py-2 rounded text-gray-400 break-words font-mono text-[11px] md:text-xs">
+                                            <div className="bg-[#0d1117] px-3 py-2 rounded text-gray-300 break-words font-mono text-[11px] md:text-xs border border-[#30363d]">
                                                 {step.value}
                                             </div>
                                         )}
@@ -447,17 +460,18 @@
 
             return (
                 <div className="flex flex-col gap-4 animate-fade-in">
-                    <div className="panel p-1 shadow-lg bg-[#161b22] border border-[#30363d] rounded-xl">
+                    <div className="panel p-1 shadow-lg bg-[#161b22] border border-[#30363d] rounded-xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-2 opacity-10 pointer-events-none group-hover:opacity-20 transition-opacity"><Icons.Activity size={64} /></div>
                         <textarea 
                             value={curlInput}
                             onChange={(e) => setCurlInput(e.target.value)}
-                            className="w-full bg-[#0d1117] text-gray-300 font-mono p-4 rounded-t-xl outline-none border-none focus:ring-2 focus:ring-emerald-500/50 resize-y min-h-[200px] md:min-h-[250px] lg:min-h-[30vh]" 
+                            className="w-full bg-[#0d1117] text-gray-300 font-mono p-4 rounded-t-xl outline-none border-none focus:ring-2 focus:ring-emerald-500/50 resize-y min-h-[200px] md:min-h-[250px] lg:min-h-[30vh] z-10 relative custom-scrollbar" 
                             placeholder="Paste your nasty cURL command here... (Double-encoded Base64 Cookies are welcome! 🍪)"
                             spellCheck="false"
                         ></textarea>
-                        <div className="p-3 bg-[#161b22] border-t border-[#30363d] flex flex-col sm:flex-row justify-between items-center rounded-b-xl gap-3">
+                        <div className="p-3 bg-[#161b22] border-t border-[#30363d] flex flex-col sm:flex-row justify-between items-center rounded-b-xl gap-3 z-10 relative">
                             <span className="text-xs text-gray-400 flex items-center gap-1"><Icons.Layers size={16} className="text-emerald-400" /> Identifies 2x, 3x nested encodings in body & cookies automatically.</span>
-                            <button onClick={processRequest} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-6 rounded-lg transition flex justify-center items-center gap-2 shadow-lg shadow-emerald-900/20">
+                            <button onClick={processRequest} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-6 rounded-lg transition flex justify-center items-center gap-2 shadow-lg shadow-emerald-900/20 active:scale-95">
                                 <Icons.Cpu size={18} /> Deep Decode Everything
                             </button>
                         </div>
@@ -498,7 +512,7 @@
                                 <div className="divide-y divide-[#30363d]">
                                     {parsedResults.cookies.length > 0 
                                         ? parsedResults.cookies.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
-                                        : <div className="p-4 text-gray-500 text-center text-sm">No cookies found in request</div>
+                                        : <div className="p-4 text-gray-500 text-center text-sm bg-[#0d1117]">No cookies found in request</div>
                                     }
                                 </div>
                             </div>
@@ -512,7 +526,7 @@
                                 <div className="divide-y divide-[#30363d]">
                                     {parsedResults.headers.length > 0 
                                         ? parsedResults.headers.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
-                                        : <div className="p-4 text-gray-500 text-center text-sm">No headers found in request</div>
+                                        : <div className="p-4 text-gray-500 text-center text-sm bg-[#0d1117]">No headers found in request</div>
                                     }
                                 </div>
                             </div>
@@ -528,7 +542,7 @@
                                         ? parsedResults.bodyParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
                                         : parsedResults.bodyDump 
                                             ? <AnalysisRow itemKey="Raw Body / Multipart Dump" analysis={parsedResults.bodyDump} />
-                                            : <div className="p-4 text-gray-500 text-center text-sm">No body payload found</div>
+                                            : <div className="p-4 text-gray-500 text-center text-sm bg-[#0d1117]">No body payload found</div>
                                     }
                                 </div>
                             </div>
@@ -543,7 +557,11 @@
         // COMPONENT 2: DECODERX (ORIGINAL TOOL)
         // ==========================================
         function StandardDecoderTab({ isDark, setToast, AlgorithmsLib }) {
-            const { defang, refang, toHex, fromHex, toBin, fromBin, toOctal, fromOctal, htmlEncode, htmlDecode, rev, atbash, rot47, caesarCipher, vigenereCipher, toMorse, fromMorse, formatJSON, parseJWT } = AlgorithmsLib;
+            const { 
+                defang, refang, toHex, fromHex, toBin, fromBin, toOctal, fromOctal, htmlEncode, htmlDecode, 
+                rev, atbash, rot47, caesarCipher, vigenereCipher, toMorse, fromMorse, formatJSON, parseJWT, 
+                b32Encode, b32Decode, extractIPs, extractURLs, hexdump 
+            } = AlgorithmsLib;
             
             const [input, setInput] = useState('');
             const [output, setOutput] = useState('');
@@ -564,7 +582,7 @@
                 if(firstAlgoInCat) {
                     setAlgo(firstAlgoInCat.id);
                     if(newCat === 'hashes') setMode('encode');
-                    else if(firstAlgoInCat.id === 'jwt' || firstAlgoInCat.id === 'urlparse') setMode('decode');
+                    else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(firstAlgoInCat.id)) setMode('decode');
                 }
             };
 
@@ -578,7 +596,7 @@
                         let res = '';
                         let effectiveMode = mode;
                         if (category === 'hashes') effectiveMode = 'encode';
-                        if (algo === 'jwt' || algo === 'urlparse') effectiveMode = 'decode';
+                        if (['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo)) effectiveMode = 'decode';
 
                         if (category === 'hashes') {
                             const msgUint8 = new TextEncoder().encode(input);
@@ -598,7 +616,8 @@
                             case 'base64url': 
                                 if(effectiveMode==='encode') res = btoa(unescape(encodeURIComponent(input))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
                                 else { let b=input.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4)b+='='; res=decodeURIComponent(escape(atob(b))); } break;
-                            case 'url': res = effectiveMode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input); break;
+                            case 'base32': res = effectiveMode === 'encode' ? b32Encode(input) : b32Decode(input); break;
+                            case 'url': res = effectiveMode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input.replace(/\+/g, ' ')); break;
                             case 'urlparse': 
                                 const urlObj = new URL(input.startsWith('http') ? input : `https://${input}`);
                                 const params = Object.fromEntries(urlObj.searchParams);
@@ -616,6 +635,9 @@
                             case 'morse': res = effectiveMode === 'encode' ? toMorse(input) : fromMorse(input); break;
                             case 'json': res = formatJSON(input, effectiveMode === 'encode'); break;
                             case 'jwt': res = parseJWT(input); break;
+                            case 'hexdump': res = hexdump(input); break;
+                            case 'extract_ips': res = extractIPs(input); break;
+                            case 'extract_urls': res = extractURLs(input); break;
                             default: res = input;
                         }
                         if (isMounted) setOutput(res);
@@ -650,7 +672,7 @@
             const clear = () => { setInput(''); setOutput(''); setErrorMsg(null); setShowQR(false); };
             
             const swap = () => {
-                if(algo === 'jwt' || algo === 'urlparse' || category === 'hashes') {
+                if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes') {
                     setToast(`Cannot swap ${algorithms.find(a=>a.id===algo).name}`); setTimeout(()=>setToast(null), 2000); return;
                 }
                 setAnimating(true); setInput(output); setMode(mode === 'encode' ? 'decode' : 'encode'); setShowQR(false);
@@ -659,7 +681,7 @@
 
             const handleFileUpload = (e) => {
                 const file = e.target.files[0]; if (!file) return;
-                if(file.size > 1024 * 1024) { setToast("File too large (Max 1MB)"); setTimeout(()=>setToast(null), 2500); return; }
+                if(file.size > 1024 * 1024 * 2) { setToast("File too large (Max 2MB)"); setTimeout(()=>setToast(null), 2500); return; }
                 const reader = new FileReader();
                 reader.onload = (ev) => { setInput(ev.target.result); setToast(`Loaded: ${file.name}`); setTimeout(()=>setToast(null), 2500); };
                 reader.readAsText(file); e.target.value = null; 
@@ -668,7 +690,16 @@
             const inputStats = getStats(input);
             const outputStats = getStats(output);
             const currentAlgoData = algorithms.find(a=>a.id===algo);
-            const isLockMode = (algo === 'jwt' || algo === 'urlparse' || category === 'hashes');
+            const isLockMode = (['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes');
+
+            // Entropy color logic for visual flair
+            const getEntropyColor = (ent) => {
+                const e = parseFloat(ent);
+                if(e < 3.0) return 'text-slate-500';
+                if(e < 4.5) return 'text-emerald-500';
+                if(e < 6.5) return 'text-orange-500';
+                return 'text-red-500 animate-pulse';
+            };
 
             return (
                 <div className="flex flex-col gap-3 animate-fade-in">
@@ -676,7 +707,7 @@
                     <div className={`flex flex-col md:flex-row flex-wrap items-center justify-between gap-3 px-3 py-2 rounded-2xl border glass-panel shadow-sm animate-slide-up ${isDark ? 'bg-slate-900/40 border-slate-800/80' : 'bg-white/60 border-white/80'}`}>
                         {/* Dropdowns */}
                         <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
-                            <div className="relative w-full sm:w-40 group z-20">
+                            <div className="relative w-full sm:w-48 group z-20">
                                 <select value={category} onChange={handleCategoryChange} className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-bold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${isDark ? 'bg-[#0f172a] border-emerald-500/40 text-emerald-400 hover:bg-[#1e293b] focus:border-emerald-400 focus:ring-1 focus:ring-emerald-500/40' : 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:border-emerald-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'}`}>
                                     {toolCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
@@ -685,8 +716,8 @@
                                 </div>
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none"><Icons.ChevronDown size={14} /></div>
                             </div>
-                            <div className="relative w-full sm:w-52 group z-10">
-                                <select value={algo} onChange={e => { setAlgo(e.target.value); if(category === 'hashes') setMode('encode'); else if(e.target.value === 'jwt' || e.target.value === 'urlparse') setMode('decode'); }} className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-semibold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${isDark ? 'bg-[#0f172a] border-blue-500/40 text-blue-300 hover:bg-[#1e293b] focus:border-blue-400 focus:ring-1 focus:ring-blue-500/40' : 'bg-blue-50 border-blue-300 text-blue-700 hover:border-blue-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30'}`}>
+                            <div className="relative w-full sm:w-56 group z-10">
+                                <select value={algo} onChange={e => { setAlgo(e.target.value); if(category === 'hashes') setMode('encode'); else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(e.target.value)) setMode('decode'); }} className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-semibold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${isDark ? 'bg-[#0f172a] border-blue-500/40 text-blue-300 hover:bg-[#1e293b] focus:border-blue-400 focus:ring-1 focus:ring-blue-500/40' : 'bg-blue-50 border-blue-300 text-blue-700 hover:border-blue-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30'}`}>
                                     {algorithms.filter(a => a.category === category).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                                 </select>
                                 <div className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>
@@ -723,7 +754,7 @@
 
                         {/* File Load & Clear */}
                         <div className="flex items-center justify-center gap-2 w-full md:w-auto ml-auto">
-                            <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".txt,.json,.xml,.csv,.log,.md" />
+                            <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".txt,.json,.xml,.csv,.log,.md,.bin" />
                             <button onClick={() => fileInputRef.current.click()} className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold tracking-wide rounded-xl transition-all border flex-1 md:flex-none justify-center ${isDark ? 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400'}`}>
                                 <Icons.Upload size={14} /> <span>LOAD</span>
                             </button>
@@ -751,7 +782,10 @@
                             </div>
                             <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
                                 <div className="flex gap-3"><span>Ln: {inputStats.lines}</span><span>Wd: {inputStats.words}</span><span>Ch: {inputStats.chars}</span></div>
-                                <span>{inputStats.bytes} B</span>
+                                <div className="flex gap-3">
+                                    <span title="Shannon Entropy (Complexity)">Ent: <span className={`font-bold ${getEntropyColor(inputStats.entropy)}`}>{inputStats.entropy}</span></span>
+                                    <span>{inputStats.bytes} B</span>
+                                </div>
                             </div>
                         </div>
 
@@ -796,7 +830,10 @@
                             </div>
                             <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t z-20 relative ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
                                 <div className="flex gap-3"><span>Ln: {outputStats.lines}</span><span>Wd: {outputStats.words}</span><span>Ch: {outputStats.chars}</span></div>
-                                <span>{outputStats.bytes} B</span>
+                                <div className="flex gap-3">
+                                    <span title="Shannon Entropy (Complexity)">Ent: <span className={`font-bold ${getEntropyColor(outputStats.entropy)}`}>{outputStats.entropy}</span></span>
+                                    <span>{outputStats.bytes} B</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -838,16 +875,58 @@
                 toMorse: s => s.toUpperCase().split('').map(c => ({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}[c]||c)).join(' '),
                 fromMorse: s => { const d = Object.entries({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}).reduce((a,[k,v])=>(a[v]=k,a),{}); return s.split(' ').map(c=>d[c]||c).join('').replace(/\//g,' '); },
                 formatJSON: (str, min) => { try { return min ? JSON.stringify(JSON.parse(str)) : JSON.stringify(JSON.parse(str), null, 4); } catch(e){ throw new Error("Invalid JSON"); } },
-                parseJWT: t => { try { const p=t.split('.'); return JSON.stringify({Header:JSON.parse(atob(p[0].replace(/-/g,'+').replace(/_/g,'/'))),Payload:JSON.parse(atob(p[1].replace(/-/g,'+').replace(/_/g,'/'))),Signature:"VERIFICATION_REQUIRED"},null,4);} catch(e){ throw new Error("Invalid JWT"); } }
+                parseJWT: t => { try { const p=t.split('.'); return JSON.stringify({Header:JSON.parse(atob(p[0].replace(/-/g,'+').replace(/_/g,'/'))),Payload:JSON.parse(atob(p[1].replace(/-/g,'+').replace(/_/g,'/'))),Signature:"VERIFICATION_REQUIRED"},null,4);} catch(e){ throw new Error("Invalid JWT"); } },
+                b32Encode: (s) => {
+                    let bits = 0, value = 0, output = '';
+                    for (let i = 0; i < s.length; i++) {
+                        value = (value << 8) | s.charCodeAt(i); bits += 8;
+                        while (bits >= 5) { output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value >>> (bits - 5)) & 31]; bits -= 5; }
+                    }
+                    if (bits > 0) output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value << (5 - bits)) & 31];
+                    while (output.length % 8 !== 0) output += '=';
+                    return output;
+                },
+                b32Decode: (s) => {
+                    s = s.replace(/=+$/, '').toUpperCase();
+                    let bits = 0, value = 0, output = '';
+                    for (let i = 0; i < s.length; i++) {
+                        let val = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".indexOf(s[i]);
+                        if (val === -1) { if(s[i].trim()==='') continue; throw new Error("Invalid Base32 char: " + s[i]); }
+                        value = (value << 5) | val; bits += 5;
+                        if (bits >= 8) { output += String.fromCharCode((value >>> (bits - 8)) & 255); bits -= 8; }
+                    }
+                    return output;
+                },
+                extractIPs: (s) => {
+                    const ipv4 = s.match(/\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g) || [];
+                    const ipv6 = s.match(/\b(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}\b/g) || [];
+                    const all = [...new Set([...ipv4, ...ipv6])];
+                    return all.length ? all.join('\n') : 'No IPs found.';
+                },
+                extractURLs: (s) => {
+                    const urls = s.match(/https?:\/\/[^\s"'<>]+/gi) || [];
+                    return urls.length ? [...new Set(urls)].join('\n') : 'No URLs found.';
+                },
+                hexdump: (s) => {
+                    let out = '';
+                    for (let i = 0; i < s.length; i += 16) {
+                        let chunk = s.slice(i, i + 16);
+                        let hex = Array.from(chunk).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' ');
+                        let ascii = Array.from(chunk).map(c => { let code = c.charCodeAt(0); return (code >= 32 && code <= 126) ? c : '.'; }).join('');
+                        out += i.toString(16).padStart(8, '0') + '  ' + hex.padEnd(48, ' ') + '  |' + ascii + '|\n';
+                    }
+                    return out || 'No data.';
+                }
             };
 
             return (
                 <div className={`min-h-screen font-sans transition-colors duration-500 flex flex-col ${isDark ? 'bg-[#030712] text-slate-300' : 'bg-[#F8FAFC] text-slate-600'}`}>
-                    {/* Background Ambience */}
+                    {/* Background Ambience & Hacker elements */}
                     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
                         <div className={`absolute -top-[20%] -left-[10%] w-[60%] h-[60%] rounded-full blur-[140px] opacity-30 mix-blend-screen ${isDark ? 'bg-blue-900/40' : 'bg-blue-300/40'}`}></div>
                         <div className={`absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] rounded-full blur-[140px] opacity-30 mix-blend-screen ${isDark ? 'bg-emerald-900/30' : 'bg-emerald-300/40'}`}></div>
                         <div className={`absolute inset-0 opacity-[0.04] ${isDark ? 'bg-grid-dark' : 'bg-grid-light'}`}></div>
+                        {isDark && <div className="scanline"></div>}
                     </div>
 
                     <main className="flex-grow w-full max-w-[90rem] mx-auto px-3 py-3 md:py-4 relative z-10 flex flex-col gap-3 animate-fade-in">
@@ -875,7 +954,7 @@
                                         : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                                     }`}
                                 >
-                                    <Icons.Terminal size={16}/> DecoderX
+                                    <Icons.Terminal size={16}/> DecoderX Tools
                                 </button>
                                 <button 
                                     onClick={() => setActiveTab('curl')}
@@ -885,7 +964,7 @@
                                         : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                                     }`}
                                 >
-                                    <Icons.Layers size={16}/> Deep cURL & Cookies
+                                    <Icons.Layers size={16}/> Deep cURL Parse
                                 </button>
                             </div>
 
@@ -913,7 +992,7 @@
                         {/* Footer */}
                         <footer className="text-center py-2 mt-auto">
                             <p className={`text-[10px] font-bold tracking-widest uppercase opacity-70 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                                Developed by <span className={`text-gradient-primary ${isDark ? '' : 'font-extrabold'}`}>Mr Shiva</span>
+                                Developed by <span className={`text-gradient-primary ${isDark ? '' : 'font-extrabold'}`}>Mr Shiva</span> • Protected by Krysha AI
                             </p>
                         </footer>
                     </main>
