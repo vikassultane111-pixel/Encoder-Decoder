@@ -9,7 +9,7 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>   
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel Standalone (Pinned version to avoid unstable releases) -->
+    <!-- Babel Standalone -->
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
     
     <!-- Google Fonts -->
@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS (Fixed CDN config for production warning mitigation where possible) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -28,22 +28,36 @@
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
                     },
+                    colors: {
+                        gray: {
+                            750: '#2d3748',
+                            850: '#1a202c',
+                            950: '#0d1117',
+                        }
+                    },
+                    boxShadow: {
+                        'neon-emerald': '0 0 15px rgba(16, 185, 129, 0.2)',
+                        'neon-blue': '0 0 15px rgba(59, 130, 246, 0.2)',
+                        'neon-red': '0 0 15px rgba(239, 68, 68, 0.2)',
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    },
                     animation: {
-                        'fade-in': 'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                         'bounce-in': 'bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.26, 1.55)',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'scanline': 'scanline 8s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        bounceIn: { '0%': { opacity: '0', transform: 'scale(0.8)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
-                        scanline: { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100vh)' } }
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        bounceIn: { '0%': { opacity: '0', transform: 'scale(0.9)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+                        scanline: { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100vh)' } },
+                        pulseGlow: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0.6' } }
                     },
                     backgroundImage: {
-                        'grid-dark': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.15)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
-                        'grid-light': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(226 232 240 / 0.8)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
+                        'grid-dark': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
+                        'grid-light': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
                     }
                 }
             }
@@ -52,10 +66,14 @@
     
     <style>
         html.dark { color-scheme: dark; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        
+        /* Premium Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 99px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(148, 163, 184, 0.8); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 99px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
         
         body { 
             -webkit-tap-highlight-color: transparent;
@@ -63,8 +81,14 @@
         }
 
         .glass-panel {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .text-gradient-primary {
@@ -75,42 +99,51 @@
         }
         .dark .text-gradient-primary { background-image: linear-gradient(135deg, #60A5FA 0%, #34D399 100%); }
 
-        select option { background-color: #0f172a; color: #10b981; font-weight: 600; padding: 10px; }
+        select option { background-color: #0f172a; color: #10b981; font-weight: 600; }
+        .light select option { background-color: #ffffff; color: #059669; }
         
+        /* Modern Range Slider */
         input[type=range] { -webkit-appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
-            background: #3B82F6; cursor: pointer; margin-top: -5px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: #10B981; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+            transition: transform 0.1s;
         }
-        .dark input[type=range]::-webkit-slider-thumb { background: #22D3EE; box-shadow: 0 0 8px rgba(34, 211, 238, 0.5); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(148, 163, 184, 0.3); border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(148, 163, 184, 0.2); border-radius: 99px; }
+        .dark input[type=range]::-webkit-slider-runnable-track { background: rgba(255, 255, 255, 0.1); }
 
-        /* Syntax Highlighting for Deep Decoder */
-        .json-key { color: #0284c7; }
-        .dark .json-key { color: #79c0ff; }
+        /* Enhanced Syntax Highlighting */
+        .json-key { color: #0284c7; font-weight: 500; }
+        .dark .json-key { color: #79c0ff; font-weight: 500; }
         .json-string { color: #059669; }
-        .dark .json-string { color: #a5d6ff; }
+        .dark .json-string { color: #7ee787; }
         .json-number { color: #9333ea; }
         .dark .json-number { color: #d2a8ff; }
-        .json-boolean { color: #e11d48; }
-        .dark .json-boolean { color: #ff7b72; }
+        .json-boolean { color: #e11d48; font-weight: 600; }
+        .dark .json-boolean { color: #ff7b72; font-weight: 600; }
 
         .scanline {
             pointer-events: none;
             position: fixed; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.4), transparent);
-            z-index: 50; opacity: 0.3;
+            background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.3), transparent);
+            z-index: 50; opacity: 0.5;
         }
+
+        /* Subtle focus outlines */
+        textarea:focus { outline: none; }
+        
+        /* Hide default file input */
+        input[type="file"] { display: none; }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-900 dark:selection:text-cyan-100 min-h-screen bg-[#030712]">
+<body class="antialiased overflow-x-hidden selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100 min-h-screen bg-slate-50 dark:bg-[#0a0a0a] text-slate-800 dark:text-slate-200">
     <div id="root"></div>
 
-    <!-- Added data-type="module" to instruct Babel to append the compiled script as a module, fixing the 'Cannot use import statement' error -->
     <script type="text/babel" data-presets="react" data-type="module">
         const { useState, useEffect, useRef } = React;
 
-        // --- ICONS ---
+        // --- ICONS (Feather/Lucide style) ---
         const Icons = {
             Shield: ({ size = 24, className, ...props }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> ),
             ArrowRight: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> ),
@@ -135,15 +168,16 @@
             Key: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"></path><path d="m21 2-9.6 9.6"></path><circle cx="7.5" cy="15.5" r="5.5"></circle></svg> ),
             Database: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg> ),
             Activity: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> ),
-            Settings: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> ),
+            Settings: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> ),
+            Search: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> ),
+            Unlock: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg> ),
             Link: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> ),
             X: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> ),
             Fingerprint: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10"></path><path d="M5 12c0-3.87 3.13-7 7-7s7 3.13 7 7"></path><path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4"></path><path d="M12 12c0 0 0 0 0 0"></path><path d="M12 15v.01"></path><path d="M12 18v.01"></path><path d="M12 21v.01"></path><path d="M8 18v.01"></path><path d="M8 21v.01"></path><path d="M16 18v.01"></path><path d="M16 21v.01"></path></svg> ),
             Wifi: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg> ),
             Layers: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> ),
             Cpu: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg> ),
-            Unlock: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg> ),
-            Search: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> ),
+            AlertTriangle: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> )
         };
 
         // --- SHARED HELPERS (DECODERX) ---
@@ -175,12 +209,12 @@
         ];
 
         const toolCategories = [
-            { id: 'network', name: 'Network Tools', icon: <Icons.Wifi size={16} /> },
-            { id: 'encoders', name: 'Encoders & Decoders', icon: <Icons.Code size={16} /> },
+            { id: 'network', name: 'Network', icon: <Icons.Wifi size={16} /> },
+            { id: 'encoders', name: 'Encoders', icon: <Icons.Code size={16} /> },
             { id: 'ciphers', name: 'Ciphers', icon: <Icons.Shield size={16} /> },
             { id: 'hashes', name: 'Hashes', icon: <Icons.Fingerprint size={16} /> },
-            { id: 'parsers', name: 'Parsers & Formatters', icon: <Icons.Database size={16} /> },
-            { id: 'extractors', name: 'Data Extractors', icon: <Icons.Search size={16} /> },
+            { id: 'parsers', name: 'Parsers', icon: <Icons.Database size={16} /> },
+            { id: 'extractors', name: 'Extractors', icon: <Icons.Search size={16} /> },
         ];
 
         const getEntropy = (str) => {
@@ -201,7 +235,7 @@
             };
         };
 
-        // --- DEEP CURL PARSER ENGINE (REACTIFIED) ---
+        // --- DEEP CURL PARSER ENGINE ---
         function safeUrlDecode(str) {
             try { return decodeURIComponent(str.replace(/\+/g, ' ')); } 
             catch(e) { return str; }
@@ -215,7 +249,7 @@
                     if (/:$/.test(match)) cls = 'json-key';
                     else cls = 'json-string';
                 } else if (/true|false/.test(match)) cls = 'json-boolean';
-                else if (/null/.test(match)) cls = 'text-slate-500';
+                else if (/null/.test(match)) cls = 'opacity-50';
                 return '<span class="' + cls + '">' + match + '</span>';
             });
         }
@@ -231,58 +265,35 @@
 
             while (loopLimit > 0) {
                 let changed = false;
-
-                // 1. Try URL Decoding
                 let urlDec = safeUrlDecode(current);
                 if (urlDec !== current && urlDec !== "") {
-                    current = urlDec;
-                    urlCount++;
+                    current = urlDec; urlCount++;
                     steps.push({ method: 'URL Decode', value: current });
-                    changed = true;
-                    continue; 
+                    changed = true; continue; 
                 }
-
-                // 2. Try Base64 Decoding
                 if (/^[A-Za-z0-9\+\/\-\_]+={0,2}$/.test(current) && current.length >= 16) {
                     try {
                         let b64 = current.replace(/-/g, '+').replace(/_/g, '/');
                         while (b64.length % 4) b64 += '='; 
                         let decoded = decodeURIComponent(escape(window.atob(b64)));
-                        
                         if (decoded && decoded !== current && /^[\x20-\x7E\n\r\t\u00A0-\uFFFF]+$/.test(decoded)) {
-                            current = decoded;
-                            b64Count++;
+                            current = decoded; b64Count++;
                             steps.push({ method: `Base64 Decode (Level ${b64Count})`, value: current });
-                            changed = true;
-                            continue; 
+                            changed = true; continue; 
                         }
                     } catch(e) {}
                 }
-
-                if (!changed) break;
-                loopLimit--;
+                if (!changed) break; loopLimit--;
             }
 
             let isJson = false;
             try {
                 let j = JSON.parse(current);
-                if (typeof j === 'object' && j !== null) {
-                    current = JSON.stringify(j, null, 2);
-                    isJson = true;
-                }
+                if (typeof j === 'object' && j !== null) { current = JSON.stringify(j, null, 2); isJson = true; }
             } catch(e) {}
 
-            return {
-                original: inputStr,
-                final: current,
-                steps: steps,
-                b64Count: b64Count,
-                urlCount: urlCount,
-                isJson: isJson,
-                isEncoded: steps.length > 0
-            };
+            return { original: inputStr, final: current, steps, b64Count, urlCount, isJson, isEncoded: steps.length > 0 };
         }
-
 
         // ==========================================
         // COMPONENT 1: DEEP CURL DECODER TAB
@@ -293,55 +304,32 @@
 
             const processRequest = () => {
                 if (!curlInput.trim()) return;
+                let results = { url: 'No URL found', queryParams: [], cookies: [], headers: [], bodyDump: null, bodyParams: [] };
 
-                let results = {
-                    url: 'No URL found',
-                    queryParams: [],
-                    cookies: [],
-                    headers: [],
-                    bodyDump: null,
-                    bodyParams: []
-                };
-
-                // URL
                 const urlMatch = curlInput.match(/['"](https?:\/\/[^'"]+)['"]/);
                 if (urlMatch) {
                     results.url = urlMatch[1];
                     if (results.url.includes('?')) {
-                        const qString = results.url.split('?')[1];
-                        const params = new URLSearchParams(qString);
-                        for (const [key, value] of params.entries()) {
-                            results.queryParams.push({ key, analysis: analyzeData(value) });
-                        }
+                        const params = new URLSearchParams(results.url.split('?')[1]);
+                        for (const [key, value] of params.entries()) results.queryParams.push({ key, analysis: analyzeData(value) });
                     }
                 }
 
-                // Headers & Cookies
                 let cookiesMap = new Map();
                 const headerRegex = /(?:-H|--header)\s*(['"])(.*?)\1/g;
                 let match;
                 while ((match = headerRegex.exec(curlInput)) !== null) {
-                    let headerLine = match[2];
-                    let splitIdx = headerLine.indexOf(':');
+                    let headerLine = match[2], splitIdx = headerLine.indexOf(':');
                     if (splitIdx > -1) {
-                        let hName = headerLine.substring(0, splitIdx).trim();
-                        let hVal = headerLine.substring(splitIdx + 1).trim();
-                        
+                        let hName = headerLine.substring(0, splitIdx).trim(), hVal = headerLine.substring(splitIdx + 1).trim();
                         if (hName.toLowerCase() === 'cookie') {
-                            hVal.split(';').forEach(pair => {
-                                let eqIdx = pair.indexOf('=');
-                                if(eqIdx > -1) cookiesMap.set(pair.substring(0, eqIdx).trim(), pair.substring(eqIdx + 1).trim());
-                            });
+                            hVal.split(';').forEach(pair => { let eqIdx = pair.indexOf('='); if(eqIdx > -1) cookiesMap.set(pair.substring(0, eqIdx).trim(), pair.substring(eqIdx + 1).trim()); });
                         } else {
                             if(hName.toLowerCase() === 'authorization') {
                                 let parts = hVal.split(' ');
                                 if(parts.length === 2) {
                                     let an = analyzeData(parts[1]);
-                                    if(an.isEncoded) {
-                                        an.original = hVal; 
-                                        results.headers.push({ key: hName, analysis: an });
-                                        continue;
-                                    }
+                                    if(an.isEncoded) { an.original = hVal; results.headers.push({ key: hName, analysis: an }); continue; }
                                 }
                             }
                             results.headers.push({ key: hName, analysis: analyzeData(hVal) });
@@ -349,204 +337,162 @@
                     }
                 }
                 
-                // -b or --cookie flags
                 const cookieRegex = /(?:-b|--cookie)\s*(['"])(.*?)\1/g;
                 let cMatch;
                 while ((cMatch = cookieRegex.exec(curlInput)) !== null) {
-                    cMatch[2].split(';').forEach(pair => {
-                        let eqIdx = pair.indexOf('=');
-                        if(eqIdx > -1) cookiesMap.set(pair.substring(0, eqIdx).trim(), pair.substring(eqIdx + 1).trim());
-                    });
+                    cMatch[2].split(';').forEach(pair => { let eqIdx = pair.indexOf('='); if(eqIdx > -1) cookiesMap.set(pair.substring(0, eqIdx).trim(), pair.substring(eqIdx + 1).trim()); });
                 }
                 cookiesMap.forEach((val, key) => results.cookies.push({ key, analysis: analyzeData(val) }));
 
-                // Body
                 const bodyRegex = /(?:--data-raw|--data|-d)\s*(?:\$)?(['"])([\s\S]*?)\1/g;
                 let bMatch = bodyRegex.exec(curlInput);
                 if (bMatch) {
                     let rawData = bMatch[2].replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
-
                     if (rawData.includes('WebKitFormBoundary') || rawData.includes('Content-Disposition: form-data')) {
                         const partsRegex = /name="([^"]+)"\r?\n\r?\n([\s\S]*?)(?=\r?\n--|$)/g;
-                        let pMatch;
-                        let foundParts = false;
-                        while ((pMatch = partsRegex.exec(rawData)) !== null) {
-                            foundParts = true;
-                            results.bodyParams.push({ key: pMatch[1], analysis: analyzeData(pMatch[2].trim()) });
-                        }
+                        let pMatch, foundParts = false;
+                        while ((pMatch = partsRegex.exec(rawData)) !== null) { foundParts = true; results.bodyParams.push({ key: pMatch[1], analysis: analyzeData(pMatch[2].trim()) }); }
                         if (!foundParts) results.bodyDump = analyzeData(rawData);
                     } 
                     else if (rawData.includes('&') && rawData.includes('=')) {
                         const params = new URLSearchParams(rawData);
-                        for (const [key, value] of params.entries()) {
-                            results.bodyParams.push({ key, analysis: analyzeData(value) });
-                        }
+                        for (const [key, value] of params.entries()) results.bodyParams.push({ key, analysis: analyzeData(value) });
                     }
-                    else {
-                        results.bodyDump = analyzeData(rawData);
-                    }
+                    else results.bodyDump = analyzeData(rawData);
                 }
 
-                setParsedResults(results);
-                setToast("Payload Deep-Decoded! 🕵️‍♀️");
-                setTimeout(() => setToast(null), 2500);
+                setParsedResults(results); setToast("Payload Deep-Decoded! 🕵️‍♀️"); setTimeout(() => setToast(null), 2500);
             };
 
             const AnalysisRow = ({ itemKey, analysis }) => {
                 if (!analysis.isEncoded) {
                     return (
-                        <div className={`flex flex-col md:flex-row bg-[#161b22] hover:bg-[#1c2128] transition-colors border-b border-[#30363d]`}>
-                            <div className="md:w-1/4 p-3 md:p-4 border-r border-[#30363d]"><span className="font-semibold text-[#8b949e] break-words text-sm md:text-base">{itemKey}</span></div>
-                            <div className="md:w-3/4 p-3 md:p-4 font-mono text-xs md:text-sm">
-                                {analysis.isJson ? (
-                                    <div className="bg-[#0d1117] p-3 rounded overflow-x-auto border border-[#30363d]" dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} />
-                                ) : (
-                                    <div className="break-words text-slate-300">{analysis.final}</div>
-                                )}
+                        <div className={`flex flex-col md:flex-row transition-colors border-b last:border-0 ${isDark ? 'border-white/5 hover:bg-white/[0.02]' : 'border-black/5 hover:bg-black/[0.02]'}`}>
+                            <div className={`md:w-1/4 p-4 border-r ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+                                <span className={`font-semibold text-sm break-words ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{itemKey}</span>
+                            </div>
+                            <div className="md:w-3/4 p-4 font-mono text-xs">
+                                {analysis.isJson 
+                                    ? <div className={`p-3 rounded-lg overflow-x-auto ${isDark ? 'bg-[#0d1117] border border-white/5' : 'bg-slate-50 border border-slate-200'}`} dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} />
+                                    : <div className={`break-words ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{analysis.final}</div>
+                                }
                             </div>
                         </div>
                     );
                 }
 
                 let badge = null;
-                if (analysis.b64Count >= 3) {
-                    badge = <span className="px-2 py-0.5 rounded text-xs font-bold bg-red-600 text-white border border-red-500 shadow-[0_0_10px_rgba(220,38,38,0.5)] animate-pulse">⚠️ TRIPLE BASE64 ENCODED!</span>;
-                } else if (analysis.b64Count === 2) {
-                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/50">🚨 DOUBLE BASE64 ENCODED</span>;
-                } else if (analysis.b64Count === 1 && analysis.urlCount > 0) {
-                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-orange-500/20 text-orange-400 border border-orange-500/50">MIXED ENCODED</span>;
-                } else if (analysis.b64Count === 1) {
-                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">Base64 Encoded</span>;
-                } else if (analysis.urlCount > 0) {
-                    badge = <span className="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">URL Encoded</span>;
-                }
+                if (analysis.b64Count >= 3) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/20 text-red-500 border border-red-500/30 animate-pulse">⚠️ TRIPLE BASE64 ENCODED!</span>;
+                else if (analysis.b64Count === 2) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-orange-500/20 text-orange-500 border border-orange-500/30">🚨 DOUBLE BASE64 ENCODED</span>;
+                else if (analysis.b64Count === 1 && analysis.urlCount > 0) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">MIXED ENCODED</span>;
+                else if (analysis.b64Count === 1) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-500/20 text-blue-500 border border-blue-500/30">BASE64 ENCODED</span>;
+                else if (analysis.urlCount > 0) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-500 border border-emerald-500/30">URL ENCODED</span>;
 
                 return (
-                    <div className={`flex flex-col md:flex-row bg-[#161b22] hover:bg-[#1c2128] transition-colors border-b border-[#30363d]`}>
-                        <div className="md:w-1/4 p-3 md:p-4 border-r border-[#30363d]"><span className="font-semibold text-[#8b949e] break-words text-sm md:text-base">{itemKey}</span></div>
-                        <div className="md:w-3/4 p-3 md:p-4">
-                            <div className="flex items-center gap-2 mb-3">{badge}</div>
+                    <div className={`flex flex-col md:flex-row transition-colors border-b last:border-0 ${isDark ? 'border-white/5 hover:bg-white/[0.02]' : 'border-black/5 hover:bg-black/[0.02]'}`}>
+                        <div className={`md:w-1/4 p-4 border-r ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+                            <span className={`font-semibold text-sm break-words ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{itemKey}</span>
+                        </div>
+                        <div className="md:w-3/4 p-4">
+                            <div className="flex items-center gap-2 mb-4">{badge}</div>
+                            <div className={`text-[10px] uppercase tracking-wider font-bold mb-2 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Original Raw Value:</div>
+                            <div className={`p-3 rounded-lg text-xs font-mono break-words mb-5 max-h-24 overflow-y-auto ${isDark ? 'bg-black/40 text-slate-500' : 'bg-slate-100 text-slate-500'}`}>{analysis.original}</div>
                             
-                            <div className="text-[10px] text-gray-500 uppercase mb-2 ml-1 tracking-wider">Original Raw Value:</div>
-                            <div className="bg-[#0d1117] p-2 rounded text-[10px] md:text-xs font-mono text-gray-500 break-words mb-4 border border-[#30363d] max-h-24 overflow-y-auto">
-                                {analysis.original}
+                            <div className={`text-[10px] uppercase tracking-wider font-bold mb-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Decoding Sequence:</div>
+                            <div className="space-y-4">
+                                {analysis.steps.map((step, i) => {
+                                    const isLast = i === analysis.steps.length - 1;
+                                    const isJSONView = isLast && analysis.isJson;
+                                    return (
+                                        <div key={i} className={`relative pl-5 ml-1 border-l-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                                            <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5px] top-1 ring-4 ${isDark ? 'bg-emerald-500 ring-[#0d1117]' : 'bg-emerald-500 ring-white'}`}></div>
+                                            <span className={`text-[10px] uppercase tracking-wider font-bold flex items-center gap-1.5 mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                                                {step.method.includes('Base64') ? <Icons.Unlock size={12}/> : <Icons.Link size={12}/>} {step.method}
+                                            </span>
+                                            {isJSONView ? (
+                                                <div className={`p-3 rounded-lg overflow-x-auto max-h-[400px] font-mono text-[11px] ${isDark ? 'bg-[#0d1117] border border-white/5' : 'bg-slate-50 border border-slate-200'}`} dangerouslySetInnerHTML={{ __html: syntaxHighlight(step.value) }} />
+                                            ) : (
+                                                <div className={`p-3 rounded-lg font-mono text-[11px] break-words ${isDark ? 'bg-[#0d1117] text-slate-300 border border-white/5' : 'bg-slate-50 text-slate-700 border border-slate-200'}`}>
+                                                    {step.value}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
-                            
-                            <div className="text-[10px] text-gray-500 uppercase mb-2 ml-1 tracking-wider">Decoding Steps:</div>
-                            {analysis.steps.map((step, i) => {
-                                const isLast = i === analysis.steps.length - 1;
-                                const isJSONView = isLast && analysis.isJson;
-                                const icon = step.method.includes('Base64') ? <Icons.Unlock size={12}/> : <Icons.Link size={12}/>;
-                                return (
-                                    <div key={i} className="ml-2 md:ml-4 pl-3 md:pl-4 border-l-2 border-[#30363d] pb-4 relative">
-                                        <div className="absolute w-2 h-2 bg-blue-500 rounded-full -left-[5px] top-1"></div>
-                                        <span className="text-[10px] md:text-xs uppercase tracking-wider font-bold text-blue-400 flex items-center gap-1 mb-2">
-                                            {icon} {step.method}
-                                        </span>
-                                        {isJSONView ? (
-                                            <div className="bg-[#0d1117] p-3 rounded mt-2 overflow-x-auto max-h-[400px] font-mono text-[11px] md:text-xs border border-[#30363d]" dangerouslySetInnerHTML={{ __html: syntaxHighlight(step.value) }} />
-                                        ) : (
-                                            <div className="bg-[#0d1117] px-3 py-2 rounded text-gray-300 break-words font-mono text-[11px] md:text-xs border border-[#30363d]">
-                                                {step.value}
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
                         </div>
                     </div>
                 );
             };
 
+            const PanelHeader = ({ icon, title, colorClass }) => (
+                <div className={`px-5 py-3 border-b flex items-center gap-2.5 ${isDark ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
+                    <div className={colorClass}>{icon}</div>
+                    <h2 className={`font-bold text-sm tracking-wide uppercase ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{title}</h2>
+                </div>
+            );
+
             return (
-                <div className="flex flex-col gap-4 animate-fade-in">
-                    <div className="panel p-1 shadow-lg bg-[#161b22] border border-[#30363d] rounded-xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-2 opacity-10 pointer-events-none group-hover:opacity-20 transition-opacity"><Icons.Activity size={64} /></div>
+                <div className="flex flex-col gap-6 animate-fade-in w-full max-w-5xl mx-auto">
+                    {/* Input Area */}
+                    <div className={`rounded-2xl border shadow-lg overflow-hidden glass-panel group ${isDark ? 'focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald' : 'focus-within:border-emerald-400'}`}>
+                        <div className={`flex items-center justify-between px-5 py-3 border-b ${isDark ? 'border-white/5 bg-white/[0.02]' : 'border-black/5 bg-black/[0.02]'}`}>
+                            <div className="flex items-center gap-2">
+                                <Icons.Terminal size={16} className={isDark ? "text-emerald-400" : "text-emerald-600"} />
+                                <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Paste cURL Command</span>
+                            </div>
+                        </div>
                         <textarea 
-                            value={curlInput}
-                            onChange={(e) => setCurlInput(e.target.value)}
-                            className="w-full bg-[#0d1117] text-gray-300 font-mono p-4 rounded-t-xl outline-none border-none focus:ring-2 focus:ring-emerald-500/50 resize-y min-h-[200px] md:min-h-[250px] lg:min-h-[30vh] z-10 relative custom-scrollbar" 
-                            placeholder="Paste your nasty cURL command here... (Double-encoded Base64 Cookies are welcome! 🍪)"
-                            spellCheck="false"
-                        ></textarea>
-                        <div className="p-3 bg-[#161b22] border-t border-[#30363d] flex flex-col sm:flex-row justify-between items-center rounded-b-xl gap-3 z-10 relative">
-                            <span className="text-xs text-gray-400 flex items-center gap-1"><Icons.Layers size={16} className="text-emerald-400" /> Identifies 2x, 3x nested encodings in body & cookies automatically.</span>
-                            <button onClick={processRequest} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-6 rounded-lg transition flex justify-center items-center gap-2 shadow-lg shadow-emerald-900/20 active:scale-95">
-                                <Icons.Cpu size={18} /> Deep Decode Everything
+                            value={curlInput} onChange={(e) => setCurlInput(e.target.value)}
+                            className={`w-full p-5 outline-none resize-y min-h-[160px] font-mono text-sm leading-relaxed custom-scrollbar ${isDark ? 'bg-transparent text-slate-300 placeholder-slate-600' : 'bg-white/50 text-slate-800 placeholder-slate-400'}`} 
+                            placeholder="curl 'https://api.target.com/data' -H 'Authorization: Bearer eyJhb...' -b 'session=base64_encoded_cookie'" spellCheck="false"
+                        />
+                        <div className={`px-5 py-3 border-t flex flex-col sm:flex-row justify-between items-center gap-4 ${isDark ? 'border-white/5 bg-black/20' : 'border-black/5 bg-slate-50'}`}>
+                            <span className={`text-xs flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                <Icons.Activity size={14} className={isDark ? 'text-emerald-400' : 'text-emerald-600'} /> Auto-detects deeply nested encodings.
+                            </span>
+                            <button onClick={processRequest} className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2.5 px-6 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                                <Icons.Cpu size={16} /> Deep Decode Data
                             </button>
                         </div>
                     </div>
 
+                    {/* Results Area */}
                     {parsedResults && (
-                        <div className="space-y-6 pb-12 animate-slide-up">
-                            {/* URL Panel */}
-                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
-                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
-                                    <Icons.Link size={16} className="text-gray-400" />
-                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Request Target</h2>
-                                </div>
-                                <div className="p-4 font-mono text-emerald-400 break-words bg-[#0d1117]">
-                                    {parsedResults.url}
-                                </div>
+                        <div className="space-y-6 animate-slide-up pb-10">
+                            <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
+                                <PanelHeader icon={<Icons.Link size={16}/>} title="Target Endpoint" colorClass={isDark ? 'text-blue-400' : 'text-blue-600'} />
+                                <div className={`p-5 font-mono text-sm break-words ${isDark ? 'text-blue-300 bg-[#0d1117]' : 'text-blue-700 bg-blue-50'}`}>{parsedResults.url}</div>
                             </div>
 
-                            {/* Query Params */}
                             {parsedResults.queryParams.length > 0 && (
-                                <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
-                                    <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
-                                        <Icons.Code size={16} className="text-gray-400" />
-                                        <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Query Parameters</h2>
-                                    </div>
-                                    <div className="divide-y divide-[#30363d]">
-                                        {parsedResults.queryParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)}
-                                    </div>
+                                <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
+                                    <PanelHeader icon={<Icons.Code size={16}/>} title="Query Parameters" colorClass={isDark ? 'text-emerald-400' : 'text-emerald-600'} />
+                                    <div>{parsedResults.queryParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)}</div>
                                 </div>
                             )}
 
-                            {/* Cookies */}
-                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
-                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
-                                    <Icons.Lock size={16} className="text-yellow-400" />
-                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Cookies</h2>
-                                </div>
-                                <div className="divide-y divide-[#30363d]">
-                                    {parsedResults.cookies.length > 0 
-                                        ? parsedResults.cookies.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
-                                        : <div className="p-4 text-gray-500 text-center text-sm bg-[#0d1117]">No cookies found in request</div>
-                                    }
-                                </div>
+                            <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
+                                <PanelHeader icon={<Icons.Lock size={16}/>} title="Session Cookies" colorClass={isDark ? 'text-amber-400' : 'text-amber-600'} />
+                                <div>{parsedResults.cookies.length > 0 ? parsedResults.cookies.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />) : <div className={`p-6 text-center text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No cookies parsed.</div>}</div>
                             </div>
 
-                            {/* Headers */}
-                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
-                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
-                                    <Icons.AlignLeft size={16} className="text-blue-400" />
-                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">HTTP Headers</h2>
-                                </div>
-                                <div className="divide-y divide-[#30363d]">
-                                    {parsedResults.headers.length > 0 
-                                        ? parsedResults.headers.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
-                                        : <div className="p-4 text-gray-500 text-center text-sm bg-[#0d1117]">No headers found in request</div>
-                                    }
-                                </div>
+                            <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
+                                <PanelHeader icon={<Icons.AlignLeft size={16}/>} title="HTTP Headers" colorClass={isDark ? 'text-purple-400' : 'text-purple-600'} />
+                                <div>{parsedResults.headers.length > 0 ? parsedResults.headers.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />) : <div className={`p-6 text-center text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No headers parsed.</div>}</div>
                             </div>
 
-                            {/* Body Panel */}
-                            <div className="panel overflow-hidden bg-[#161b22] border border-[#30363d] rounded-xl shadow-lg">
-                                <div className="bg-[#21262d] border-b border-[#30363d] px-4 py-3 flex items-center gap-2">
-                                    <Icons.Database size={16} className="text-purple-400" />
-                                    <h2 className="font-semibold text-gray-200 text-sm tracking-wide uppercase">Body Payload</h2>
-                                </div>
-                                <div className="divide-y divide-[#30363d]">
+                            <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
+                                <PanelHeader icon={<Icons.Database size={16}/>} title="Body Payload" colorClass={isDark ? 'text-rose-400' : 'text-rose-600'} />
+                                <div>
                                     {parsedResults.bodyParams.length > 0 
                                         ? parsedResults.bodyParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
                                         : parsedResults.bodyDump 
-                                            ? <AnalysisRow itemKey="Raw Body / Multipart Dump" analysis={parsedResults.bodyDump} />
-                                            : <div className="p-4 text-gray-500 text-center text-sm bg-[#0d1117]">No body payload found</div>
+                                            ? <AnalysisRow itemKey="Raw Body Dump" analysis={parsedResults.bodyDump} />
+                                            : <div className={`p-6 text-center text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No body payload parsed.</div>
                                     }
                                 </div>
                             </div>
-
                         </div>
                     )}
                 </div>
@@ -557,11 +503,7 @@
         // COMPONENT 2: DECODERX (ORIGINAL TOOL)
         // ==========================================
         function StandardDecoderTab({ isDark, setToast, AlgorithmsLib }) {
-            const { 
-                defang, refang, toHex, fromHex, toBin, fromBin, toOctal, fromOctal, htmlEncode, htmlDecode, 
-                rev, atbash, rot47, caesarCipher, vigenereCipher, toMorse, fromMorse, formatJSON, parseJWT, 
-                b32Encode, b32Decode, extractIPs, extractURLs, hexdump 
-            } = AlgorithmsLib;
+            const { defang, refang, toHex, fromHex, toBin, fromBin, toOctal, fromOctal, htmlEncode, htmlDecode, rev, atbash, rot47, caesarCipher, vigenereCipher, toMorse, fromMorse, formatJSON, parseJWT, b32Encode, b32Decode, extractIPs, extractURLs, hexdump } = AlgorithmsLib;
             
             const [input, setInput] = useState('');
             const [output, setOutput] = useState('');
@@ -576,53 +518,38 @@
             const fileInputRef = useRef(null);
 
             const handleCategoryChange = (e) => {
-                const newCat = e.target.value;
-                setCategory(newCat);
-                const firstAlgoInCat = algorithms.find(a => a.category === newCat);
-                if(firstAlgoInCat) {
-                    setAlgo(firstAlgoInCat.id);
+                const newCat = e.target.value; setCategory(newCat);
+                const firstAlgo = algorithms.find(a => a.category === newCat);
+                if(firstAlgo) {
+                    setAlgo(firstAlgo.id);
                     if(newCat === 'hashes') setMode('encode');
-                    else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(firstAlgoInCat.id)) setMode('decode');
+                    else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(firstAlgo.id)) setMode('decode');
                 }
             };
 
             useEffect(() => {
                 let isMounted = true;
-                const processConversion = async () => {
+                const process = async () => {
                     setErrorMsg(null); setShowQR(false); 
-                    if (!input) { if (isMounted) setOutput(''); return; }
-
+                    if (!input) { if(isMounted) setOutput(''); return; }
                     try {
-                        let res = '';
-                        let effectiveMode = mode;
+                        let res = '', effectiveMode = mode;
                         if (category === 'hashes') effectiveMode = 'encode';
                         if (['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo)) effectiveMode = 'decode';
 
                         if (category === 'hashes') {
-                            const msgUint8 = new TextEncoder().encode(input);
-                            let hashName = 'SHA-256';
-                            if(algo === 'sha512') hashName = 'SHA-512';
-                            if(algo === 'sha1') hashName = 'SHA-1';
-                            const hashBuffer = await crypto.subtle.digest(hashName, msgUint8);
-                            const hashArray = Array.from(new Uint8Array(hashBuffer));
-                            res = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                            if (isMounted) setOutput(res);
-                            return;
+                            const hashBuffer = await crypto.subtle.digest(algo === 'sha512' ? 'SHA-512' : algo === 'sha1' ? 'SHA-1' : 'SHA-256', new TextEncoder().encode(input));
+                            res = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+                            if (isMounted) setOutput(res); return;
                         }
 
                         switch (algo) {
                             case 'defang': res = effectiveMode === 'encode' ? defang(input) : refang(input); break;
                             case 'base64': res = effectiveMode === 'encode' ? btoa(unescape(encodeURIComponent(input))) : decodeURIComponent(escape(atob(input))); break;
-                            case 'base64url': 
-                                if(effectiveMode==='encode') res = btoa(unescape(encodeURIComponent(input))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-                                else { let b=input.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4)b+='='; res=decodeURIComponent(escape(atob(b))); } break;
+                            case 'base64url': res = effectiveMode === 'encode' ? btoa(unescape(encodeURIComponent(input))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'') : (() => { let b=input.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4)b+='='; return decodeURIComponent(escape(atob(b))); })(); break;
                             case 'base32': res = effectiveMode === 'encode' ? b32Encode(input) : b32Decode(input); break;
                             case 'url': res = effectiveMode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input.replace(/\+/g, ' ')); break;
-                            case 'urlparse': 
-                                const urlObj = new URL(input.startsWith('http') ? input : `https://${input}`);
-                                const params = Object.fromEntries(urlObj.searchParams);
-                                res = JSON.stringify({ Protocol: urlObj.protocol.replace(':', ''), Host: urlObj.host, Path: urlObj.pathname, Parameters: Object.keys(params).length > 0 ? params : "None" }, null, 4);
-                                break;
+                            case 'urlparse': const u = new URL(input.startsWith('http') ? input : `https://${input}`); res = JSON.stringify({ Protocol: u.protocol.replace(':',''), Host: u.host, Path: u.pathname, Parameters: Object.keys(Object.fromEntries(u.searchParams)).length ? Object.fromEntries(u.searchParams) : "None" }, null, 4); break;
                             case 'hex': res = effectiveMode === 'encode' ? toHex(input) : fromHex(input); break;
                             case 'binary': res = effectiveMode === 'encode' ? toBin(input) : fromBin(input.replace(/[^01\s]/g,'')); break;
                             case 'octal': res = effectiveMode === 'encode' ? toOctal(input) : fromOctal(input); break;
@@ -641,200 +568,169 @@
                             default: res = input;
                         }
                         if (isMounted) setOutput(res);
-                    } catch (e) { 
-                        if (isMounted) { setOutput(''); setErrorMsg(e.message || `Error processing payload! Check format.`); }
-                    }
+                    } catch (e) { if (isMounted) { setOutput(''); setErrorMsg(e.message || 'Error processing payload. Check format.'); } }
                 };
-                processConversion();
-                return () => { isMounted = false; };
+                process(); return () => { isMounted = false; };
             }, [input, mode, algo, category, caesarShift, vigenereKey]);
 
-            const copy = (txt) => {
-                if(!txt) return; navigator.clipboard.writeText(txt);
-                setToast('Copied to clipboard'); setTimeout(()=>setToast(null), 2500);
+            const action = (type) => {
+                if(type === 'copy' && output) { navigator.clipboard.writeText(output); setToast('Copied to clipboard'); }
+                if(type === 'download' && output && !errorMsg) {
+                    const url = URL.createObjectURL(new Blob([output], { type: "text/plain" }));
+                    const a = document.createElement("a"); a.href = url; a.download = `decoderx_output_${algo}.txt`;
+                    a.click(); URL.revokeObjectURL(url); setToast('File downloaded! 🚀');
+                }
+                if(type === 'qr' && output && !errorMsg) {
+                    if(output.length > 900) return setToast("Output too long for QR! (Max ~900 chars)");
+                    setShowQR(!showQR);
+                }
+                setTimeout(()=>setToast(null), 2500);
             };
 
-            const downloadOutput = () => {
-                if(!output || errorMsg) return;
-                const blob = new Blob([output], { type: "text/plain" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a"); a.href = url; a.download = `decoderx_output_${algo}.txt`;
-                a.click(); URL.revokeObjectURL(url);
-                setToast('File downloaded! 🚀'); setTimeout(()=>setToast(null), 2500);
-            };
-
-            const toggleQR = () => {
-                if(!output || errorMsg) return;
-                if(output.length > 900) { setToast("Output too long for QR! (Max ~900 chars)"); setTimeout(()=>setToast(null), 3000); return; }
-                setShowQR(!showQR);
-            };
-            
-            const clear = () => { setInput(''); setOutput(''); setErrorMsg(null); setShowQR(false); };
-            
             const swap = () => {
                 if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes') {
                     setToast(`Cannot swap ${algorithms.find(a=>a.id===algo).name}`); setTimeout(()=>setToast(null), 2000); return;
                 }
                 setAnimating(true); setInput(output); setMode(mode === 'encode' ? 'decode' : 'encode'); setShowQR(false);
-                setTimeout(() => setAnimating(false), 500);
+                setTimeout(() => setAnimating(false), 400);
             };
 
-            const handleFileUpload = (e) => {
-                const file = e.target.files[0]; if (!file) return;
-                if(file.size > 1024 * 1024 * 2) { setToast("File too large (Max 2MB)"); setTimeout(()=>setToast(null), 2500); return; }
+            const handleFile = (e) => {
+                const f = e.target.files[0]; if (!f) return;
+                if(f.size > 1024 * 1024 * 2) { setToast("File too large (Max 2MB)"); setTimeout(()=>setToast(null), 2500); return; }
                 const reader = new FileReader();
-                reader.onload = (ev) => { setInput(ev.target.result); setToast(`Loaded: ${file.name}`); setTimeout(()=>setToast(null), 2500); };
-                reader.readAsText(file); e.target.value = null; 
+                reader.onload = (ev) => { setInput(ev.target.result); setToast(`Loaded: ${f.name}`); setTimeout(()=>setToast(null), 2500); };
+                reader.readAsText(f); e.target.value = null; 
             };
 
-            const inputStats = getStats(input);
-            const outputStats = getStats(output);
-            const currentAlgoData = algorithms.find(a=>a.id===algo);
-            const isLockMode = (['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes');
+            const inStats = getStats(input), outStats = getStats(output), currAlgo = algorithms.find(a=>a.id===algo);
+            const isLockMode = ['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes';
+            const getEntropyColor = (e) => parseFloat(e) < 3.0 ? 'text-slate-500' : parseFloat(e) < 4.5 ? 'text-emerald-500' : parseFloat(e) < 6.5 ? 'text-amber-500' : 'text-red-500 animate-pulse';
 
-            // Entropy color logic for visual flair
-            const getEntropyColor = (ent) => {
-                const e = parseFloat(ent);
-                if(e < 3.0) return 'text-slate-500';
-                if(e < 4.5) return 'text-emerald-500';
-                if(e < 6.5) return 'text-orange-500';
-                return 'text-red-500 animate-pulse';
-            };
+            const PanelHeader = ({ title, stats, isOutput, copyVal }) => (
+                <div className={`flex flex-col sm:flex-row sm:items-center justify-between px-5 py-3 border-b z-20 relative ${isDark ? 'border-white/5 bg-white/[0.02]' : 'border-black/5 bg-black/[0.02]'}`}>
+                    <div className="flex items-center gap-3 mb-2 sm:mb-0">
+                        <div className={`w-2.5 h-2.5 rounded-full ${isOutput ? (errorMsg ? 'bg-red-500 shadow-neon-red' : (isDark ? 'bg-blue-500 shadow-neon-blue' : 'bg-blue-500')) : (isDark ? 'bg-emerald-500 shadow-neon-emerald' : 'bg-emerald-500')}`}></div>
+                        <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{title}</span>
+                        {isOutput && <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold border ${errorMsg ? 'bg-red-500/20 text-red-500 border-red-500/30' : (isDark ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-blue-100 text-blue-700 border-blue-200')}`}>{errorMsg ? 'ERROR' : currAlgo?.name}</span>}
+                    </div>
+                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                        {isOutput && (
+                            <>
+                                <button onClick={()=>action('qr')} disabled={!!errorMsg || !output} className={`p-1.5 rounded-lg transition-all ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? (showQR ? 'bg-blue-500 text-white shadow-neon-blue' : 'hover:bg-white/10 text-slate-400 hover:text-blue-400') : (showQR ? 'bg-blue-100 text-blue-700' : 'hover:bg-slate-200 text-slate-500 hover:text-blue-600'))}`} title="QR Code"><Icons.QrCode size={14}/></button>
+                                <button onClick={()=>action('download')} disabled={!!errorMsg || !output} className={`p-1.5 rounded-lg transition-all ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-slate-400 hover:text-blue-400' : 'hover:bg-slate-200 text-slate-500 hover:text-blue-600')}`} title="Download TXT"><Icons.Download size={14}/></button>
+                                <div className={`w-px h-4 mx-1 ${isDark ? 'bg-white/10' : 'bg-black/10'}`}></div>
+                            </>
+                        )}
+                        <button onClick={()=>isOutput ? action('copy') : (input && navigator.clipboard.writeText(input), setToast('Copied!'), setTimeout(()=>setToast(null), 2000))} disabled={isOutput ? (!!errorMsg || !output) : !input} className={`p-1.5 rounded-lg transition-all ${(!copyVal && !input) || (isOutput && errorMsg) ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-slate-400 hover:text-emerald-400' : 'hover:bg-slate-200 text-slate-500 hover:text-emerald-600')}`} title="Copy"><Icons.Copy size={14}/></button>
+                    </div>
+                </div>
+            );
+
+            const PanelFooter = ({ stats }) => (
+                <div className={`flex justify-between items-center px-5 py-2.5 text-[10px] font-mono border-t z-20 relative ${isDark ? 'border-white/5 bg-black/40 text-slate-500' : 'border-black/5 bg-slate-50 text-slate-500'}`}>
+                    <div className="flex gap-4"><span>Ln: {stats.lines}</span><span>Wd: {stats.words}</span><span>Ch: {stats.chars}</span></div>
+                    <div className="flex gap-4"><span title="Shannon Entropy">Ent: <span className={`font-bold ${getEntropyColor(stats.entropy)}`}>{stats.entropy}</span></span><span>{stats.bytes} B</span></div>
+                </div>
+            );
 
             return (
-                <div className="flex flex-col gap-3 animate-fade-in">
-                    {/* Controls Bar */}
-                    <div className={`flex flex-col md:flex-row flex-wrap items-center justify-between gap-3 px-3 py-2 rounded-2xl border glass-panel shadow-sm animate-slide-up ${isDark ? 'bg-slate-900/40 border-slate-800/80' : 'bg-white/60 border-white/80'}`}>
-                        {/* Dropdowns */}
-                        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
-                            <div className="relative w-full sm:w-48 group z-20">
-                                <select value={category} onChange={handleCategoryChange} className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-bold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${isDark ? 'bg-[#0f172a] border-emerald-500/40 text-emerald-400 hover:bg-[#1e293b] focus:border-emerald-400 focus:ring-1 focus:ring-emerald-500/40' : 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:border-emerald-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'}`}>
+                <div className="flex flex-col gap-5 animate-fade-in w-full max-w-[100rem] mx-auto">
+                    {/* Sleek Toolbar */}
+                    <div className="glass-panel p-2 md:p-3 rounded-2xl border shadow-lg flex flex-col xl:flex-row items-center justify-between gap-4 z-30 relative animate-slide-up">
+                        
+                        {/* Segment 1: Selectors */}
+                        <div className="flex flex-col sm:flex-row items-center gap-2 w-full xl:w-auto">
+                            <div className="relative w-full sm:w-48">
+                                <select value={category} onChange={handleCategoryChange} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-bold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-emerald-400 hover:bg-black/60 focus:border-emerald-500/50 focus:shadow-neon-emerald' : 'bg-white border border-slate-200 text-emerald-700 hover:bg-slate-50 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100'}`}>
                                     {toolCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
-                                <div className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                                    {toolCategories.find(c=>c.id===category)?.icon}
-                                </div>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none"><Icons.ChevronDown size={14} /></div>
+                                <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-emerald-400/80' : 'text-emerald-600'}`}>{toolCategories.find(c=>c.id===category)?.icon}</div>
+                                <Icons.ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
                             </div>
-                            <div className="relative w-full sm:w-56 group z-10">
-                                <select value={algo} onChange={e => { setAlgo(e.target.value); if(category === 'hashes') setMode('encode'); else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(e.target.value)) setMode('decode'); }} className={`w-full h-10 appearance-none pl-10 pr-8 rounded-xl font-semibold text-sm border outline-none focus:outline-none transition-all cursor-pointer shadow-sm ${isDark ? 'bg-[#0f172a] border-blue-500/40 text-blue-300 hover:bg-[#1e293b] focus:border-blue-400 focus:ring-1 focus:ring-blue-500/40' : 'bg-blue-50 border-blue-300 text-blue-700 hover:border-blue-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30'}`}>
+                            <div className="relative w-full sm:w-56">
+                                <select value={algo} onChange={e => { setAlgo(e.target.value); if(category === 'hashes') setMode('encode'); else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(e.target.value)) setMode('decode'); }} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-semibold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-blue-300 hover:bg-black/60 focus:border-blue-500/50 focus:shadow-neon-blue' : 'bg-white border border-slate-200 text-blue-700 hover:bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100'}`}>
                                     {algorithms.filter(a => a.category === category).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                                 </select>
-                                <div className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>
-                                    {algorithms.find(a=>a.id===algo)?.icon}
-                                </div>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none"><Icons.ChevronDown size={14} /></div>
+                                <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-blue-400/80' : 'text-blue-600'}`}>{algorithms.find(a=>a.id===algo)?.icon}</div>
+                                <Icons.ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
                             </div>
                         </div>
 
-                        {/* Mode Toggle & Extra Settings */}
-                        <div className="flex items-center gap-2 w-full md:w-auto">
-                            <div className={`flex p-1 rounded-xl w-full md:w-auto justify-center ${isDark ? 'bg-slate-950/80' : 'bg-slate-100/80'} ${isLockMode ? 'opacity-50 pointer-events-none' : ''}`}>
+                        {/* Segment 2: Mode Toggle & Config */}
+                        <div className="flex items-center gap-3 w-full xl:w-auto">
+                            <div className={`flex p-1 rounded-xl w-full sm:w-auto transition-opacity ${isLockMode ? 'opacity-50 pointer-events-none' : ''} ${isDark ? 'bg-black/50 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
                                 {['encode', 'decode'].map(m => (
-                                    <button key={m} onClick={() => setMode(m)} className={`flex-1 md:flex-none px-4 py-1.5 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-slate-800 text-emerald-400 shadow-md shadow-emerald-900/20 ring-1 ring-emerald-500/30' : 'bg-white text-blue-600 shadow-sm ring-1 ring-black/5') : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
-                                        {m}
-                                    </button>
+                                    <button key={m} onClick={() => setMode(m)} className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-[#1a202c] text-white shadow-lg border border-white/10' : 'bg-white text-slate-800 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}>{m}</button>
                                 ))}
                             </div>
                             
+                            {/* Conditional Algo Configs */}
                             {algo === 'caesar' && (
-                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border flex-grow justify-center ${isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white border-slate-200'}`}>
-                                    <Icons.Settings size={14} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
-                                    <input type="range" min="1" max="25" value={caesarShift} onChange={(e) => setCaesarShift(e.target.value)} className="w-20" />
-                                    <span className={`font-mono font-bold w-4 text-center text-xs ${isDark ? 'text-emerald-400' : 'text-blue-600'}`}>{caesarShift}</span>
+                                <div className={`flex items-center gap-3 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
+                                    <Icons.Settings size={14} className="text-slate-500" />
+                                    <input type="range" min="1" max="25" value={caesarShift} onChange={(e) => setCaesarShift(e.target.value)} className="w-20 sm:w-28" />
+                                    <span className={`font-mono font-bold w-5 text-center text-xs ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{caesarShift}</span>
                                 </div>
                             )}
                             {algo === 'vigenere' && (
-                                <div className={`flex items-center gap-2 px-3 py-1 rounded-xl border flex-grow justify-center ${isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white border-slate-200'}`}>
-                                    <Icons.Settings size={14} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
-                                    <input type="text" value={vigenereKey} onChange={(e) => setVigenereKey(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))} placeholder="KEY" className={`w-20 bg-transparent border-b outline-none font-mono font-bold text-center text-xs uppercase tracking-widest px-1 py-0.5 ${isDark ? 'border-slate-700 focus:border-emerald-500 text-emerald-400' : 'border-slate-300 focus:border-blue-500 text-blue-600'}`}/>
+                                <div className={`flex items-center gap-3 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
+                                    <Icons.Settings size={14} className="text-slate-500" />
+                                    <input type="text" value={vigenereKey} onChange={(e) => setVigenereKey(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))} placeholder="KEY" className={`w-20 sm:w-28 bg-transparent outline-none font-mono font-bold text-center text-xs uppercase tracking-widest ${isDark ? 'text-emerald-400 placeholder-slate-600' : 'text-emerald-600 placeholder-slate-400'}`}/>
                                 </div>
                             )}
                         </div>
 
-                        {/* File Load & Clear */}
-                        <div className="flex items-center justify-center gap-2 w-full md:w-auto ml-auto">
-                            <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".txt,.json,.xml,.csv,.log,.md,.bin" />
-                            <button onClick={() => fileInputRef.current.click()} className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold tracking-wide rounded-xl transition-all border flex-1 md:flex-none justify-center ${isDark ? 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400'}`}>
-                                <Icons.Upload size={14} /> <span>LOAD</span>
+                        {/* Segment 3: Actions */}
+                        <div className="flex items-center gap-2 w-full xl:w-auto xl:ml-auto">
+                            <input type="file" ref={fileInputRef} onChange={handleFile} className="hidden" accept=".txt,.json,.xml,.csv,.log,.md,.bin" />
+                            <button onClick={() => fileInputRef.current.click()} className={`flex-1 xl:flex-none flex items-center justify-center gap-2 h-11 px-5 text-xs font-bold tracking-widest rounded-xl transition-all ${isDark ? 'bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                                <Icons.Upload size={14} /> LOAD
                             </button>
-                            <button onClick={clear} className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold tracking-wide rounded-xl transition-all border flex-1 md:flex-none justify-center ${isDark ? 'border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50' : 'border-red-200 bg-red-50 text-red-500 hover:bg-red-100 hover:border-red-300'}`}>
-                                <Icons.Trash2 size={14} /> <span>CLEAR</span>
+                            <button onClick={() => {setInput(''); setOutput(''); setErrorMsg(null); setShowQR(false);}} className={`flex-1 xl:flex-none flex items-center justify-center gap-2 h-11 px-5 text-xs font-bold tracking-widest rounded-xl transition-all ${isDark ? 'bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:border-red-500/40' : 'bg-red-50 border border-red-200 text-red-600 hover:bg-red-100'}`}>
+                                <Icons.Trash2 size={14} /> CLEAR
                             </button>
                         </div>
                     </div>
 
-                    {/* Main Editor Section */}
-                    <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-3 lg:gap-4 items-stretch animate-slide-up" style={{animationDelay: '0.1s'}}>
-                        {/* Input Box Wrapper */}
-                        <div className={`flex flex-col rounded-2xl border glass-panel shadow-lg overflow-hidden transition-all duration-300 focus-within:ring-1 ${isDark ? 'bg-slate-900/60 border-slate-700/60 focus-within:ring-blue-500/50 focus-within:border-blue-500/50' : 'bg-white border-slate-200 focus-within:ring-blue-500/50 focus-within:border-blue-400'}`}>
-                            <div className={`flex-shrink-0 flex items-center justify-between px-4 py-2 border-b ${isDark ? 'border-slate-800 bg-slate-950/50' : 'border-slate-200 bg-slate-50/80'}`}>
-                                <div className="flex items-center gap-2.5">
-                                    <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'bg-blue-500'}`}></div>
-                                    <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>Input</span>
-                                </div>
-                                <button onClick={() => copy(input)} disabled={!input} className={`p-1 rounded-md transition-colors ${!input ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-blue-400' : 'hover:bg-blue-50 text-slate-400 hover:text-blue-600')}`} title="Copy Input">
-                                    <Icons.Copy size={14}/>
-                                </button>
-                            </div>
+                    {/* Workspace Area */}
+                    <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-6 items-stretch animate-slide-up" style={{animationDelay: '0.15s'}}>
+                        
+                        {/* Input Panel */}
+                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group ${isDark ? 'border-white/5 focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald' : 'border-black/5 focus-within:border-emerald-400 focus-within:shadow-lg'}`}>
+                            <PanelHeader title="Input" stats={inStats} isOutput={false} copyVal={input} />
                             <div className="relative flex-grow flex flex-col">
-                                <textarea value={input} onChange={e => setInput(e.target.value)} placeholder="Paste payload or type here..." className={`w-full flex-grow p-4 bg-transparent resize-none outline-none font-mono text-sm leading-relaxed custom-scrollbar placeholder-opacity-40 min-h-[300px] md:min-h-[400px] lg:min-h-[500px] xl:min-h-[65vh] ${isDark ? 'placeholder-slate-500 text-slate-200' : 'placeholder-slate-400 text-slate-800'}`} spellCheck="false" />
+                                <textarea value={input} onChange={e => setInput(e.target.value)} placeholder="Enter payload or drag file here..." className={`w-full flex-grow p-6 bg-transparent resize-none outline-none font-mono text-[13px] leading-relaxed custom-scrollbar placeholder-opacity-50 min-h-[300px] md:min-h-[400px] lg:min-h-[60vh] ${isDark ? 'text-emerald-50 placeholder-slate-600' : 'text-slate-800 placeholder-slate-400'}`} spellCheck="false" />
                             </div>
-                            <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
-                                <div className="flex gap-3"><span>Ln: {inputStats.lines}</span><span>Wd: {inputStats.words}</span><span>Ch: {inputStats.chars}</span></div>
-                                <div className="flex gap-3">
-                                    <span title="Shannon Entropy (Complexity)">Ent: <span className={`font-bold ${getEntropyColor(inputStats.entropy)}`}>{inputStats.entropy}</span></span>
-                                    <span>{inputStats.bytes} B</span>
-                                </div>
-                            </div>
+                            <PanelFooter stats={inStats} />
                         </div>
 
-                        {/* Swap Action Wrapper */}
-                        <div className="flex items-center justify-center relative z-10 -my-4 lg:my-0 lg:-mx-4">
-                            <button onClick={swap} disabled={isLockMode} className={`p-3 rounded-full shadow-xl border-4 transition-all hover:scale-110 active:scale-95 group relative overflow-hidden z-10 ${isLockMode ? 'opacity-50 cursor-not-allowed' : ''} ${isDark ? 'bg-slate-800 border-[#030712] text-emerald-400 hover:text-white' : 'bg-white border-[#F8FAFC] text-blue-600 hover:text-white'}`} title="Swap Input/Output">
-                                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isDark ? 'bg-gradient-to-br from-emerald-500 to-blue-600' : 'bg-gradient-to-br from-blue-500 to-emerald-500'}`}></div>
+                        {/* Swap Action */}
+                        <div className="flex items-center justify-center relative z-10 -my-6 lg:my-0 lg:-mx-6">
+                            <button onClick={swap} disabled={isLockMode} className={`p-4 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95 group relative overflow-hidden z-10 ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-[#0d1117] border-4 border-[#030712] text-white hover:shadow-neon-emerald' : 'bg-white border-4 border-slate-50 text-slate-800 hover:shadow-xl'}`} title="Swap">
+                                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isDark ? 'bg-gradient-to-br from-emerald-600 to-blue-600' : 'bg-gradient-to-br from-emerald-400 to-blue-500'}`}></div>
                                 <div className={`relative z-10 transition-transform duration-500 ${animating ? 'rotate-180' : ''}`}>
-                                    <div className="hidden lg:block"><Icons.ArrowRight size={20} strokeWidth={2.5} /></div>
-                                    <div className="lg:hidden"><Icons.ArrowDown size={20} strokeWidth={2.5} /></div>
+                                    <Icons.ArrowRight size={22} strokeWidth={2.5} className="hidden lg:block" />
+                                    <Icons.ArrowDown size={22} strokeWidth={2.5} className="lg:hidden" />
                                 </div>
                             </button>
                         </div>
 
-                        {/* Output Box Wrapper */}
-                        <div className={`flex flex-col rounded-2xl border glass-panel shadow-lg overflow-hidden transition-all duration-300 focus-within:ring-1 relative ${errorMsg ? (isDark ? 'border-red-500/50 ring-1 ring-red-500/30' : 'border-red-400 ring-1 ring-red-500/30') : (isDark ? 'bg-slate-900/60 border-slate-700/60 focus-within:ring-emerald-500/50 focus-within:border-emerald-500/50' : 'bg-white border-slate-200 focus-within:ring-emerald-500/50 focus-within:border-emerald-400')}`}>
-                            <div className={`flex-shrink-0 flex items-center justify-between px-4 py-2 border-b z-20 relative ${isDark ? 'border-slate-800 bg-slate-950/50' : 'border-slate-200 bg-slate-50/80'}`}>
-                                <div className="flex items-center gap-2.5">
-                                    <div className={`w-2 h-2 rounded-full ${errorMsg ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]' : (isDark ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-emerald-500')}`}></div>
-                                    <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>Output</span>
-                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold border ${errorMsg ? 'bg-red-900/40 text-red-400 border-red-500/40' : (isDark ? 'bg-slate-800/80 text-emerald-400 border-emerald-500/30' : 'bg-emerald-50 text-emerald-700 border-emerald-300')}`}>
-                                        {errorMsg ? 'ERROR' : currentAlgoData?.name || algo}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <button onClick={toggleQR} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? (showQR ? 'bg-emerald-500/20 text-emerald-400' : 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400') : (showQR ? 'bg-emerald-100 text-emerald-700' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700'))}`} title="View as QR Code"><Icons.QrCode size={14}/></button>
-                                    <button onClick={downloadOutput} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700')}`} title="Download as .txt"><Icons.Download size={14}/></button>
-                                    <div className={`w-px h-3 mx-1 ${isDark ? 'bg-slate-700' : 'bg-slate-300'}`}></div>
-                                    <button onClick={() => copy(output)} disabled={!!errorMsg || !output} className={`p-1 rounded-md transition-colors ${!output || errorMsg ? 'opacity-30 cursor-not-allowed' : (isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-emerald-400' : 'hover:bg-emerald-50 text-slate-500 hover:text-emerald-700')}`} title="Copy Output"><Icons.Copy size={14}/></button>
-                                </div>
-                            </div>
+                        {/* Output Panel */}
+                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 ${errorMsg ? (isDark ? 'border-red-500/50 shadow-neon-red' : 'border-red-400 shadow-lg') : (isDark ? 'border-white/5 focus-within:border-blue-500/50 focus-within:shadow-neon-blue' : 'border-black/5 focus-within:border-blue-400 focus-within:shadow-lg')}`}>
+                            <PanelHeader title="Output" stats={outStats} isOutput={true} copyVal={output} />
                             <div className="relative flex-grow flex flex-col">
-                                <textarea value={errorMsg || output} readOnly placeholder={errorMsg ? '' : "Result awaits..."} className={`w-full flex-grow p-4 bg-transparent resize-none outline-none font-mono text-sm leading-relaxed custom-scrollbar min-h-[300px] md:min-h-[400px] lg:min-h-[500px] xl:min-h-[65vh] ${errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-emerald-400' : 'text-emerald-700')}`} />
+                                <textarea value={errorMsg || output} readOnly placeholder={errorMsg ? '' : "Result awaits..."} className={`w-full flex-grow p-6 bg-transparent resize-none outline-none font-mono text-[13px] leading-relaxed custom-scrollbar min-h-[300px] md:min-h-[400px] lg:min-h-[60vh] ${errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-blue-50' : 'text-slate-800')}`} />
                                 {showQR && (
-                                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 animate-bounce-in glass-panel bg-black/20">
-                                        <div className={`p-4 rounded-xl shadow-2xl relative ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-slate-200'}`}>
-                                            <button onClick={toggleQR} className={`absolute -top-2.5 -right-2.5 p-1 rounded-full shadow-md ${isDark ? 'bg-slate-700 text-slate-200 hover:bg-red-500' : 'bg-white text-slate-600 hover:bg-red-500 hover:text-white'}`}><Icons.X size={12} /></button>
-                                            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(output)}`} alt="QR Code" className="w-44 h-44 rounded-lg" />
+                                    <div className="absolute inset-0 z-10 flex items-center justify-center p-6 animate-bounce-in bg-black/40 backdrop-blur-sm">
+                                        <div className={`p-5 rounded-2xl shadow-2xl relative ${isDark ? 'bg-slate-900 border border-slate-700' : 'bg-white border border-slate-200'}`}>
+                                            <button onClick={()=>setShowQR(false)} className="absolute -top-3 -right-3 p-1.5 rounded-full shadow-lg bg-red-500 text-white hover:bg-red-600 transition-colors"><Icons.X size={14} /></button>
+                                            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(output)}&color=${isDark?'ffffff':'000000'}&bgcolor=${isDark?'0f172a':'ffffff'}`} alt="QR" className="w-48 h-48 rounded-xl opacity-90" />
                                         </div>
                                     </div>
                                 )}
                             </div>
-                            <div className={`flex-shrink-0 flex justify-between items-center px-4 py-1.5 text-[10px] font-mono border-t z-20 relative ${isDark ? 'border-slate-800/50 bg-slate-950/30 text-slate-500' : 'border-slate-200 bg-slate-50/50 text-slate-400'}`}>
-                                <div className="flex gap-3"><span>Ln: {outputStats.lines}</span><span>Wd: {outputStats.words}</span><span>Ch: {outputStats.chars}</span></div>
-                                <div className="flex gap-3">
-                                    <span title="Shannon Entropy (Complexity)">Ent: <span className={`font-bold ${getEntropyColor(outputStats.entropy)}`}>{outputStats.entropy}</span></span>
-                                    <span>{outputStats.bytes} B</span>
-                                </div>
-                            </div>
+                            <PanelFooter stats={outStats} />
                         </div>
                     </div>
                 </div>
@@ -842,11 +738,11 @@
         }
 
         // ==========================================
-        // MAIN APP (TABS + THEME)
+        // MAIN APP SHELL
         // ==========================================
         function App() {
             const [theme, setTheme] = useState('dark');
-            const [activeTab, setActiveTab] = useState('decoderx'); // 'decoderx' | 'curl'
+            const [activeTab, setActiveTab] = useState('decoderx');
             const [toast, setToast] = useState(null);
 
             useEffect(() => { 
@@ -856,6 +752,7 @@
 
             const isDark = theme === 'dark';
             
+            // All algorithms preserved exactly as requested
             const algosLib = {
                 toHex: s => { let r=''; for(let i=0;i<s.length;i++) r+=s.charCodeAt(i).toString(16).padStart(2,'0'); return r; },
                 fromHex: h => { let s=''; h=h.replace(/\s|0x/g,''); for(let i=0;i<h.length;i+=2) s+=String.fromCharCode(parseInt(h.substr(i,2),16)); return s; },
@@ -920,88 +817,77 @@
             };
 
             return (
-                <div className={`min-h-screen font-sans transition-colors duration-500 flex flex-col ${isDark ? 'bg-[#030712] text-slate-300' : 'bg-[#F8FAFC] text-slate-600'}`}>
-                    {/* Background Ambience & Hacker elements */}
-                    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-                        <div className={`absolute -top-[20%] -left-[10%] w-[60%] h-[60%] rounded-full blur-[140px] opacity-30 mix-blend-screen ${isDark ? 'bg-blue-900/40' : 'bg-blue-300/40'}`}></div>
-                        <div className={`absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] rounded-full blur-[140px] opacity-30 mix-blend-screen ${isDark ? 'bg-emerald-900/30' : 'bg-emerald-300/40'}`}></div>
-                        <div className={`absolute inset-0 opacity-[0.04] ${isDark ? 'bg-grid-dark' : 'bg-grid-light'}`}></div>
+                <div className="min-h-screen flex flex-col relative">
+                    {/* Immersive Background */}
+                    <div className="fixed inset-0 pointer-events-none z-0">
+                        <div className={`absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[150px] opacity-40 mix-blend-screen transition-colors duration-1000 ${isDark ? 'bg-blue-900/30' : 'bg-blue-200/50'}`}></div>
+                        <div className={`absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full blur-[150px] opacity-40 mix-blend-screen transition-colors duration-1000 ${isDark ? 'bg-emerald-900/30' : 'bg-emerald-200/50'}`}></div>
+                        <div className={`absolute inset-0 ${isDark ? 'bg-grid-dark opacity-100' : 'bg-grid-light opacity-60'}`}></div>
                         {isDark && <div className="scanline"></div>}
                     </div>
 
-                    <main className="flex-grow w-full max-w-[90rem] mx-auto px-3 py-3 md:py-4 relative z-10 flex flex-col gap-3 animate-fade-in">
+                    {/* App Container */}
+                    <main className="flex-grow w-full max-w-[100rem] mx-auto p-4 md:p-6 lg:p-8 relative z-10 flex flex-col gap-6">
                         
-                        {/* Header & Tab Switcher */}
-                        <header className={`flex flex-col xl:flex-row items-center justify-between gap-4 px-4 py-3 rounded-2xl border glass-panel shadow-md transition-all duration-300 ${isDark ? 'bg-slate-900/50 border-slate-700/50' : 'bg-white/70 border-white shadow-slate-200/50'}`}>
+                        {/* Top Navigation Bar */}
+                        <header className={`glass-panel border rounded-2xl p-3 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-xl transition-all duration-500 animate-slide-up ${isDark ? 'bg-black/20 border-white/10' : 'bg-white/60 border-white/50'}`}>
                             
                             {/* Logo */}
-                            <div className="flex items-center gap-3 w-full xl:w-1/4">
-                                <div className={`p-2 rounded-xl shadow-lg transition-transform hover:scale-105 ${isDark ? 'bg-gradient-to-br from-blue-600 to-emerald-500 shadow-emerald-900/20' : 'bg-gradient-to-br from-blue-600 to-emerald-500 shadow-blue-200'} text-white`}>
-                                    <Icons.Shield size={22} strokeWidth={2.5} />
+                            <div className="flex items-center gap-3 pl-2 w-full lg:w-1/3">
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-blue-500 blur-md opacity-50 rounded-xl"></div>
+                                    <div className={`relative p-2.5 rounded-xl border shadow-sm ${isDark ? 'bg-black border-white/10 text-white' : 'bg-white border-slate-100 text-slate-800'}`}>
+                                        <Icons.Shield size={22} strokeWidth={2.5} className="text-emerald-500" />
+                                    </div>
                                 </div>
-                                <h1 className="text-xl md:text-2xl font-bold tracking-tight text-gradient-primary leading-none">
-                                    DecoderX <span className="font-light">Pro</span>
-                                </h1>
+                                <div>
+                                    <h1 className="text-xl md:text-2xl font-black tracking-tight text-gradient-primary leading-none">DecoderX</h1>
+                                    <p className={`text-[10px] font-bold tracking-[0.2em] uppercase mt-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Pro Suite</p>
+                                </div>
                             </div>
 
-                            {/* Center Tab Switcher */}
-                            <div className={`flex p-1 rounded-xl w-full xl:w-auto shadow-inner ${isDark ? 'bg-slate-950/80 border border-slate-800' : 'bg-slate-200/80 border border-slate-300'}`}>
-                                <button 
-                                    onClick={() => setActiveTab('decoderx')}
-                                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                        activeTab === 'decoderx' 
-                                        ? (isDark ? 'bg-slate-800 text-blue-400 shadow-md ring-1 ring-blue-500/30' : 'bg-white text-blue-600 shadow-sm ring-1 ring-black/5') 
-                                        : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                                    }`}
-                                >
-                                    <Icons.Terminal size={16}/> DecoderX Tools
+                            {/* Center Segmented Control */}
+                            <div className={`flex p-1.5 rounded-xl w-full lg:w-auto shadow-inner border ${isDark ? 'bg-black/50 border-white/5' : 'bg-slate-100 border-slate-200/50'}`}>
+                                <button onClick={() => setActiveTab('decoderx')} className={`flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all duration-300 ${activeTab === 'decoderx' ? (isDark ? 'bg-[#1a202c] text-emerald-400 shadow-md border border-white/10' : 'bg-white text-emerald-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
+                                    <Icons.Terminal size={16}/> Essential Tools
                                 </button>
-                                <button 
-                                    onClick={() => setActiveTab('curl')}
-                                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                        activeTab === 'curl' 
-                                        ? (isDark ? 'bg-slate-800 text-emerald-400 shadow-md ring-1 ring-emerald-500/30' : 'bg-white text-emerald-600 shadow-sm ring-1 ring-black/5') 
-                                        : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                                    }`}
-                                >
+                                <button onClick={() => setActiveTab('curl')} className={`flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all duration-300 ${activeTab === 'curl' ? (isDark ? 'bg-[#1a202c] text-blue-400 shadow-md border border-white/10' : 'bg-white text-blue-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
                                     <Icons.Layers size={16}/> Deep cURL Parse
                                 </button>
                             </div>
 
-                            {/* Theme Toggle (Right) */}
-                            <div className="flex justify-end w-full xl:w-1/4">
-                                <button 
-                                    onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} 
-                                    className={`h-10 w-10 flex items-center justify-center rounded-xl border outline-none transition-all active:scale-95 shadow-sm ${
-                                        isDark 
-                                        ? 'bg-slate-900 border-slate-700 text-yellow-400 hover:bg-slate-800 hover:border-yellow-500/50' 
-                                        : 'bg-white border-slate-300 text-slate-500 hover:text-slate-800 hover:border-slate-400'
-                                    }`}
-                                >
+                            {/* Right Controls */}
+                            <div className="flex justify-end w-full lg:w-1/3 pr-2">
+                                <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} className={`h-11 w-11 flex items-center justify-center rounded-xl border outline-none transition-all hover:scale-105 active:scale-95 shadow-sm ${isDark ? 'bg-black border-white/10 text-yellow-400 hover:border-yellow-500/50 hover:shadow-neon-emerald' : 'bg-white border-slate-200 text-slate-500 hover:text-blue-500'}`}>
                                     {isDark ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
                                 </button>
                             </div>
                         </header>
 
-                        {/* Content Area */}
-                        {activeTab === 'decoderx' 
-                            ? <StandardDecoderTab isDark={isDark} setToast={setToast} AlgorithmsLib={algosLib} />
-                            : <CurlDecoderTab isDark={isDark} setToast={setToast} />
-                        }
+                        {/* Main Tool Content */}
+                        <div className="flex-grow flex flex-col w-full">
+                            {activeTab === 'decoderx' 
+                                ? <StandardDecoderTab isDark={isDark} setToast={setToast} AlgorithmsLib={algosLib} />
+                                : <CurlDecoderTab isDark={isDark} setToast={setToast} />
+                            }
+                        </div>
 
                         {/* Footer */}
-                        <footer className="text-center py-2 mt-auto">
-                            <p className={`text-[10px] font-bold tracking-widest uppercase opacity-70 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                                Developed by <span className={`text-gradient-primary ${isDark ? '' : 'font-extrabold'}`}>Mr Shiva</span> • Protected by Krysha AI
-                            </p>
+                        <footer className="mt-auto py-4 animate-fade-in text-center">
+                            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border glass-panel ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-glow"></div>
+                                <span className={`text-[10px] font-bold tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    Built by <span className="text-gradient-primary">Mr Shiva</span>
+                                </span>
+                            </div>
                         </footer>
                     </main>
 
-                    {/* Toast */}
+                    {/* Toast Notification */}
                     {toast && (
-                        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
-                            <div className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl shadow-2xl border font-semibold text-xs backdrop-blur-md ${isDark ? 'bg-slate-800/90 border-emerald-500/30 text-emerald-300' : 'bg-white/95 border-slate-200 text-slate-700 shadow-slate-300/50'}`}>
-                                <div className={`p-1 rounded-full ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100 text-emerald-600'}`}><Icons.Check size={14} /></div>
+                        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
+                            <div className={`flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl border font-bold text-xs md:text-sm tracking-wide glass-panel ${isDark ? 'border-emerald-500/30 text-emerald-400 bg-black/80' : 'border-emerald-200 text-emerald-700 bg-white/90'}`}>
+                                <div className={`p-1.5 rounded-full ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100'}`}><Icons.Check size={14} /></div>
                                 {toast}
                             </div>
                         </div>
