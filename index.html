@@ -15,7 +15,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,39 +25,32 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
-                        gray: {
-                            750: '#2d3748',
-                            850: '#1a202c',
-                            950: '#0d1117',
+                        brand: {
+                            bg: '#09090b',
+                            panel: '#18181b',
+                            border: '#27272a',
                         }
                     },
                     boxShadow: {
-                        'neon-emerald': '0 0 15px rgba(16, 185, 129, 0.2)',
-                        'neon-blue': '0 0 15px rgba(59, 130, 246, 0.2)',
-                        'neon-red': '0 0 15px rgba(239, 68, 68, 0.2)',
-                        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+                        'neon-emerald': '0 0 20px rgba(16, 185, 129, 0.15)',
+                        'neon-blue': '0 0 20px rgba(59, 130, 246, 0.15)',
+                        'neon-red': '0 0 20px rgba(239, 68, 68, 0.15)',
+                        'floating': '0 10px 40px -10px rgba(0,0,0,0.5)',
                     },
                     animation: {
-                        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'bounce-in': 'bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.26, 1.55)',
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'scanline': 'scanline 8s linear infinite',
-                        'pulse-glow': 'pulseGlow 2s infinite',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        slideUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        bounceIn: { '0%': { opacity: '0', transform: 'scale(0.9)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
-                        scanline: { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100vh)' } },
-                        pulseGlow: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0.6' } }
-                    },
-                    backgroundImage: {
-                        'grid-dark': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
-                        'grid-light': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        scanline: { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100vh)' } }
                     }
                 }
             }
@@ -65,15 +58,15 @@
     </script>
     
     <style>
-        html.dark { color-scheme: dark; }
+        html.dark { color-scheme: dark; background-color: #09090b; }
         
         /* Premium Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 99px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
+        .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
         
         body { 
             -webkit-tap-highlight-color: transparent;
@@ -81,14 +74,14 @@
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .light .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
         
         .text-gradient-primary {
@@ -97,38 +90,24 @@
             -webkit-text-fill-color: transparent;
             background-image: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
         }
-        .dark .text-gradient-primary { background-image: linear-gradient(135deg, #60A5FA 0%, #34D399 100%); }
-
-        select option { background-color: #0f172a; color: #10b981; font-weight: 600; }
-        .light select option { background-color: #ffffff; color: #059669; }
-        
-        /* Modern Range Slider */
-        input[type=range] { -webkit-appearance: none; background: transparent; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-            background: #10B981; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-            transition: transform 0.1s;
-        }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(148, 163, 184, 0.2); border-radius: 99px; }
-        .dark input[type=range]::-webkit-slider-runnable-track { background: rgba(255, 255, 255, 0.1); }
 
         /* Enhanced Syntax Highlighting */
-        .json-key { color: #0284c7; font-weight: 500; }
-        .dark .json-key { color: #38bdf8; font-weight: 500; } /* Cyan */
-        .json-string { color: #059669; }
-        .dark .json-string { color: #2dd4bf; } /* Teal */
-        .json-number { color: #9333ea; }
-        .dark .json-number { color: #c084fc; } /* Purple */
-        .json-boolean { color: #e11d48; font-weight: 600; }
-        .dark .json-boolean { color: #fb7185; font-weight: 600; } /* Rose */
-        .dark .json-bracket { color: #94a3b8; } /* Muted */
+        .json-key { color: #0ea5e9; font-weight: 500; }
+        .dark .json-key { color: #38bdf8; } 
+        .json-string { color: #10b981; }
+        .dark .json-string { color: #34d399; } 
+        .json-number { color: #a855f7; }
+        .dark .json-number { color: #c084fc; } 
+        .json-boolean { color: #f43f5e; font-weight: 600; }
+        .dark .json-boolean { color: #fb7185; } 
+        .dark .json-bracket { color: #94a3b8; } 
 
         .editor-textarea, .editor-pre {
             white-space: pre-wrap !important;
             word-break: break-all !important;
             overflow-wrap: break-word !important;
             tab-size: 4;
+            line-height: 1.6;
         }
         .editor-textarea {
             color: transparent !important;
@@ -144,26 +123,28 @@
             color: transparent;
         }
 
-        .scanline {
-            pointer-events: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.3), transparent);
-            z-index: 50; opacity: 0.5;
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .light .bg-grid-pattern {
+            background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
         }
 
         textarea:focus { outline: none; }
         input[type="file"] { display: none; }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100 min-h-screen bg-slate-50 dark:bg-[#0a0a0a] text-slate-800 dark:text-slate-200">
+<body class="antialiased overflow-x-hidden selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100 min-h-screen bg-slate-50 dark:bg-brand-bg text-slate-800 dark:text-slate-300">
     <div id="root"></div>
 
     <script type="text/babel" data-presets="react" data-type="module">
         const { useState, useEffect, useRef } = React;
 
-        // --- ICONS ---
+        // --- ICONS KO YAHAN DEFINE KIYA HAI ---
         const Icons = {
-            Shield: ({ size = 24, className, ...props }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> ),
+            Shield: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> ),
+            ArrowRightLeft: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg> ),
             ArrowRight: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> ),
             ArrowDown: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg> ),
             Copy: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> ),
@@ -186,26 +167,28 @@
             Key: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"></path><path d="m21 2-9.6 9.6"></path><circle cx="7.5" cy="15.5" r="5.5"></circle></svg> ),
             Database: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg> ),
             Activity: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> ),
-            Settings: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> ),
             Search: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> ),
+            Clock: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ),
+            Type: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg> ),
+            Wifi: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg> ),
+            Settings: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> ),
+            Cpu: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg> ),
             Unlock: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg> ),
-            Link: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> ),
             X: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> ),
             Fingerprint: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10"></path><path d="M5 12c0-3.87 3.13-7 7-7s7 3.13 7 7"></path><path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4"></path><path d="M12 12c0 0 0 0 0 0"></path><path d="M12 15v.01"></path><path d="M12 18v.01"></path><path d="M12 21v.01"></path><path d="M8 18v.01"></path><path d="M8 21v.01"></path><path d="M16 18v.01"></path><path d="M16 21v.01"></path></svg> ),
-            Wifi: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg> ),
+            Wand: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 4V2"></path><path d="M15 16v-2"></path><path d="M8 9h2"></path><path d="M20 9h2"></path><path d="M17.8 11.8 19 13"></path><path d="M15 9h0"></path><path d="M17.8 6.2 19 5"></path><path d="m3 21 9-9"></path><path d="M12.2 6.2 11 5"></path></svg> ),
+            Link: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> ),
             Layers: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> ),
-            Cpu: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg> ),
-            AlertTriangle: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ),
-            Wand: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 4V2"></path><path d="M15 16v-2"></path><path d="M8 9h2"></path><path d="M20 9h2"></path><path d="M17.8 11.8 19 13"></path><path d="M15 9h0"></path><path d="M17.8 6.2 19 5"></path><path d="m3 21 9-9"></path><path d="M12.2 6.2 11 5"></path></svg> )
         };
 
-        // --- SHARED HELPERS (DECODERX) ---
+        // --- ALGORITHMS & CATEGORIES (EK HI BAAR DEFINE KIYA) ---
         const algorithms = [
             { id: 'defang', category: 'network', name: 'Defang IP / URL', icon: <Icons.Wifi size={16} /> },
             { id: 'base64', category: 'encoders', name: 'Base64', icon: <Icons.Code size={16} /> },
             { id: 'base64url', category: 'encoders', name: 'Base64 (URL Safe)', icon: <Icons.Lock size={16} /> },
             { id: 'base32', category: 'encoders', name: 'Base32', icon: <Icons.Code size={16} /> },
             { id: 'url', category: 'encoders', name: 'URL / URI', icon: <Icons.Globe size={16} /> },
+            { id: 'url_all', category: 'encoders', name: 'URL Encode All', icon: <Icons.Globe size={16} /> },
             { id: 'hex', category: 'encoders', name: 'Hexadecimal', icon: <Icons.Hash size={16} /> },
             { id: 'binary', category: 'encoders', name: 'Binary', icon: <Icons.Binary size={16} /> },
             { id: 'octal', category: 'encoders', name: 'Octal Escaping', icon: <Icons.FileCode size={16} /> },
@@ -215,27 +198,32 @@
             { id: 'vigenere', category: 'ciphers', name: 'Vigenère Cipher', icon: <Icons.Lock size={16} /> },
             { id: 'atbash', category: 'ciphers', name: 'Atbash Cipher', icon: <Icons.Code size={16} /> },
             { id: 'morse', category: 'ciphers', name: 'Morse Code', icon: <Icons.Activity size={16} /> },
-            { id: 'reverse', category: 'ciphers', name: 'Reverse Text', icon: <Icons.AlignLeft size={16} /> },
-            { id: 'sha256', category: 'hashes', name: 'SHA-256', icon: <Icons.Fingerprint size={16} /> },
-            { id: 'sha512', category: 'hashes', name: 'SHA-512', icon: <Icons.Fingerprint size={16} /> },
-            { id: 'sha1', category: 'hashes', name: 'SHA-1', icon: <Icons.Fingerprint size={16} /> },
+            { id: 'sha256', category: 'hashes', name: 'SHA-256', icon: <Icons.Hash size={16} /> },
+            { id: 'sha512', category: 'hashes', name: 'SHA-512', icon: <Icons.Hash size={16} /> },
+            { id: 'sha1', category: 'hashes', name: 'SHA-1', icon: <Icons.Hash size={16} /> },
             { id: 'urlparse', category: 'parsers', name: 'URL Parser', icon: <Icons.Link size={16} /> },
             { id: 'jwt', category: 'parsers', name: 'JWT Parser', icon: <Icons.Key size={16} /> },
             { id: 'json', category: 'parsers', name: 'JSON Formatter', icon: <Icons.Database size={16} /> },
             { id: 'hexdump', category: 'parsers', name: 'Hexdump Generator', icon: <Icons.Hash size={16} /> },
             { id: 'extract_ips', category: 'extractors', name: 'Extract IPs (v4/v6)', icon: <Icons.Search size={16} /> },
             { id: 'extract_urls', category: 'extractors', name: 'Extract URLs', icon: <Icons.Search size={16} /> },
+            { id: 'epoch', category: 'utilities', name: 'Epoch Time Converter', icon: <Icons.Clock size={16} /> },
+            { id: 'uuid', category: 'utilities', name: 'UUID v4 Generator', icon: <Icons.Key size={16} /> },
+            { id: 'string_utils', category: 'utilities', name: 'String Case Utils', icon: <Icons.Type size={16} /> },
+            { id: 'reverse', category: 'utilities', name: 'Reverse Text', icon: <Icons.AlignLeft size={16} /> },
         ];
 
         const toolCategories = [
             { id: 'network', name: 'Network', icon: <Icons.Wifi size={16} /> },
             { id: 'encoders', name: 'Encoders', icon: <Icons.Code size={16} /> },
             { id: 'ciphers', name: 'Ciphers', icon: <Icons.Shield size={16} /> },
-            { id: 'hashes', name: 'Hashes', icon: <Icons.Fingerprint size={16} /> },
+            { id: 'hashes', name: 'Hashes', icon: <Icons.Hash size={16} /> },
             { id: 'parsers', name: 'Parsers', icon: <Icons.Database size={16} /> },
             { id: 'extractors', name: 'Extractors', icon: <Icons.Search size={16} /> },
+            { id: 'utilities', name: 'Utilities', icon: <Icons.Settings size={16} /> },
         ];
 
+        // --- HELPER FUNCTIONS ---
         const getEntropy = (str) => {
             if (!str) return '0.00';
             const len = str.length;
@@ -272,11 +260,7 @@
             }
         };
 
-        // --- DEEP CURL PARSER ENGINE ---
-        function safeUrlDecode(str) {
-            try { return decodeURIComponent(str.replace(/\+/g, ' ')); } 
-            catch(e) { return str; }
-        }
+        function safeUrlDecode(str) { try { return decodeURIComponent(str.replace(/\+/g, ' ')); } catch(e) { return str; } }
 
         function syntaxHighlight(jsonStr) {
             if (!jsonStr) return "";
@@ -288,9 +272,7 @@
                         let keyStr = match.substring(0, match.lastIndexOf(':')).trim();
                         let colonSpace = match.substring(match.lastIndexOf(':'));
                         return '<span class="json-key">' + keyStr + '</span><span class="text-slate-500">' + colonSpace + '</span>';
-                    } else {
-                        cls = 'json-string';
-                    }
+                    } else { cls = 'json-string'; }
                 } else if (/true|false/.test(match)) cls = 'json-boolean';
                 else if (/null/.test(match)) cls = 'json-bracket opacity-50';
                 return '<span class="' + cls + '">' + match + '</span>';
@@ -299,42 +281,29 @@
 
         function analyzeData(inputStr) {
             if (!inputStr || typeof inputStr !== 'string') return { original: inputStr, final: inputStr, steps: [], isEncoded: false, b64Count: 0, urlCount: 0, isJson: false };
-
             let current = inputStr.trim();
             let steps = [];
             let b64Count = 0;
             let urlCount = 0;
             let loopLimit = 10;
-
             while (loopLimit > 0) {
                 let changed = false;
                 let urlDec = safeUrlDecode(current);
-                if (urlDec !== current && urlDec !== "") {
-                    current = urlDec; urlCount++;
-                    steps.push({ method: 'URL Decode', value: current });
-                    changed = true; continue; 
-                }
+                if (urlDec !== current && urlDec !== "") { current = urlDec; urlCount++; steps.push({ method: 'URL Decode', value: current }); changed = true; continue; }
                 if (/^[A-Za-z0-9\+\/\-\_]+={0,2}$/.test(current) && current.length >= 16) {
                     try {
                         let b64 = current.replace(/-/g, '+').replace(/_/g, '/');
                         while (b64.length % 4) b64 += '='; 
                         let decoded = decodeURIComponent(escape(window.atob(b64)));
                         if (decoded && decoded !== current && /^[\x20-\x7E\n\r\t\u00A0-\uFFFF]+$/.test(decoded)) {
-                            current = decoded; b64Count++;
-                            steps.push({ method: `Base64 Decode (Level ${b64Count})`, value: current });
-                            changed = true; continue; 
+                            current = decoded; b64Count++; steps.push({ method: `Base64 Decode (Level ${b64Count})`, value: current }); changed = true; continue; 
                         }
                     } catch(e) {}
                 }
                 if (!changed) break; loopLimit--;
             }
-
             let isJson = false;
-            try {
-                let j = JSON.parse(current);
-                if (typeof j === 'object' && j !== null) { current = JSON.stringify(j, null, 2); isJson = true; }
-            } catch(e) {}
-
+            try { let j = JSON.parse(current); if (typeof j === 'object' && j !== null) { current = JSON.stringify(j, null, 2); isJson = true; } } catch(e) {}
             return { original: inputStr, final: current, steps, b64Count, urlCount, isJson, isEncoded: steps.length > 0 };
         }
 
@@ -343,50 +312,23 @@
         // ==========================================
         const HighlightedInput = ({ value, onChange, isDark, placeholder }) => {
             const preRef = useRef(null);
-            
             let isJson = false;
             let displayHtml = value ? value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
-            
             if (value && (value.trim().startsWith('{') || value.trim().startsWith('['))) {
-                try {
-                    JSON.parse(value);
-                    isJson = true;
-                    // KRYSHA'S FIX: Use exact raw user input, NO AUTO BEAUTIFY!
-                    displayHtml = syntaxHighlight(value);
-                } catch(e) {}
+                try { JSON.parse(value); isJson = true; displayHtml = syntaxHighlight(value); } catch(e) {}
             }
-
-            const handleScroll = (e) => {
-                if (preRef.current) {
-                    preRef.current.scrollTop = e.target.scrollTop;
-                    preRef.current.scrollLeft = e.target.scrollLeft;
-                }
-            };
-
+            const handleScroll = (e) => { if (preRef.current) { preRef.current.scrollTop = e.target.scrollTop; preRef.current.scrollLeft = e.target.scrollLeft; } };
             return (
-                <div className="relative flex-grow flex flex-col w-full min-h-[300px] md:min-h-[400px] lg:min-h-[60vh] bg-transparent overflow-hidden">
-                    {isJson && <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-md z-0 ${isDark ? 'bg-emerald-500/50' : 'bg-emerald-500/30'}`}></div>}
-                    
-                    <pre 
-                        ref={preRef}
-                        className={`absolute inset-0 p-6 m-0 font-mono text-[13px] leading-relaxed custom-scrollbar overflow-auto pointer-events-none z-0 editor-pre ${isJson ? 'pl-8' : ''} ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
-                        aria-hidden="true"
-                        dangerouslySetInnerHTML={{ __html: displayHtml || (value ? ' ' : `<span class="opacity-50">${placeholder}</span>`) }}
-                    />
-                    
-                    <textarea 
-                        value={value} 
-                        onChange={onChange} 
-                        onScroll={handleScroll}
-                        className={`absolute inset-0 w-full h-full p-6 m-0 bg-transparent resize-none outline-none font-mono text-[13px] leading-relaxed custom-scrollbar overflow-auto z-10 editor-textarea ${isJson ? 'pl-8' : ''}`} 
-                        spellCheck="false" 
-                    />
+                <div className="relative flex-grow flex flex-col w-full h-[450px] bg-transparent overflow-hidden group">
+                    {isJson && <div className={`absolute left-0 top-4 bottom-4 w-[3px] rounded-r-md z-0 transition-colors ${isDark ? 'bg-emerald-500/50 group-focus-within:bg-emerald-400' : 'bg-emerald-500/30 group-focus-within:bg-emerald-500'}`}></div>}
+                    <pre ref={preRef} className={`absolute inset-0 p-5 font-mono text-[13px] custom-scrollbar overflow-auto pointer-events-none z-0 editor-pre ${isJson ? 'pl-7' : ''} ${isDark ? 'text-slate-300' : 'text-slate-700'}`} dangerouslySetInnerHTML={{ __html: displayHtml || (value ? ' ' : `<span class="opacity-40 italic">${placeholder}</span>`) }} />
+                    <textarea value={value} onChange={onChange} onScroll={handleScroll} className={`absolute inset-0 w-full h-full p-5 bg-transparent resize-none outline-none font-mono text-[13px] custom-scrollbar overflow-auto z-10 editor-textarea ${isJson ? 'pl-7' : ''}`} spellCheck="false" />
                 </div>
             );
         };
 
         // ==========================================
-        // COMPONENT 1: DEEP CURL DECODER TAB
+        // COMPONENT: CURL DECODER TAB
         // ==========================================
         function CurlDecoderTab({ isDark, setToast }) {
             const [curlInput, setCurlInput] = useState('');
@@ -395,7 +337,6 @@
             const processRequest = () => {
                 if (!curlInput.trim()) return;
                 let results = { url: 'No URL found', queryParams: [], cookies: [], headers: [], bodyDump: null, bodyParams: [] };
-
                 const urlMatch = curlInput.match(/['"](https?:\/\/[^'"]+)['"]/);
                 if (urlMatch) {
                     results.url = urlMatch[1];
@@ -404,7 +345,6 @@
                         for (const [key, value] of params.entries()) results.queryParams.push({ key, analysis: analyzeData(value) });
                     }
                 }
-
                 let cookiesMap = new Map();
                 const headerRegex = /(?:-H|--header)\s*(['"])(.*?)\1/g;
                 let match;
@@ -426,7 +366,6 @@
                         }
                     }
                 }
-                
                 const cookieRegex = /(?:-b|--cookie)\s*(['"])(.*?)\1/g;
                 let cMatch;
                 while ((cMatch = cookieRegex.exec(curlInput)) !== null) {
@@ -450,7 +389,6 @@
                     }
                     else results.bodyDump = analyzeData(rawData);
                 }
-
                 setParsedResults(results); setToast("Payload Deep-Decoded! 🕵️‍♀️"); setTimeout(() => setToast(null), 2500);
             };
 
@@ -461,11 +399,11 @@
                             <div className={`md:w-1/4 p-4 border-r ${isDark ? 'border-white/5' : 'border-black/5'}`}>
                                 <span className={`font-semibold text-sm break-words ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{itemKey}</span>
                             </div>
-                            <div className="md:w-3/4 p-4 font-mono text-xs relative">
+                            <div className="md:w-3/4 p-4 font-mono text-[13px] relative">
                                 {analysis.isJson 
-                                    ? <div className={`p-4 rounded-lg overflow-x-auto relative ${isDark ? 'bg-[#0d1117] border border-white/5' : 'bg-slate-50 border border-slate-200'}`}>
+                                    ? <div className={`p-4 rounded-xl overflow-x-auto relative ${isDark ? 'bg-brand-bg border border-white/5' : 'bg-slate-50 border border-slate-200'}`}>
                                         <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-md ${isDark ? 'bg-cyan-500/50' : 'bg-cyan-500/30'}`}></div>
-                                        <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} className="pl-2 whitespace-pre-wrap" />
+                                        <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} className="pl-2 whitespace-pre-wrap leading-relaxed" />
                                       </div>
                                     : <div className={`break-words ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{analysis.final}</div>
                                 }
@@ -473,13 +411,12 @@
                         </div>
                     );
                 }
-
                 let badge = null;
-                if (analysis.b64Count >= 3) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/20 text-red-500 border border-red-500/30 animate-pulse">⚠️ TRIPLE BASE64 ENCODED!</span>;
-                else if (analysis.b64Count === 2) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-orange-500/20 text-orange-500 border border-orange-500/30">🚨 DOUBLE BASE64 ENCODED</span>;
-                else if (analysis.b64Count === 1 && analysis.urlCount > 0) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">MIXED ENCODED</span>;
-                else if (analysis.b64Count === 1) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-500/20 text-blue-500 border border-blue-500/30">BASE64 ENCODED</span>;
-                else if (analysis.urlCount > 0) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-500 border border-emerald-500/30">URL ENCODED</span>;
+                if (analysis.b64Count >= 3) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse">⚠️ TRIPLE BASE64 ENCODED!</span>;
+                else if (analysis.b64Count === 2) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-orange-500/20 text-orange-400 border border-orange-500/30">🚨 DOUBLE BASE64 ENCODED</span>;
+                else if (analysis.b64Count === 1 && analysis.urlCount > 0) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">MIXED ENCODED</span>;
+                else if (analysis.b64Count === 1) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">BASE64 ENCODED</span>;
+                else if (analysis.urlCount > 0) badge = <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">URL ENCODED</span>;
 
                 return (
                     <div className={`flex flex-col md:flex-row transition-colors border-b last:border-0 ${isDark ? 'border-white/5 hover:bg-white/[0.02]' : 'border-black/5 hover:bg-black/[0.02]'}`}>
@@ -489,7 +426,7 @@
                         <div className="md:w-3/4 p-4">
                             <div className="flex items-center gap-2 mb-4">{badge}</div>
                             <div className={`text-[10px] uppercase tracking-wider font-bold mb-2 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Original Raw Value:</div>
-                            <div className={`p-3 rounded-lg text-xs font-mono break-words mb-5 max-h-24 overflow-y-auto ${isDark ? 'bg-black/40 text-slate-500' : 'bg-slate-100 text-slate-500'}`}>{analysis.original}</div>
+                            <div className={`p-3 rounded-xl text-xs font-mono break-words mb-5 max-h-32 overflow-y-auto custom-scrollbar ${isDark ? 'bg-black/40 text-slate-500' : 'bg-slate-100 text-slate-500'}`}>{analysis.original}</div>
                             
                             <div className={`text-[10px] uppercase tracking-wider font-bold mb-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Decoding Sequence:</div>
                             <div className="space-y-4">
@@ -497,18 +434,18 @@
                                     const isLast = i === analysis.steps.length - 1;
                                     const isJSONView = isLast && analysis.isJson;
                                     return (
-                                        <div key={i} className={`relative pl-5 ml-1 border-l-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                                            <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5px] top-1 ring-4 ${isDark ? 'bg-emerald-500 ring-[#0d1117]' : 'bg-emerald-500 ring-white'}`}></div>
+                                        <div key={i} className={`relative pl-6 ml-1 border-l-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                                            <div className={`absolute w-3 h-3 rounded-full -left-[7px] top-0.5 ring-4 ${isDark ? 'bg-emerald-500 ring-brand-panel' : 'bg-emerald-500 ring-white'}`}></div>
                                             <span className={`text-[10px] uppercase tracking-wider font-bold flex items-center gap-1.5 mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                                                {step.method.includes('Base64') ? <Icons.Unlock size={12}/> : <Icons.Link size={12}/>} {step.method}
+                                                {step.method.includes('Base64') ? <Icons.Lock size={12}/> : <Icons.Globe size={12}/>} {step.method}
                                             </span>
                                             {isJSONView ? (
-                                                <div className={`p-4 rounded-lg overflow-x-auto max-h-[400px] font-mono text-[12px] relative ${isDark ? 'bg-[#0d1117] border border-white/5' : 'bg-slate-50 border border-slate-200'}`}>
+                                                <div className={`p-4 rounded-xl overflow-x-auto max-h-[400px] font-mono text-[12px] relative custom-scrollbar ${isDark ? 'bg-brand-bg border border-white/5' : 'bg-slate-50 border border-slate-200'}`}>
                                                     <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-md ${isDark ? 'bg-cyan-500/50' : 'bg-cyan-500/30'}`}></div>
-                                                    <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(step.value) }} className="pl-2 whitespace-pre-wrap" />
+                                                    <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(step.value) }} className="pl-2 whitespace-pre-wrap leading-relaxed" />
                                                 </div>
                                             ) : (
-                                                <div className={`p-3 rounded-lg font-mono text-[11px] break-words ${isDark ? 'bg-[#0d1117] text-slate-300 border border-white/5' : 'bg-slate-50 text-slate-700 border border-slate-200'}`}>
+                                                <div className={`p-3 rounded-xl font-mono text-[12px] break-words ${isDark ? 'bg-brand-bg text-slate-300 border border-white/5' : 'bg-slate-50 text-slate-700 border border-slate-200'}`}>
                                                     {step.value}
                                                 </div>
                                             )}
@@ -522,7 +459,7 @@
             };
 
             const PanelHeader = ({ icon, title, colorClass }) => (
-                <div className={`px-5 py-3 border-b flex items-center gap-2.5 ${isDark ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
+                <div className={`px-5 py-3.5 border-b flex items-center gap-2.5 ${isDark ? 'bg-white/[0.01] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
                     <div className={colorClass}>{icon}</div>
                     <h2 className={`font-bold text-sm tracking-wide uppercase ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{title}</h2>
                 </div>
@@ -530,9 +467,8 @@
 
             return (
                 <div className="flex flex-col gap-6 animate-fade-in w-full max-w-5xl mx-auto">
-                    {/* Input Area */}
-                    <div className={`rounded-2xl border shadow-lg overflow-hidden glass-panel group ${isDark ? 'focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald' : 'focus-within:border-emerald-400'}`}>
-                        <div className={`flex items-center justify-between px-5 py-3 border-b ${isDark ? 'border-white/5 bg-white/[0.02]' : 'border-black/5 bg-black/[0.02]'}`}>
+                    <div className={`rounded-2xl border shadow-lg overflow-hidden glass-panel group transition-colors duration-300 ${isDark ? 'focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald border-white/5' : 'focus-within:border-emerald-400 border-black/5'}`}>
+                        <div className={`flex items-center justify-between px-5 py-3 border-b ${isDark ? 'border-white/5 bg-white/[0.01]' : 'border-black/5 bg-black/[0.02]'}`}>
                             <div className="flex items-center gap-2">
                                 <Icons.Terminal size={16} className={isDark ? "text-emerald-400" : "text-emerald-600"} />
                                 <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Paste cURL Command</span>
@@ -540,10 +476,10 @@
                         </div>
                         <textarea 
                             value={curlInput} onChange={(e) => setCurlInput(e.target.value)}
-                            className={`w-full p-5 outline-none resize-y min-h-[160px] font-mono text-sm leading-relaxed custom-scrollbar ${isDark ? 'bg-transparent text-slate-300 placeholder-slate-600' : 'bg-white/50 text-slate-800 placeholder-slate-400'}`} 
+                            className={`w-full p-5 outline-none resize-y min-h-[160px] font-mono text-[13px] leading-relaxed custom-scrollbar ${isDark ? 'bg-brand-bg/50 text-slate-300 placeholder-slate-600' : 'bg-white/50 text-slate-800 placeholder-slate-400'}`} 
                             placeholder="curl 'https://api.target.com/data' -H 'Authorization: Bearer eyJhb...' -b 'session=base64_encoded_cookie'" spellCheck="false"
                         />
-                        <div className={`px-5 py-3 border-t flex flex-col sm:flex-row justify-between items-center gap-4 ${isDark ? 'border-white/5 bg-black/20' : 'border-black/5 bg-slate-50'}`}>
+                        <div className={`px-5 py-3 border-t flex flex-col sm:flex-row justify-between items-center gap-4 ${isDark ? 'border-white/5 bg-black/40' : 'border-black/5 bg-slate-50'}`}>
                             <span className={`text-xs flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                 <Icons.Activity size={14} className={isDark ? 'text-emerald-400' : 'text-emerald-600'} /> Auto-detects deeply nested encodings.
                             </span>
@@ -553,31 +489,26 @@
                         </div>
                     </div>
 
-                    {/* Results Area */}
                     {parsedResults && (
                         <div className="space-y-6 animate-slide-up pb-10">
                             <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
                                 <PanelHeader icon={<Icons.Link size={16}/>} title="Target Endpoint" colorClass={isDark ? 'text-blue-400' : 'text-blue-600'} />
-                                <div className={`p-5 font-mono text-sm break-words ${isDark ? 'text-blue-300 bg-[#0d1117]' : 'text-blue-700 bg-blue-50'}`}>{parsedResults.url}</div>
+                                <div className={`p-5 font-mono text-[13px] break-words ${isDark ? 'text-blue-300 bg-brand-bg/80' : 'text-blue-700 bg-blue-50/50'}`}>{parsedResults.url}</div>
                             </div>
-
                             {parsedResults.queryParams.length > 0 && (
                                 <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
                                     <PanelHeader icon={<Icons.Code size={16}/>} title="Query Parameters" colorClass={isDark ? 'text-emerald-400' : 'text-emerald-600'} />
                                     <div>{parsedResults.queryParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)}</div>
                                 </div>
                             )}
-
                             <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
                                 <PanelHeader icon={<Icons.Lock size={16}/>} title="Session Cookies" colorClass={isDark ? 'text-amber-400' : 'text-amber-600'} />
                                 <div>{parsedResults.cookies.length > 0 ? parsedResults.cookies.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />) : <div className={`p-6 text-center text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No cookies parsed.</div>}</div>
                             </div>
-
                             <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
                                 <PanelHeader icon={<Icons.AlignLeft size={16}/>} title="HTTP Headers" colorClass={isDark ? 'text-purple-400' : 'text-purple-600'} />
                                 <div>{parsedResults.headers.length > 0 ? parsedResults.headers.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />) : <div className={`p-6 text-center text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No headers parsed.</div>}</div>
                             </div>
-
                             <div className="glass-panel rounded-2xl border overflow-hidden shadow-lg">
                                 <PanelHeader icon={<Icons.Database size={16}/>} title="Body Payload" colorClass={isDark ? 'text-rose-400' : 'text-rose-600'} />
                                 <div>
@@ -596,10 +527,10 @@
         }
 
         // ==========================================
-        // COMPONENT 2: DECODERX (ORIGINAL TOOL)
+        // COMPONENT: STANDARD DECODER TAB
         // ==========================================
         function StandardDecoderTab({ isDark, setToast, AlgorithmsLib }) {
-            const { defang, refang, toHex, fromHex, toBin, fromBin, toOctal, fromOctal, htmlEncode, htmlDecode, rev, atbash, rot47, caesarCipher, vigenereCipher, toMorse, fromMorse, formatJSON, parseJWT, b32Encode, b32Decode, extractIPs, extractURLs, hexdump } = AlgorithmsLib;
+            const { defang, refang, toHex, fromHex, toBin, fromBin, toOctal, fromOctal, htmlEncode, htmlDecode, rev, atbash, rot47, caesarCipher, vigenereCipher, toMorse, fromMorse, formatJSON, parseJWT, b32Encode, b32Decode, extractIPs, extractURLs, hexdump, epochConvert, urlEncodeAll, stringUtils } = AlgorithmsLib;
             
             const [input, setInput] = useState('');
             const [output, setOutput] = useState('');
@@ -610,7 +541,8 @@
             const [errorMsg, setErrorMsg] = useState(null);
             const [showQR, setShowQR] = useState(false);
             const [caesarShift, setCaesarShift] = useState(13);
-            const [vigenereKey, setVigenereKey] = useState('ZYRA');
+            const [vigenereKey, setVigenereKey] = useState('KEY');
+            const [strUtilMode, setStrUtilMode] = useState('upper');
             const fileInputRef = useRef(null);
 
             const handleCategoryChange = (e) => {
@@ -618,8 +550,8 @@
                 const firstAlgo = algorithms.find(a => a.category === newCat);
                 if(firstAlgo) {
                     setAlgo(firstAlgo.id);
-                    if(newCat === 'hashes') setMode('encode');
-                    else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(firstAlgo.id)) setMode('decode');
+                    if(newCat === 'hashes' || firstAlgo.id === 'uuid' || firstAlgo.id === 'url_all') setMode('encode');
+                    else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'epoch'].includes(firstAlgo.id)) setMode('decode');
                 }
             };
 
@@ -627,11 +559,18 @@
                 let isMounted = true;
                 const process = async () => {
                     setErrorMsg(null); setShowQR(false); 
+                    
+                    if (algo === 'uuid') {
+                        if (isMounted) setOutput(crypto.randomUUID());
+                        return;
+                    }
+
                     if (!input) { if(isMounted) setOutput(''); return; }
+                    
                     try {
                         let res = '', effectiveMode = mode;
-                        if (category === 'hashes') effectiveMode = 'encode';
-                        if (['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo)) effectiveMode = 'decode';
+                        if (category === 'hashes' || algo === 'url_all') effectiveMode = 'encode';
+                        if (['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'epoch'].includes(algo)) effectiveMode = 'decode';
 
                         if (category === 'hashes') {
                             const hashBuffer = await crypto.subtle.digest(algo === 'sha512' ? 'SHA-512' : algo === 'sha1' ? 'SHA-1' : 'SHA-256', new TextEncoder().encode(input));
@@ -645,6 +584,7 @@
                             case 'base64url': res = effectiveMode === 'encode' ? btoa(unescape(encodeURIComponent(input))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'') : (() => { let b=input.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4)b+='='; return decodeURIComponent(escape(atob(b.replace(/\s+/g, '')))); })(); break;
                             case 'base32': res = effectiveMode === 'encode' ? b32Encode(input) : b32Decode(input); break;
                             case 'url': res = effectiveMode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input.replace(/\+/g, ' ')); break;
+                            case 'url_all': res = urlEncodeAll(input); break;
                             case 'urlparse': const u = new URL(input.startsWith('http') ? input : `https://${input}`); res = JSON.stringify({ Protocol: u.protocol.replace(':',''), Host: u.host, Path: u.pathname, Parameters: Object.keys(Object.fromEntries(u.searchParams)).length ? Object.fromEntries(u.searchParams) : "None" }, null, 4); break;
                             case 'hex': res = effectiveMode === 'encode' ? toHex(input) : fromHex(input); break;
                             case 'binary': res = effectiveMode === 'encode' ? toBin(input) : fromBin(input); break;
@@ -661,38 +601,26 @@
                             case 'hexdump': res = hexdump(input); break;
                             case 'extract_ips': res = extractIPs(input); break;
                             case 'extract_urls': res = extractURLs(input); break;
+                            case 'epoch': res = epochConvert(input); break;
+                            case 'string_utils': res = stringUtils(input, strUtilMode); break;
                             default: res = input;
                         }
                         if (isMounted) setOutput(res);
                     } catch (e) { if (isMounted) { setOutput(''); setErrorMsg(e.message || 'Error processing payload. Check format.'); } }
                 };
                 process(); return () => { isMounted = false; };
-            }, [input, mode, algo, category, caesarShift, vigenereKey]);
+            }, [input, mode, algo, category, caesarShift, vigenereKey, strUtilMode]);
 
-            // KRYSHA'S NEW FEATURE: Formatting action buttons on demand!
             const applyJsonFormat = (type) => {
-                if (!output) {
-                    setToast('No output to format! 😅');
-                    setTimeout(()=>setToast(null), 2000);
-                    return;
-                }
+                if (!output) { setToast('No output to format! 😅'); setTimeout(()=>setToast(null), 2000); return; }
                 try {
                     const parsed = JSON.parse(output);
                     if (typeof parsed === 'object' && parsed !== null) {
-                        if (type === 'beautify') {
-                            setOutput(JSON.stringify(parsed, null, 4));
-                        } else if (type === 'minify') {
-                            setOutput(JSON.stringify(parsed));
-                        }
+                        setOutput(type === 'beautify' ? JSON.stringify(parsed, null, 4) : JSON.stringify(parsed));
                         setToast(`JSON ${type === 'beautify' ? 'Beautified ✨' : 'Minified 🗜️'}`);
                         setTimeout(()=>setToast(null), 2000);
-                    } else {
-                        throw new Error();
-                    }
-                } catch(e) {
-                    setToast('Output is not valid JSON! 🥲');
-                    setTimeout(()=>setToast(null), 2000);
-                }
+                    } else throw new Error();
+                } catch(e) { setToast('Output is not valid JSON! 🥲'); setTimeout(()=>setToast(null), 2000); }
             };
 
             const downloadFile = () => {
@@ -711,13 +639,10 @@
             };
 
             const swap = () => {
-                if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes') {
+                if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'epoch'].includes(algo) || category === 'hashes') {
                     setToast(`Cannot swap ${algorithms.find(a=>a.id===algo).name}`); setTimeout(()=>setToast(null), 2000); return;
                 }
-                setAnimating(true); 
-                setInput(output); 
-                setMode(mode === 'encode' ? 'decode' : 'encode'); 
-                setShowQR(false);
+                setAnimating(true); setInput(output); setMode(mode === 'encode' ? 'decode' : 'encode'); setShowQR(false);
                 setTimeout(() => setAnimating(false), 400);
             };
 
@@ -730,17 +655,17 @@
             };
 
             const inStats = getStats(input), outStats = getStats(output), currAlgo = algorithms.find(a=>a.id===algo);
-            const isLockMode = ['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes';
+            const isLockMode = ['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'epoch', 'url_all', 'string_utils'].includes(algo) || category === 'hashes';
             const getEntropyColor = (e) => parseFloat(e) < 3.0 ? 'text-slate-500' : parseFloat(e) < 4.5 ? 'text-emerald-500' : parseFloat(e) < 6.5 ? 'text-amber-500' : 'text-red-500 animate-pulse';
 
             const PanelHeader = ({ title, stats, isOutput, copyVal }) => (
-                <div className={`flex flex-col sm:flex-row sm:items-center justify-between px-5 py-3 border-b z-20 relative ${isDark ? 'border-white/5 bg-white/[0.02]' : 'border-black/5 bg-black/[0.02]'}`}>
+                <div className={`flex flex-col sm:flex-row sm:items-center justify-between px-5 py-3 border-b z-20 relative ${isDark ? 'border-white/5 bg-white/[0.01]' : 'border-black/5 bg-black/[0.02]'}`}>
                     <div className="flex items-center gap-3 mb-2 sm:mb-0">
                         <div className={`w-2.5 h-2.5 rounded-full ${isOutput ? (errorMsg ? 'bg-red-500 shadow-neon-red' : (isDark ? 'bg-blue-500 shadow-neon-blue' : 'bg-blue-500')) : (isDark ? 'bg-emerald-500 shadow-neon-emerald' : 'bg-emerald-500')}`}></div>
                         <span className={`text-xs font-bold uppercase tracking-widest flex items-center gap-2 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                             {title}
                         </span>
-                        {isOutput && <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold border ${errorMsg ? 'bg-red-500/20 text-red-500 border-red-500/30' : (isDark ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-blue-100 text-blue-700 border-blue-200')}`}>{errorMsg ? 'ERROR' : currAlgo?.name}</span>}
+                        {isOutput && <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold border ${errorMsg ? 'bg-red-500/20 text-red-500 border-red-500/30' : (isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-blue-50 text-blue-700 border-blue-200')}`}>{errorMsg ? 'ERROR' : currAlgo?.name}</span>}
                     </div>
                     <div className="flex items-center gap-2 self-end sm:self-auto">
                         {isOutput && (
@@ -756,45 +681,38 @@
             );
 
             const PanelFooter = ({ stats }) => (
-                <div className={`flex justify-between items-center px-5 py-2.5 text-[10px] font-mono border-t z-20 relative ${isDark ? 'border-white/5 bg-black/40 text-slate-500' : 'border-black/5 bg-slate-50 text-slate-500'}`}>
+                <div className={`flex justify-between items-center px-5 py-2.5 text-[10px] font-mono border-t z-20 relative ${isDark ? 'border-white/5 bg-black/20 text-slate-500' : 'border-black/5 bg-slate-50 text-slate-500'}`}>
                     <div className="flex gap-4"><span>Ln: {stats.lines}</span><span>Wd: {stats.words}</span><span>Ch: {stats.chars}</span></div>
                     <div className="flex gap-4"><span title="Shannon Entropy">Ent: <span className={`font-bold ${getEntropyColor(stats.entropy)}`}>{stats.entropy}</span></span><span>{stats.bytes} B</span></div>
                 </div>
             );
 
-            // KRYSHA'S FIX: NO AUTO BEAUTIFICATION. Just checking if it's JSON for syntax highlighting.
             let isJsonOutput = false;
             let formattedJsonOutput = '';
-            
             if (!errorMsg && output) {
                 if (output.trim().startsWith('{') || output.trim().startsWith('[')) {
-                    try {
-                        JSON.parse(output);
-                        isJsonOutput = true;
-                        formattedJsonOutput = output; // RAW OUTPUT EXACTLY AS IT IS
-                    } catch (e) {}
+                    try { JSON.parse(output); isJsonOutput = true; formattedJsonOutput = output; } catch (e) {}
                 }
             }
 
             return (
-                <div className="flex flex-col gap-5 animate-fade-in w-full max-w-[100rem] mx-auto">
+                <div className="flex flex-col gap-6 animate-fade-in w-full max-w-[100rem] mx-auto">
+                    {/* TOP CONTROL BAR (SAAS STYLE) */}
                     <div className="glass-panel p-2 md:p-3 rounded-2xl border shadow-lg flex flex-col xl:flex-row items-center justify-between gap-4 z-30 relative animate-slide-up">
-                        
                         <div className="flex flex-col sm:flex-row items-center gap-2 w-full xl:w-auto">
                             <div className="relative w-full sm:w-48">
-                                <select value={category} onChange={handleCategoryChange} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-bold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-emerald-400 hover:bg-black/60 focus:border-emerald-500/50 focus:shadow-neon-emerald' : 'bg-white border border-slate-200 text-emerald-700 hover:bg-slate-50 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100'}`}>
+                                <select value={category} onChange={handleCategoryChange} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-bold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-emerald-400 hover:bg-black/60 focus:border-emerald-500/50' : 'bg-white border border-slate-200 text-emerald-700 hover:bg-slate-50 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100'}`}>
                                     {toolCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
                                 <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-emerald-400/80' : 'text-emerald-600'}`}>{toolCategories.find(c=>c.id===category)?.icon}</div>
                                 <Icons.ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
                             </div>
-                            <div className="relative w-full sm:w-56">
+                            <div className="relative w-full sm:w-60">
                                 <select value={algo} onChange={e => { 
-                                        const val = e.target.value;
-                                        setAlgo(val); 
-                                        if(category === 'hashes') setMode('encode'); 
-                                        else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(val)) setMode('decode'); 
-                                    }} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-semibold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-blue-300 hover:bg-black/60 focus:border-blue-500/50 focus:shadow-neon-blue' : 'bg-white border border-slate-200 text-blue-700 hover:bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100'}`}>
+                                        const val = e.target.value; setAlgo(val); 
+                                        if(category === 'hashes' || val === 'uuid' || val === 'url_all') setMode('encode'); 
+                                        else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'epoch'].includes(val)) setMode('decode'); 
+                                    }} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-semibold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-blue-300 hover:bg-black/60 focus:border-blue-500/50' : 'bg-white border border-slate-200 text-blue-700 hover:bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100'}`}>
                                     {algorithms.filter(a => a.category === category).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                                 </select>
                                 <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-blue-400/80' : 'text-blue-600'}`}>{algorithms.find(a=>a.id===algo)?.icon}</div>
@@ -803,12 +721,13 @@
                         </div>
 
                         <div className="flex items-center gap-3 w-full xl:w-auto">
-                            <div className={`flex p-1 rounded-xl w-full sm:w-auto transition-opacity ${isLockMode ? 'opacity-50 pointer-events-none' : ''} ${isDark ? 'bg-black/50 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
-                                {['encode', 'decode'].map(m => (
-                                    // KRYSHA'S FIX: Reverted to standard Encode/Decode Labels
-                                    <button key={m} onClick={() => setMode(m)} className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-[#1a202c] text-white shadow-lg border border-white/10' : 'bg-white text-slate-800 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}>{m}</button>
-                                ))}
-                            </div>
+                            {!['uuid'].includes(algo) && (
+                                <div className={`flex p-1 rounded-xl w-full sm:w-auto transition-opacity ${isLockMode ? 'opacity-50 pointer-events-none' : ''} ${isDark ? 'bg-black/50 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
+                                    {['encode', 'decode'].map(m => (
+                                        <button key={m} onClick={() => setMode(m)} className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-brand-panel text-white shadow-lg border border-white/10' : 'bg-white text-slate-800 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}>{m}</button>
+                                    ))}
+                                </div>
+                            )}
                             
                             {algo === 'caesar' && (
                                 <div className={`flex items-center gap-3 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
@@ -821,6 +740,15 @@
                                 <div className={`flex items-center gap-3 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
                                     <Icons.Settings size={14} className="text-slate-500" />
                                     <input type="text" value={vigenereKey} onChange={(e) => setVigenereKey(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))} placeholder="KEY" className={`w-20 sm:w-28 bg-transparent outline-none font-mono font-bold text-center text-xs uppercase tracking-widest ${isDark ? 'text-emerald-400 placeholder-slate-600' : 'text-emerald-600 placeholder-slate-400'}`}/>
+                                </div>
+                            )}
+                            {algo === 'string_utils' && (
+                                <div className={`flex items-center gap-2 p-1 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
+                                    {['upper', 'lower', 'title'].map(m => (
+                                        <button key={m} onClick={() => setStrUtilMode(m)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${strUtilMode === m ? (isDark?'bg-brand-panel text-white':'bg-white text-slate-800') : 'text-slate-500 hover:text-slate-400'}`}>
+                                            {m === 'upper' ? 'UPPER' : m === 'lower' ? 'lower' : 'Title'}
+                                        </button>
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -836,51 +764,58 @@
                         </div>
                     </div>
 
-                    <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-6 items-stretch animate-slide-up" style={{animationDelay: '0.15s'}}>
+                    {/* MAIN EDITOR GRID */}
+                    <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-stretch animate-slide-up" style={{animationDelay: '0.1s'}}>
                         
+                        {/* INPUT PANEL */}
                         <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group ${isDark ? 'border-white/5 focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald' : 'border-black/5 focus-within:border-emerald-400 focus-within:shadow-lg'}`}>
-                            <PanelHeader title="Input" stats={inStats} isOutput={false} copyVal={input} />
-                            <HighlightedInput value={input} onChange={e => setInput(e.target.value)} isDark={isDark} placeholder="Enter payload or drag file here..." />
+                            <PanelHeader title="Input Payload" stats={inStats} isOutput={false} copyVal={input} />
+                            <HighlightedInput value={input} onChange={e => setInput(e.target.value)} isDark={isDark} placeholder={algo === 'epoch' ? "Enter Unix Timestamp (e.g. 1729000000)" : "Enter payload or drag file here..."} />
                             <PanelFooter stats={inStats} />
                         </div>
 
-                        {/* KRYSHA'S NEW FEATURE: Central Action Area with Format Buttons & Swap */}
-                        <div className="flex flex-row lg:flex-col items-center justify-center gap-4 relative z-10 py-2 lg:py-0 lg:px-2">
-                            
-                            <button onClick={() => applyJsonFormat('beautify')} className={`h-10 w-10 lg:h-12 lg:w-12 flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(0,0,0,0.2)] transition-all hover:scale-110 active:scale-95 group relative z-10 ${isDark ? 'bg-[#0f1115] border border-[#1a1d24] text-emerald-400 hover:border-emerald-500/50 hover:shadow-neon-emerald' : 'bg-slate-50 border border-slate-200 text-emerald-600 hover:shadow-lg'}`} title="Beautify JSON Output">
-                                 <Icons.AlignLeft size={16} />
-                            </button>
+                        {/* PROFESSIONAL UNIFIED TOOLBAR */}
+                        <div className="flex flex-row lg:flex-col items-center justify-center gap-3 relative z-10 py-2 lg:py-0 lg:px-2">
+                            <div className={`flex flex-row lg:flex-col items-center p-1.5 rounded-full shadow-floating backdrop-blur-xl border ${isDark ? 'bg-black/60 border-white/10' : 'bg-white/80 border-slate-200'}`}>
+                                
+                                <button onClick={() => applyJsonFormat('beautify')} className={`h-10 w-10 flex items-center justify-center rounded-full transition-all group relative z-10 ${isDark ? 'text-emerald-400 hover:bg-white/10' : 'text-emerald-600 hover:bg-emerald-50'}`} title="Beautify JSON">
+                                    <Icons.AlignLeft size={16} className="transition-transform group-hover:scale-110" />
+                                </button>
 
-                            <button onClick={swap} disabled={isLockMode} className={`h-14 w-14 lg:h-16 lg:w-16 flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(0,0,0,0.4)] transition-all hover:scale-110 active:scale-95 group relative overflow-hidden z-10 ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-[#0f1115] border-2 border-[#1a1d24] text-slate-300 hover:text-white hover:border-emerald-500/50 hover:shadow-neon-emerald' : 'bg-slate-800 border-2 border-slate-700 text-white hover:shadow-xl hover:bg-slate-900'}`} title="Swap Input/Output">
-                                <div className={`relative z-10 transition-transform duration-500 ${animating ? 'rotate-180 scale-75' : ''}`}>
-                                    <Icons.ArrowRight size={24} strokeWidth={2} className="hidden lg:block opacity-90 group-hover:opacity-100" />
-                                    <Icons.ArrowDown size={24} strokeWidth={2} className="lg:hidden opacity-90 group-hover:opacity-100" />
-                                </div>
-                            </button>
+                                <div className={`w-px h-6 lg:w-6 lg:h-px mx-1 my-1 ${isDark ? 'bg-white/10' : 'bg-slate-200'}`}></div>
 
-                            <button onClick={() => applyJsonFormat('minify')} className={`h-10 w-10 lg:h-12 lg:w-12 flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(0,0,0,0.2)] transition-all hover:scale-110 active:scale-95 group relative z-10 ${isDark ? 'bg-[#0f1115] border border-[#1a1d24] text-blue-400 hover:border-blue-500/50 hover:shadow-neon-blue' : 'bg-slate-50 border border-slate-200 text-blue-600 hover:shadow-lg'}`} title="Minify JSON Output">
-                                 <Icons.FileCode size={16} />
-                            </button>
+                                <button onClick={swap} disabled={isLockMode} className={`h-12 w-12 flex items-center justify-center rounded-full shadow-lg transition-all active:scale-95 group relative overflow-hidden z-20 ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-brand-panel border-2 border-[#27272a] text-slate-200 hover:text-white hover:border-emerald-500 hover:shadow-neon-emerald' : 'bg-slate-800 border-2 border-slate-700 text-white hover:shadow-xl hover:bg-slate-900'}`} title="Swap Input & Output">
+                                    <div className={`relative z-10 transition-transform duration-500 ${animating ? 'rotate-180 scale-75' : ''}`}>
+                                        <Icons.ArrowRightLeft size={18} strokeWidth={2.5} />
+                                    </div>
+                                </button>
 
+                                <div className={`w-px h-6 lg:w-6 lg:h-px mx-1 my-1 ${isDark ? 'bg-white/10' : 'bg-slate-200'}`}></div>
+
+                                <button onClick={() => applyJsonFormat('minify')} className={`h-10 w-10 flex items-center justify-center rounded-full transition-all group relative z-10 ${isDark ? 'text-blue-400 hover:bg-white/10' : 'text-blue-600 hover:bg-blue-50'}`} title="Minify JSON">
+                                    <Icons.FileCode size={16} className="transition-transform group-hover:scale-110" />
+                                </button>
+                            </div>
                         </div>
 
-                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 ${errorMsg ? (isDark ? 'border-red-500/50 shadow-neon-red' : 'border-red-400 shadow-lg') : (isDark ? 'border-white/5 focus-within:border-blue-500/50 focus-within:shadow-neon-blue' : 'border-black/5 focus-within:border-blue-400 focus-within:shadow-lg')}`}>
-                            <PanelHeader title="Output" stats={outStats} isOutput={true} copyVal={output} />
-                            <div className="relative flex-grow flex flex-col">
+                        {/* OUTPUT PANEL */}
+                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group ${errorMsg ? (isDark ? 'border-red-500/50 shadow-neon-red' : 'border-red-400 shadow-lg') : (isDark ? 'border-white/5 focus-within:border-blue-500/50 focus-within:shadow-neon-blue' : 'border-black/5 focus-within:border-blue-400 focus-within:shadow-lg')}`}>
+                            <PanelHeader title="Processed Output" stats={outStats} isOutput={true} copyVal={output} />
+                            <div className="relative flex-grow flex flex-col h-[450px]">
                                 {isJsonOutput ? (
-                                    <div className={`w-full flex-grow p-6 overflow-auto font-mono text-[13px] leading-relaxed custom-scrollbar relative min-h-[300px] md:min-h-[400px] lg:min-h-[60vh] ${isDark ? 'bg-[#0a0a0a] text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
-                                        <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-md ${isDark ? 'bg-cyan-500/50' : 'bg-cyan-500/30'}`}></div>
-                                        <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(formattedJsonOutput) }} className="whitespace-pre-wrap pl-2 m-0 editor-pre"></pre>
+                                    <div className={`w-full h-full p-5 overflow-auto font-mono text-[13px] custom-scrollbar relative ${isDark ? 'bg-brand-bg text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
+                                        <div className={`absolute left-0 top-4 bottom-4 w-[3px] rounded-r-md transition-colors ${isDark ? 'bg-cyan-500/50 group-focus-within:bg-cyan-400' : 'bg-cyan-500/30 group-focus-within:bg-cyan-500'}`}></div>
+                                        <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(formattedJsonOutput) }} className="whitespace-pre-wrap pl-3 m-0 editor-pre leading-relaxed"></pre>
                                     </div>
                                 ) : (
-                                    <textarea value={errorMsg || output} readOnly placeholder={errorMsg ? '' : "Result awaits..."} className={`w-full flex-grow p-6 bg-transparent resize-none outline-none font-mono text-[13px] leading-relaxed custom-scrollbar min-h-[300px] md:min-h-[400px] lg:min-h-[60vh] ${errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-blue-50' : 'text-slate-800')}`} />
+                                    <textarea value={errorMsg || output} readOnly placeholder={errorMsg ? '' : "Result awaits..."} className={`w-full h-full p-5 bg-transparent resize-none outline-none font-mono text-[13px] custom-scrollbar overflow-auto leading-relaxed ${errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-blue-50' : 'text-slate-800')}`} />
                                 )}
                                 
                                 {showQR && (
-                                    <div className="absolute inset-0 z-10 flex items-center justify-center p-6 animate-bounce-in bg-black/40 backdrop-blur-sm">
-                                        <div className={`p-5 rounded-2xl shadow-2xl relative ${isDark ? 'bg-slate-900 border border-slate-700' : 'bg-white border border-slate-200'}`}>
+                                    <div className="absolute inset-0 z-10 flex items-center justify-center p-6 animate-bounce-in bg-black/40 backdrop-blur-md">
+                                        <div className={`p-5 rounded-3xl shadow-2xl relative border ${isDark ? 'bg-brand-panel border-white/10' : 'bg-white border-slate-200'}`}>
                                             <button onClick={()=>setShowQR(false)} className="absolute -top-3 -right-3 p-1.5 rounded-full shadow-lg bg-red-500 text-white hover:bg-red-600 transition-colors"><Icons.X size={14} /></button>
-                                            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(output)}&color=${isDark?'ffffff':'000000'}&bgcolor=${isDark?'0f172a':'ffffff'}`} alt="QR" className="w-48 h-48 rounded-xl opacity-90" />
+                                            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(output)}&color=${isDark?'ffffff':'000000'}&bgcolor=${isDark?'09090b':'ffffff'}`} alt="QR" className="w-48 h-48 rounded-xl opacity-90" />
                                         </div>
                                     </div>
                                 )}
@@ -907,20 +842,15 @@
 
             const isDark = theme === 'dark';
             
+            // KRYSHA'S ENHANCED ALGOS LIB
             const algosLib = {
                 toHex: s => { let r=''; for(let i=0;i<s.length;i++) r+=s.charCodeAt(i).toString(16).padStart(2,'0'); return r; },
                 fromHex: h => { let s=''; h=h.replace(/\s|0x/g,''); for(let i=0;i<h.length;i+=2) s+=String.fromCharCode(parseInt(h.substr(i,2),16)); return s; },
                 toBin: s => s.split('').map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' '),
-                fromBin: b => {
-                    let clean = b.replace(/[^01]/g, '');
-                    if(!clean) return '';
-                    let s = '';
-                    for(let i=0; i<clean.length; i+=8) s += String.fromCharCode(parseInt(clean.substr(i,8).padEnd(8, '0'), 2));
-                    return s;
-                },
+                fromBin: b => { let clean = b.replace(/[^01]/g, ''); if(!clean) return ''; let s = ''; for(let i=0; i<clean.length; i+=8) s += String.fromCharCode(parseInt(clean.substr(i,8).padEnd(8, '0'), 2)); return s; },
                 toOctal: s => s.split('').map(c => '\\' + c.charCodeAt(0).toString(8).padStart(3, '0')).join(''),
                 fromOctal: s => s.replace(/\\([0-7]{1,3})/g, (m, p1) => String.fromCharCode(parseInt(p1, 8))),
-                htmlEncode: s => s.replace(/[\u00A0-\u9999<>&]/g, i => '&#'+i.charCodeAt(0)+';'),
+                htmlEncode: s => s.replace(/[\u00A0-\u9999<>&"']/g, i => '&#'+i.charCodeAt(0)+';'),
                 htmlDecode: s => new DOMParser().parseFromString(s,'text/html').documentElement.textContent,
                 rev: s => s.split('').reverse().join(''),
                 atbash: s => s.replace(/[a-zA-Z]/g, c => String.fromCharCode((c <= 'Z' ? 90 + 65 : 122 + 97) - c.charCodeAt(0))),
@@ -932,93 +862,53 @@
                 toMorse: s => s.toUpperCase().split('').map(c => ({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}[c]||c)).join(' '),
                 fromMorse: s => { const d = Object.entries({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}).reduce((a,[k,v])=>(a[v]=k,a),{}); return s.split(' ').map(c=>d[c]||c).join('').replace(/\//g,' '); },
                 formatJSON: (str, min) => { if(!str.trim()) return ''; try { return min ? JSON.stringify(JSON.parse(str)) : JSON.stringify(JSON.parse(str), null, 4); } catch(e){ throw new Error("Invalid JSON Format"); } },
-                parseJWT: t => { 
-                    try { 
-                        const p=t.split('.'); 
-                        if(p.length < 2) throw new Error("Invalid JWT");
-                        const dec = s => { let b=s.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='='; return decodeURIComponent(escape(atob(b))); };
-                        return JSON.stringify({Header:JSON.parse(dec(p[0])),Payload:JSON.parse(dec(p[1])),Signature:"VERIFICATION_REQUIRED"},null,4);
-                    } catch(e){ throw new Error("Invalid or Corrupted JWT"); } 
-                },
-                b32Encode: (s) => {
-                    let bits = 0, value = 0, output = '';
-                    for (let i = 0; i < s.length; i++) {
-                        value = (value << 8) | s.charCodeAt(i); bits += 8;
-                        while (bits >= 5) { output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value >>> (bits - 5)) & 31]; bits -= 5; }
-                    }
-                    if (bits > 0) output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value << (5 - bits)) & 31];
-                    while (output.length % 8 !== 0) output += '=';
-                    return output;
-                },
-                b32Decode: (s) => {
-                    s = s.replace(/=+$/, '').toUpperCase().replace(/\s+/g, '');
-                    let bits = 0, value = 0, output = '';
-                    for (let i = 0; i < s.length; i++) {
-                        let val = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".indexOf(s[i]);
-                        if (val === -1) throw new Error("Invalid Base32 char: " + s[i]);
-                        value = (value << 5) | val; bits += 5;
-                        if (bits >= 8) { output += String.fromCharCode((value >>> (bits - 8)) & 255); bits -= 8; }
-                    }
-                    return output;
-                },
-                extractIPs: (s) => {
-                    const ipv4 = s.match(/\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g) || [];
-                    const ipv6 = s.match(/\b(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}\b/g) || [];
-                    const all = [...new Set([...ipv4, ...ipv6])];
-                    return all.length ? all.join('\n') : 'No IPs found.';
-                },
-                extractURLs: (s) => {
-                    const urls = s.match(/https?:\/\/[^\s"'<>]+/gi) || [];
-                    return urls.length ? [...new Set(urls)].join('\n') : 'No URLs found.';
-                },
-                hexdump: (s) => {
-                    let out = '';
-                    for (let i = 0; i < s.length; i += 16) {
-                        let chunk = s.slice(i, i + 16);
-                        let hex = Array.from(chunk).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' ');
-                        let ascii = Array.from(chunk).map(c => { let code = c.charCodeAt(0); return (code >= 32 && code <= 126) ? c : '.'; }).join('');
-                        out += i.toString(16).padStart(8, '0') + '  ' + hex.padEnd(48, ' ') + '  |' + ascii + '|\n';
-                    }
-                    return out || 'No data.';
-                }
+                parseJWT: t => { try { const p=t.split('.'); if(p.length < 2) throw new Error("Invalid JWT"); const dec = s => { let b=s.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='='; return decodeURIComponent(escape(atob(b))); }; return JSON.stringify({Header:JSON.parse(dec(p[0])),Payload:JSON.parse(dec(p[1])),Signature:"VERIFICATION_REQUIRED"},null,4); } catch(e){ throw new Error("Invalid or Corrupted JWT"); } },
+                b32Encode: (s) => { let bits = 0, value = 0, output = ''; for (let i = 0; i < s.length; i++) { value = (value << 8) | s.charCodeAt(i); bits += 8; while (bits >= 5) { output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value >>> (bits - 5)) & 31]; bits -= 5; } } if (bits > 0) output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value << (5 - bits)) & 31]; while (output.length % 8 !== 0) output += '='; return output; },
+                b32Decode: (s) => { s = s.replace(/=+$/, '').toUpperCase().replace(/\s+/g, ''); let bits = 0, value = 0, output = ''; for (let i = 0; i < s.length; i++) { let val = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".indexOf(s[i]); if (val === -1) throw new Error("Invalid Base32 char"); value = (value << 5) | val; bits += 5; if (bits >= 8) { output += String.fromCharCode((value >>> (bits - 8)) & 255); bits -= 8; } } return output; },
+                extractIPs: (s) => { const ipv4 = s.match(/\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g) || []; const ipv6 = s.match(/\b(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}\b/g) || []; const all = [...new Set([...ipv4, ...ipv6])]; return all.length ? all.join('\n') : 'No IPs found.'; },
+                extractURLs: (s) => { const urls = s.match(/https?:\/\/[^\s"'<>]+/gi) || []; return urls.length ? [...new Set(urls)].join('\n') : 'No URLs found.'; },
+                hexdump: (s) => { let out = ''; for (let i = 0; i < s.length; i += 16) { let chunk = s.slice(i, i + 16); let hex = Array.from(chunk).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' '); let ascii = Array.from(chunk).map(c => { let code = c.charCodeAt(0); return (code >= 32 && code <= 126) ? c : '.'; }).join(''); out += i.toString(16).padStart(8, '0') + '  ' + hex.padEnd(48, ' ') + '  |' + ascii + '|\n'; } return out || 'No data.'; },
+                epochConvert: (s) => { s = s.trim(); if(!/^\d+$/.test(s)) throw new Error("Invalid Epoch Number"); let ms = s.length <= 10 ? parseInt(s) * 1000 : parseInt(s); return new Date(ms).toUTCString() + "\nLocal: " + new Date(ms).toString(); },
+                urlEncodeAll: (s) => s.split('').map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0').toUpperCase()).join(''),
+                stringUtils: (s, mode) => { if(mode === 'upper') return s.toUpperCase(); if(mode === 'lower') return s.toLowerCase(); return s.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substring(1).toLowerCase()); }
             };
 
             return (
-                <div className="min-h-screen flex flex-col relative">
+                <div className="min-h-screen flex flex-col relative font-sans">
                     <div className="fixed inset-0 pointer-events-none z-0">
-                        <div className={`absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[150px] opacity-40 mix-blend-screen transition-colors duration-1000 ${isDark ? 'bg-blue-900/30' : 'bg-blue-200/50'}`}></div>
-                        <div className={`absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full blur-[150px] opacity-40 mix-blend-screen transition-colors duration-1000 ${isDark ? 'bg-emerald-900/30' : 'bg-emerald-200/50'}`}></div>
-                        <div className={`absolute inset-0 ${isDark ? 'bg-grid-dark opacity-100' : 'bg-grid-light opacity-60'}`}></div>
-                        {isDark && <div className="scanline"></div>}
+                        <div className={`absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[180px] opacity-30 mix-blend-screen transition-colors duration-1000 ${isDark ? 'bg-blue-600' : 'bg-blue-200'}`}></div>
+                        <div className={`absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full blur-[180px] opacity-30 mix-blend-screen transition-colors duration-1000 ${isDark ? 'bg-emerald-600' : 'bg-emerald-200'}`}></div>
+                        <div className={`absolute inset-0 bg-grid-pattern opacity-100`}></div>
+                        {isDark && <div className="scanline opacity-30"></div>}
                     </div>
 
-                    <main className="flex-grow w-full max-w-[100rem] mx-auto p-4 md:p-6 lg:p-8 relative z-10 flex flex-col gap-5">
-                        <header className={`glass-panel border rounded-xl py-2 px-3 flex flex-col lg:flex-row items-center justify-between gap-3 shadow-md transition-all duration-500 animate-slide-up ${isDark ? 'bg-black/30 border-white/10' : 'bg-white/70 border-white/50'}`}>
-                            <div className="flex items-center gap-2.5 pl-2 w-full lg:w-1/3">
+                    <main className="flex-grow w-full max-w-[100rem] mx-auto p-4 md:p-6 lg:p-8 relative z-10 flex flex-col gap-8">
+                        <header className={`glass-panel border rounded-2xl p-4 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-500 animate-slide-up ${isDark ? 'bg-brand-bg/60 border-white/5' : 'bg-white/80 border-slate-200'}`}>
+                            <div className="flex items-center gap-3 pl-2 w-full lg:w-1/3">
                                 <div className="relative">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-blue-500 blur-[6px] opacity-50 rounded-lg"></div>
-                                    <div className={`relative p-1.5 rounded-lg border shadow-sm ${isDark ? 'bg-black border-white/10 text-white' : 'bg-white border-slate-100 text-slate-800'}`}>
-                                        <Icons.Shield size={18} strokeWidth={2.5} className="text-emerald-500" />
+                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-blue-500 blur-[8px] opacity-40 rounded-xl"></div>
+                                    <div className={`relative p-2 rounded-xl border shadow-sm ${isDark ? 'bg-brand-panel border-white/10 text-white' : 'bg-white border-slate-100 text-slate-800'}`}>
+                                        <Icons.Shield size={20} strokeWidth={2.5} className="text-emerald-500" />
                                     </div>
                                 </div>
                                 <div>
-                                    <h1 className="text-lg md:text-xl font-black tracking-tight text-gradient-primary leading-none">DecoderX</h1>
-                                    <p className={`text-[9px] font-bold tracking-[0.2em] uppercase mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Pro Suite</p>
+                                    <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-gradient-primary leading-none">DecoderX</h1>
+                                    <p className={`text-[10px] font-bold tracking-[0.2em] uppercase mt-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Pro Suite</p>
                                 </div>
                             </div>
 
-                            <div className={`flex p-1 rounded-lg w-full lg:w-auto shadow-inner border ${isDark ? 'bg-black/50 border-white/5' : 'bg-slate-100 border-slate-200/50'}`}>
-                                <button onClick={() => setActiveTab('decoderx')} className={`flex-1 flex items-center justify-center gap-2 px-4 py-1.5 rounded-md text-xs font-bold transition-all duration-300 ${activeTab === 'decoderx' ? (isDark ? 'bg-[#1a202c] text-emerald-400 shadow-md border border-white/10' : 'bg-white text-emerald-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
-                                    <Icons.Terminal size={14}/> Essential Tools
+                            <div className={`flex p-1.5 rounded-xl w-full lg:w-auto shadow-inner border ${isDark ? 'bg-black/60 border-white/5' : 'bg-slate-100 border-slate-200/50'}`}>
+                                <button onClick={() => setActiveTab('decoderx')} className={`flex-1 flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${activeTab === 'decoderx' ? (isDark ? 'bg-brand-panel text-emerald-400 shadow-md border border-white/5' : 'bg-white text-emerald-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
+                                    <Icons.Terminal size={16}/> Essential Tools
                                 </button>
-                                <button onClick={() => setActiveTab('curl')} className={`flex-1 flex items-center justify-center gap-2 px-4 py-1.5 rounded-md text-xs font-bold transition-all duration-300 ${activeTab === 'curl' ? (isDark ? 'bg-[#1a202c] text-blue-400 shadow-md border border-white/10' : 'bg-white text-blue-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
-                                    <Icons.Layers size={14}/> Deep cURL Parse
+                                <button onClick={() => setActiveTab('curl')} className={`flex-1 flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${activeTab === 'curl' ? (isDark ? 'bg-brand-panel text-blue-400 shadow-md border border-white/5' : 'bg-white text-blue-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
+                                    <Icons.Layers size={16}/> Deep cURL Parse
                                 </button>
                             </div>
 
                             <div className="flex justify-end w-full lg:w-1/3 pr-2">
-                                <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} className={`h-9 w-9 flex items-center justify-center rounded-lg border outline-none transition-all hover:scale-105 active:scale-95 shadow-sm ${isDark ? 'bg-black border-white/10 text-yellow-400 hover:border-yellow-500/50 hover:shadow-neon-emerald' : 'bg-white border-slate-200 text-slate-500 hover:text-blue-500'}`}>
-                                    {isDark ? <Icons.Sun size={16} /> : <Icons.Moon size={16} />}
+                                <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} className={`h-10 w-10 flex items-center justify-center rounded-xl border outline-none transition-all hover:scale-105 active:scale-95 shadow-sm ${isDark ? 'bg-brand-panel border-white/10 text-yellow-400 hover:border-yellow-500/50 hover:shadow-neon-emerald' : 'bg-white border-slate-200 text-slate-500 hover:text-blue-500'}`}>
+                                    {isDark ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
                                 </button>
                             </div>
                         </header>
@@ -1030,20 +920,20 @@
                             }
                         </div>
 
-                        <footer className="mt-auto py-2 animate-fade-in text-center">
-                            <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border glass-panel ${isDark ? 'border-white/5' : 'border-black/5'}`}>
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-glow"></div>
-                                <span className={`text-[10px] font-bold tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                                    Built by <span className="text-gradient-primary">Mr Shiva</span>
+                        <footer className="mt-auto pt-4 pb-2 animate-fade-in text-center">
+                            <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border glass-panel ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-glow shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                                <span className={`text-[11px] font-bold tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    Engineered by <span className="text-gradient-primary">Mr Shiva</span>
                                 </span>
                             </div>
                         </footer>
                     </main>
 
                     {toast && (
-                        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
-                            <div className={`flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl border font-bold text-xs md:text-sm tracking-wide glass-panel ${isDark ? 'border-emerald-500/30 text-emerald-400 bg-black/80' : 'border-emerald-200 text-emerald-700 bg-white/90'}`}>
-                                <div className={`p-1.5 rounded-full ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100'}`}><Icons.Check size={14} /></div>
+                        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
+                            <div className={`flex items-center gap-3 px-6 py-4 rounded-2xl shadow-floating border font-bold text-sm tracking-wide glass-panel ${isDark ? 'border-emerald-500/30 text-emerald-400 bg-brand-bg/90' : 'border-emerald-200 text-emerald-700 bg-white/95'}`}>
+                                <div className={`p-1.5 rounded-full ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100'}`}><Icons.Check size={16} /></div>
                                 {toast}
                             </div>
                         </div>
