@@ -113,7 +113,7 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(148, 163, 184, 0.2); border-radius: 99px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: rgba(255, 255, 255, 0.1); }
 
-        /* Enhanced Syntax Highlighting matching screenshot */
+        /* Enhanced Syntax Highlighting */
         .json-key { color: #0284c7; font-weight: 500; }
         .dark .json-key { color: #38bdf8; font-weight: 500; } /* Cyan */
         .json-string { color: #059669; }
@@ -124,7 +124,6 @@
         .dark .json-boolean { color: #fb7185; font-weight: 600; } /* Rose */
         .dark .json-bracket { color: #94a3b8; } /* Muted */
 
-        /* Transparent Textarea Magic for exact UI sync */
         .editor-textarea, .editor-pre {
             white-space: pre-wrap !important;
             word-break: break-all !important;
@@ -162,7 +161,7 @@
     <script type="text/babel" data-presets="react" data-type="module">
         const { useState, useEffect, useRef } = React;
 
-        // --- ICONS (Feather/Lucide style) ---
+        // --- ICONS ---
         const Icons = {
             Shield: ({ size = 24, className, ...props }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> ),
             ArrowRight: ({ size = 24, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> ),
@@ -255,14 +254,11 @@
             };
         };
 
-        // --- SAFE CLIPBOARD (BUG FIX 3) ---
         const copyToClipboard = (text, setToast) => {
             try {
-                // Primary method
                 if (navigator.clipboard && window.isSecureContext) {
                     navigator.clipboard.writeText(text).then(() => setToast('Copied to clipboard! 📋'));
                 } else {
-                    // Fallback for strict iframes as per security requirements
                     const textArea = document.createElement("textarea");
                     textArea.value = text;
                     document.body.appendChild(textArea);
@@ -355,6 +351,7 @@
                 try {
                     JSON.parse(value);
                     isJson = true;
+                    // KRYSHA'S FIX: Use exact raw user input, NO AUTO BEAUTIFY!
                     displayHtml = syntaxHighlight(value);
                 } catch(e) {}
             }
@@ -370,7 +367,6 @@
                 <div className="relative flex-grow flex flex-col w-full min-h-[300px] md:min-h-[400px] lg:min-h-[60vh] bg-transparent overflow-hidden">
                     {isJson && <div className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-md z-0 ${isDark ? 'bg-emerald-500/50' : 'bg-emerald-500/30'}`}></div>}
                     
-                    {/* BUG FIX 4: Aligned whitespace properties strictly for sync */}
                     <pre 
                         ref={preRef}
                         className={`absolute inset-0 p-6 m-0 font-mono text-[13px] leading-relaxed custom-scrollbar overflow-auto pointer-events-none z-0 editor-pre ${isJson ? 'pl-8' : ''} ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
@@ -673,6 +669,32 @@
                 process(); return () => { isMounted = false; };
             }, [input, mode, algo, category, caesarShift, vigenereKey]);
 
+            // KRYSHA'S NEW FEATURE: Formatting action buttons on demand!
+            const applyJsonFormat = (type) => {
+                if (!output) {
+                    setToast('No output to format! 😅');
+                    setTimeout(()=>setToast(null), 2000);
+                    return;
+                }
+                try {
+                    const parsed = JSON.parse(output);
+                    if (typeof parsed === 'object' && parsed !== null) {
+                        if (type === 'beautify') {
+                            setOutput(JSON.stringify(parsed, null, 4));
+                        } else if (type === 'minify') {
+                            setOutput(JSON.stringify(parsed));
+                        }
+                        setToast(`JSON ${type === 'beautify' ? 'Beautified ✨' : 'Minified 🗜️'}`);
+                        setTimeout(()=>setToast(null), 2000);
+                    } else {
+                        throw new Error();
+                    }
+                } catch(e) {
+                    setToast('Output is not valid JSON! 🥲');
+                    setTimeout(()=>setToast(null), 2000);
+                }
+            };
+
             const downloadFile = () => {
                 if(output && !errorMsg) {
                     const url = URL.createObjectURL(new Blob([output], { type: "text/plain" }));
@@ -693,18 +715,7 @@
                     setToast(`Cannot swap ${algorithms.find(a=>a.id===algo).name}`); setTimeout(()=>setToast(null), 2000); return;
                 }
                 setAnimating(true); 
-
-                let formattedInput = output;
-                if (!errorMsg && output) {
-                    try {
-                        const parsed = JSON.parse(output);
-                        if (typeof parsed === 'object' && parsed !== null) {
-                            formattedInput = JSON.stringify(parsed, null, 4);
-                        }
-                    } catch(e) {}
-                }
-
-                setInput(formattedInput); 
+                setInput(output); 
                 setMode(mode === 'encode' ? 'decode' : 'encode'); 
                 setShowQR(false);
                 setTimeout(() => setAnimating(false), 400);
@@ -722,28 +733,12 @@
             const isLockMode = ['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(algo) || category === 'hashes';
             const getEntropyColor = (e) => parseFloat(e) < 3.0 ? 'text-slate-500' : parseFloat(e) < 4.5 ? 'text-emerald-500' : parseFloat(e) < 6.5 ? 'text-amber-500' : 'text-red-500 animate-pulse';
 
-            let canFormatInput = false;
-            if (input && (input.trim().startsWith('{') || input.trim().startsWith('['))) {
-                try {
-                    const p = JSON.parse(input);
-                    if (typeof p === 'object' && p !== null) {
-                        const formatted = JSON.stringify(p, null, 4);
-                        if (formatted !== input) canFormatInput = true;
-                    }
-                } catch(e) {}
-            }
-
-            const PanelHeader = ({ title, stats, isOutput, copyVal, showMagicFormat }) => (
+            const PanelHeader = ({ title, stats, isOutput, copyVal }) => (
                 <div className={`flex flex-col sm:flex-row sm:items-center justify-between px-5 py-3 border-b z-20 relative ${isDark ? 'border-white/5 bg-white/[0.02]' : 'border-black/5 bg-black/[0.02]'}`}>
                     <div className="flex items-center gap-3 mb-2 sm:mb-0">
                         <div className={`w-2.5 h-2.5 rounded-full ${isOutput ? (errorMsg ? 'bg-red-500 shadow-neon-red' : (isDark ? 'bg-blue-500 shadow-neon-blue' : 'bg-blue-500')) : (isDark ? 'bg-emerald-500 shadow-neon-emerald' : 'bg-emerald-500')}`}></div>
                         <span className={`text-xs font-bold uppercase tracking-widest flex items-center gap-2 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                             {title}
-                            {showMagicFormat && (
-                                <button onClick={() => setInput(JSON.stringify(JSON.parse(input), null, 4))} className={`px-2 py-0.5 ml-1 rounded text-[9px] font-black tracking-widest flex items-center gap-1 transition-colors ${isDark ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/40' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'}`} title="Auto-format ugly JSON">
-                                    <Icons.Wand size={10} /> FORMAT
-                                </button>
-                            )}
                         </span>
                         {isOutput && <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold border ${errorMsg ? 'bg-red-500/20 text-red-500 border-red-500/30' : (isDark ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-blue-100 text-blue-700 border-blue-200')}`}>{errorMsg ? 'ERROR' : currAlgo?.name}</span>}
                     </div>
@@ -767,16 +762,18 @@
                 </div>
             );
 
+            // KRYSHA'S FIX: NO AUTO BEAUTIFICATION. Just checking if it's JSON for syntax highlighting.
             let isJsonOutput = false;
             let formattedJsonOutput = '';
+            
             if (!errorMsg && output) {
-                try {
-                    const parsed = JSON.parse(output);
-                    if (typeof parsed === 'object' && parsed !== null) {
+                if (output.trim().startsWith('{') || output.trim().startsWith('[')) {
+                    try {
+                        JSON.parse(output);
                         isJsonOutput = true;
-                        formattedJsonOutput = JSON.stringify(parsed, null, 4);
-                    }
-                } catch (e) {}
+                        formattedJsonOutput = output; // RAW OUTPUT EXACTLY AS IT IS
+                    } catch (e) {}
+                }
             }
 
             return (
@@ -792,7 +789,12 @@
                                 <Icons.ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
                             </div>
                             <div className="relative w-full sm:w-56">
-                                <select value={algo} onChange={e => { setAlgo(e.target.value); if(category === 'hashes') setMode('encode'); else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(e.target.value)) setMode('decode'); }} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-semibold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-blue-300 hover:bg-black/60 focus:border-blue-500/50 focus:shadow-neon-blue' : 'bg-white border border-slate-200 text-blue-700 hover:bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100'}`}>
+                                <select value={algo} onChange={e => { 
+                                        const val = e.target.value;
+                                        setAlgo(val); 
+                                        if(category === 'hashes') setMode('encode'); 
+                                        else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls'].includes(val)) setMode('decode'); 
+                                    }} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-semibold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-blue-300 hover:bg-black/60 focus:border-blue-500/50 focus:shadow-neon-blue' : 'bg-white border border-slate-200 text-blue-700 hover:bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100'}`}>
                                     {algorithms.filter(a => a.category === category).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                                 </select>
                                 <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-blue-400/80' : 'text-blue-600'}`}>{algorithms.find(a=>a.id===algo)?.icon}</div>
@@ -803,6 +805,7 @@
                         <div className="flex items-center gap-3 w-full xl:w-auto">
                             <div className={`flex p-1 rounded-xl w-full sm:w-auto transition-opacity ${isLockMode ? 'opacity-50 pointer-events-none' : ''} ${isDark ? 'bg-black/50 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
                                 {['encode', 'decode'].map(m => (
+                                    // KRYSHA'S FIX: Reverted to standard Encode/Decode Labels
                                     <button key={m} onClick={() => setMode(m)} className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-[#1a202c] text-white shadow-lg border border-white/10' : 'bg-white text-slate-800 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}>{m}</button>
                                 ))}
                             </div>
@@ -836,22 +839,33 @@
                     <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-6 items-stretch animate-slide-up" style={{animationDelay: '0.15s'}}>
                         
                         <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group ${isDark ? 'border-white/5 focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald' : 'border-black/5 focus-within:border-emerald-400 focus-within:shadow-lg'}`}>
-                            <PanelHeader title="Input" stats={inStats} isOutput={false} copyVal={input} showMagicFormat={canFormatInput} />
+                            <PanelHeader title="Input" stats={inStats} isOutput={false} copyVal={input} />
                             <HighlightedInput value={input} onChange={e => setInput(e.target.value)} isDark={isDark} placeholder="Enter payload or drag file here..." />
                             <PanelFooter stats={inStats} />
                         </div>
 
-                        <div className="flex items-center justify-center relative z-10 -my-6 lg:my-0 lg:-mx-6">
-                            <button onClick={swap} disabled={isLockMode} className={`h-14 w-14 lg:h-16 lg:w-16 flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-all hover:scale-110 active:scale-95 group relative overflow-hidden z-10 ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-[#0f1115] border-2 border-[#1a1d24] text-slate-300 hover:text-white hover:border-emerald-500/50 hover:shadow-neon-emerald' : 'bg-slate-800 border-2 border-slate-700 text-white hover:shadow-xl hover:bg-slate-900'}`} title="Swap">
+                        {/* KRYSHA'S NEW FEATURE: Central Action Area with Format Buttons & Swap */}
+                        <div className="flex flex-row lg:flex-col items-center justify-center gap-4 relative z-10 py-2 lg:py-0 lg:px-2">
+                            
+                            <button onClick={() => applyJsonFormat('beautify')} className={`h-10 w-10 lg:h-12 lg:w-12 flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(0,0,0,0.2)] transition-all hover:scale-110 active:scale-95 group relative z-10 ${isDark ? 'bg-[#0f1115] border border-[#1a1d24] text-emerald-400 hover:border-emerald-500/50 hover:shadow-neon-emerald' : 'bg-slate-50 border border-slate-200 text-emerald-600 hover:shadow-lg'}`} title="Beautify JSON Output">
+                                 <Icons.AlignLeft size={16} />
+                            </button>
+
+                            <button onClick={swap} disabled={isLockMode} className={`h-14 w-14 lg:h-16 lg:w-16 flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(0,0,0,0.4)] transition-all hover:scale-110 active:scale-95 group relative overflow-hidden z-10 ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-[#0f1115] border-2 border-[#1a1d24] text-slate-300 hover:text-white hover:border-emerald-500/50 hover:shadow-neon-emerald' : 'bg-slate-800 border-2 border-slate-700 text-white hover:shadow-xl hover:bg-slate-900'}`} title="Swap Input/Output">
                                 <div className={`relative z-10 transition-transform duration-500 ${animating ? 'rotate-180 scale-75' : ''}`}>
                                     <Icons.ArrowRight size={24} strokeWidth={2} className="hidden lg:block opacity-90 group-hover:opacity-100" />
                                     <Icons.ArrowDown size={24} strokeWidth={2} className="lg:hidden opacity-90 group-hover:opacity-100" />
                                 </div>
                             </button>
+
+                            <button onClick={() => applyJsonFormat('minify')} className={`h-10 w-10 lg:h-12 lg:w-12 flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(0,0,0,0.2)] transition-all hover:scale-110 active:scale-95 group relative z-10 ${isDark ? 'bg-[#0f1115] border border-[#1a1d24] text-blue-400 hover:border-blue-500/50 hover:shadow-neon-blue' : 'bg-slate-50 border border-slate-200 text-blue-600 hover:shadow-lg'}`} title="Minify JSON Output">
+                                 <Icons.FileCode size={16} />
+                            </button>
+
                         </div>
 
                         <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 ${errorMsg ? (isDark ? 'border-red-500/50 shadow-neon-red' : 'border-red-400 shadow-lg') : (isDark ? 'border-white/5 focus-within:border-blue-500/50 focus-within:shadow-neon-blue' : 'border-black/5 focus-within:border-blue-400 focus-within:shadow-lg')}`}>
-                            <PanelHeader title="Output" stats={outStats} isOutput={true} copyVal={output} showMagicFormat={false} />
+                            <PanelHeader title="Output" stats={outStats} isOutput={true} copyVal={output} />
                             <div className="relative flex-grow flex flex-col">
                                 {isJsonOutput ? (
                                     <div className={`w-full flex-grow p-6 overflow-auto font-mono text-[13px] leading-relaxed custom-scrollbar relative min-h-[300px] md:min-h-[400px] lg:min-h-[60vh] ${isDark ? 'bg-[#0a0a0a] text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
@@ -893,7 +907,6 @@
 
             const isDark = theme === 'dark';
             
-            // BUG FIX 1 & 2: Added rigorous whitespace handling and padding to decoders.
             const algosLib = {
                 toHex: s => { let r=''; for(let i=0;i<s.length;i++) r+=s.charCodeAt(i).toString(16).padStart(2,'0'); return r; },
                 fromHex: h => { let s=''; h=h.replace(/\s|0x/g,''); for(let i=0;i<h.length;i+=2) s+=String.fromCharCode(parseInt(h.substr(i,2),16)); return s; },
