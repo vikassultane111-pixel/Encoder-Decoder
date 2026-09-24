@@ -138,6 +138,14 @@
 
         textarea:focus { outline: none; }
         input[type="file"] { display: none; }
+
+        /* Smooth Custom Scrollbar for Workspace Tabs */
+        .tab-scroll-container::-webkit-scrollbar { height: 4px; }
+        .tab-scroll-container::-webkit-scrollbar-track { background: transparent; }
+        .tab-scroll-container::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 10px; }
+        .tab-scroll-container::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+        .dark .tab-scroll-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); }
+        .dark .tab-scroll-container::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100 min-h-screen bg-slate-50 dark:bg-brand-bg text-slate-800 dark:text-slate-300">
@@ -326,10 +334,10 @@
             }
             const handleScroll = (e) => { if (preRef.current) { preRef.current.scrollTop = e.target.scrollTop; preRef.current.scrollLeft = e.target.scrollLeft; } };
             return (
-                <div className="relative flex-grow flex flex-col w-full h-[450px] bg-transparent overflow-hidden group">
+                <div className="relative flex-grow flex flex-col w-full min-h-[250px] h-[300px] md:h-[400px] lg:h-[450px] bg-transparent overflow-hidden group">
                     {isJson && <div className={`absolute left-0 top-4 bottom-4 w-[3px] rounded-r-md z-0 transition-colors ${isDark ? 'bg-emerald-500/50 group-focus-within:bg-emerald-400' : 'bg-emerald-500/30 group-focus-within:bg-emerald-500'}`}></div>}
-                    <pre ref={preRef} className={`absolute inset-0 p-5 font-mono text-[13px] custom-scrollbar overflow-auto pointer-events-none z-0 editor-pre ${isJson ? 'pl-7' : ''} ${isDark ? 'text-slate-300' : 'text-slate-700'}`} dangerouslySetInnerHTML={{ __html: displayHtml || (value ? ' ' : `<span class="opacity-40 italic">${placeholder}</span>`) }} />
-                    <textarea value={value} onChange={onChange} onScroll={handleScroll} className={`absolute inset-0 w-full h-full p-5 bg-transparent resize-none outline-none font-mono text-[13px] custom-scrollbar overflow-auto z-10 editor-textarea ${isJson ? 'pl-7' : ''}`} spellCheck="false" />
+                    <pre ref={preRef} className={`absolute inset-0 p-4 sm:p-5 font-mono text-[12px] sm:text-[13px] custom-scrollbar overflow-auto pointer-events-none z-0 editor-pre ${isJson ? 'pl-7' : ''} ${isDark ? 'text-slate-300' : 'text-slate-700'}`} dangerouslySetInnerHTML={{ __html: displayHtml || (value ? ' ' : `<span class="opacity-40 italic">${placeholder}</span>`) }} />
+                    <textarea value={value} onChange={onChange} onScroll={handleScroll} className={`absolute inset-0 w-full h-full p-4 sm:p-5 bg-transparent resize-none outline-none font-mono text-[12px] sm:text-[13px] custom-scrollbar overflow-auto z-10 editor-textarea ${isJson ? 'pl-7' : ''}`} spellCheck="false" />
                 </div>
             );
         };
@@ -704,56 +712,57 @@
             }
 
             return (
-                <div className="flex flex-col gap-6 animate-fade-in w-full max-w-[100rem] mx-auto">
+                <div className="flex flex-col gap-4 sm:gap-6 animate-fade-in w-full max-w-[100rem] mx-auto">
                     {/* TOP CONTROL BAR (SAAS STYLE) */}
-                    <div className="glass-panel p-2 md:p-3 rounded-2xl border shadow-lg flex flex-col xl:flex-row items-center justify-between gap-4 z-30 relative">
-                        <div className="flex flex-col sm:flex-row items-center gap-2 w-full xl:w-auto">
-                            <div className="relative w-full sm:w-48">
-                                <select value={category} onChange={handleCategoryChange} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-bold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-emerald-400 hover:bg-black/60 focus:border-emerald-500/50' : 'bg-white border border-slate-200 text-emerald-700 hover:bg-slate-50 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100'}`}>
+                    <div className="glass-panel p-3 sm:p-4 rounded-2xl border shadow-lg flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 z-30 relative animate-slide-up">
+                        
+                        <div className="grid grid-cols-2 xl:flex gap-3 w-full xl:w-auto">
+                            <div className="relative w-full xl:w-48 col-span-1">
+                                <select value={category} onChange={handleCategoryChange} className={`w-full h-11 appearance-none pl-10 pr-8 rounded-xl font-bold text-[12px] sm:text-[13px] outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-emerald-400 hover:bg-black/60 focus:border-emerald-500/50' : 'bg-white border border-slate-200 text-emerald-700 hover:bg-slate-50 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100'}`}>
                                     {toolCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
-                                <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-emerald-400/80' : 'text-emerald-600'}`}>{toolCategories.find(c=>c.id===category)?.icon}</div>
-                                <Icons.ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
+                                <div className={`absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-emerald-400/80' : 'text-emerald-600'}`}>{toolCategories.find(c=>c.id===category)?.icon}</div>
+                                <Icons.ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
                             </div>
-                            <div className="relative w-full sm:w-60">
+                            <div className="relative w-full xl:w-60 col-span-1">
                                 <select value={algo} onChange={e => { 
                                         const val = e.target.value; setAlgo(val); 
                                         if(category === 'hashes' || val === 'uuid' || val === 'url_all') setMode('encode'); 
                                         else if(['jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'epoch'].includes(val)) setMode('decode'); 
-                                    }} className={`w-full h-11 appearance-none pl-11 pr-8 rounded-xl font-semibold text-sm outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-blue-300 hover:bg-black/60 focus:border-blue-500/50' : 'bg-white border border-slate-200 text-blue-700 hover:bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100'}`}>
+                                    }} className={`w-full h-11 appearance-none pl-10 pr-8 rounded-xl font-semibold text-[12px] sm:text-[13px] outline-none transition-all cursor-pointer ${isDark ? 'bg-black/40 border border-white/5 text-blue-300 hover:bg-black/60 focus:border-blue-500/50' : 'bg-white border border-slate-200 text-blue-700 hover:bg-slate-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100'}`}>
                                     {algorithms.filter(a => a.category === category).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                                 </select>
-                                <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-blue-400/80' : 'text-blue-600'}`}>{algorithms.find(a=>a.id===algo)?.icon}</div>
-                                <Icons.ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
+                                <div className={`absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none ${isDark ? 'text-blue-400/80' : 'text-blue-600'}`}>{algorithms.find(a=>a.id===algo)?.icon}</div>
+                                <Icons.ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" />
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3 w-full xl:w-auto">
+                        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full xl:w-auto">
                             {!['uuid'].includes(algo) && (
                                 <div className={`flex p-1 rounded-xl w-full sm:w-auto transition-opacity ${isLockMode ? 'opacity-50 pointer-events-none' : ''} ${isDark ? 'bg-black/50 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
                                     {['encode', 'decode'].map(m => (
-                                        <button key={m} onClick={() => setMode(m)} className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-brand-panel text-white shadow-lg border border-white/10' : 'bg-white text-slate-800 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}>{m}</button>
+                                        <button key={m} onClick={() => setMode(m)} className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-[13px] sm:text-sm font-bold capitalize transition-all duration-300 ${mode === m ? (isDark ? 'bg-brand-panel text-white shadow-lg border border-white/10' : 'bg-white text-slate-800 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'}`}>{m}</button>
                                     ))}
                                 </div>
                             )}
                             
                             {algo === 'caesar' && (
-                                <div className={`flex items-center gap-3 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
-                                    <Icons.Settings size={14} className="text-slate-500" />
-                                    <input type="range" min="1" max="25" value={caesarShift} onChange={(e) => setCaesarShift(e.target.value)} className="w-20 sm:w-28" />
-                                    <span className={`font-mono font-bold w-5 text-center text-xs ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{caesarShift}</span>
+                                <div className={`flex flex-1 sm:flex-none items-center justify-between sm:justify-start gap-2 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
+                                    <Icons.Settings size={14} className="text-slate-500 hidden sm:block" />
+                                    <input type="range" min="1" max="25" value={caesarShift} onChange={(e) => setCaesarShift(e.target.value)} className="w-full sm:w-28" />
+                                    <span className={`font-mono font-bold w-5 text-center text-[11px] sm:text-xs ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{caesarShift}</span>
                                 </div>
                             )}
                             {algo === 'vigenere' && (
-                                <div className={`flex items-center gap-3 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
-                                    <Icons.Settings size={14} className="text-slate-500" />
-                                    <input type="text" value={vigenereKey} onChange={(e) => setVigenereKey(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))} placeholder="KEY" className={`w-20 sm:w-28 bg-transparent outline-none font-mono font-bold text-center text-xs uppercase tracking-widest ${isDark ? 'text-emerald-400 placeholder-slate-600' : 'text-emerald-600 placeholder-slate-400'}`}/>
+                                <div className={`flex flex-1 sm:flex-none items-center gap-2 px-4 py-2 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-white border border-slate-200'}`}>
+                                    <Icons.Settings size={14} className="text-slate-500 hidden sm:block" />
+                                    <input type="text" value={vigenereKey} onChange={(e) => setVigenereKey(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))} placeholder="KEY" className={`w-full sm:w-28 bg-transparent outline-none font-mono font-bold text-center text-[11px] sm:text-xs uppercase tracking-widest ${isDark ? 'text-emerald-400 placeholder-slate-600' : 'text-emerald-600 placeholder-slate-400'}`}/>
                                 </div>
                             )}
                             {algo === 'string_utils' && (
-                                <div className={`flex items-center gap-2 p-1 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
+                                <div className={`flex flex-1 sm:flex-none items-center w-full sm:w-auto gap-1 p-1 rounded-xl h-11 ${isDark ? 'bg-black/40 border border-white/5' : 'bg-slate-200/50 border border-slate-300/50'}`}>
                                     {['upper', 'lower', 'title'].map(m => (
-                                        <button key={m} onClick={() => setStrUtilMode(m)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${strUtilMode === m ? (isDark?'bg-brand-panel text-white':'bg-white text-slate-800') : 'text-slate-500 hover:text-slate-400'}`}>
+                                        <button key={m} onClick={() => setStrUtilMode(m)} className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${strUtilMode === m ? (isDark?'bg-brand-panel text-white':'bg-white text-slate-800') : 'text-slate-500 hover:text-slate-400'}`}>
                                             {m === 'upper' ? 'UPPER' : m === 'lower' ? 'lower' : 'Title'}
                                         </button>
                                     ))}
@@ -761,30 +770,30 @@
                             )}
                         </div>
 
-                        <div className="flex items-center gap-2 w-full xl:w-auto xl:ml-auto">
+                        <div className="flex items-center gap-3 w-full xl:w-auto xl:ml-auto">
                             <input type="file" ref={fileInputRef} onChange={handleFile} className="hidden" accept=".txt,.json,.xml,.csv,.log,.md,.bin" />
-                            <button onClick={() => fileInputRef.current.click()} className={`flex-1 xl:flex-none flex items-center justify-center gap-2 h-11 px-5 text-xs font-bold tracking-widest rounded-xl transition-all ${isDark ? 'bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                            <button onClick={() => fileInputRef.current.click()} className={`flex-1 xl:flex-none flex items-center justify-center gap-2 h-11 px-4 sm:px-5 text-[11px] sm:text-xs font-bold tracking-widest rounded-xl transition-all shadow-sm ${isDark ? 'bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
                                 <Icons.Upload size={14} /> LOAD
                             </button>
-                            <button onClick={() => {setInput(''); setOutput(''); setErrorMsg(null); setShowQR(false);}} className={`flex-1 xl:flex-none flex items-center justify-center gap-2 h-11 px-5 text-xs font-bold tracking-widest rounded-xl transition-all ${isDark ? 'bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:border-red-500/40' : 'bg-red-50 border border-red-200 text-red-600 hover:bg-red-100'}`}>
+                            <button onClick={() => {setInput(''); setOutput(''); setErrorMsg(null); setShowQR(false);}} className={`flex-1 xl:flex-none flex items-center justify-center gap-2 h-11 px-4 sm:px-5 text-[11px] sm:text-xs font-bold tracking-widest rounded-xl transition-all shadow-sm ${isDark ? 'bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:border-red-500/40' : 'bg-red-50 border border-red-200 text-red-600 hover:bg-red-100'}`}>
                                 <Icons.Trash2 size={14} /> CLEAR
                             </button>
                         </div>
                     </div>
 
                     {/* MAIN EDITOR GRID */}
-                    <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-stretch">
+                    <div className="flex-grow grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-stretch animate-slide-up" style={{animationDelay: '0.1s'}}>
                         
                         {/* INPUT PANEL */}
-                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group ${isDark ? 'border-white/5 focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald' : 'border-black/5 focus-within:border-emerald-400 focus-within:shadow-lg'}`}>
+                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group shadow-sm ${isDark ? 'border-white/5 focus-within:border-emerald-500/50 focus-within:shadow-neon-emerald' : 'border-black/5 focus-within:border-emerald-400 focus-within:shadow-lg'}`}>
                             <PanelHeader title="Input Payload" stats={inStats} isOutput={false} copyVal={input} />
                             <HighlightedInput value={input} onChange={e => setInput(e.target.value)} isDark={isDark} placeholder={algo === 'epoch' ? "Enter Unix Timestamp (e.g. 1729000000)" : "Enter payload or drag file here..."} />
                             <PanelFooter stats={inStats} />
                         </div>
 
                         {/* PROFESSIONAL UNIFIED TOOLBAR */}
-                        <div className="flex flex-row lg:flex-col items-center justify-center gap-3 relative z-10 py-2 lg:py-0 lg:px-2">
-                            <div className={`flex flex-row lg:flex-col items-center p-1.5 rounded-full shadow-floating backdrop-blur-xl border ${isDark ? 'bg-black/60 border-white/10' : 'bg-white/80 border-slate-200'}`}>
+                        <div className="flex flex-row lg:flex-col items-center justify-center gap-3 relative z-10 py-1 lg:py-0 lg:px-2">
+                            <div className={`flex flex-row lg:flex-col items-center p-1.5 rounded-full shadow-floating backdrop-blur-xl border ${isDark ? 'bg-black/60 border-white/10' : 'bg-white/90 border-slate-200'}`}>
                                 
                                 <button onClick={() => applyJsonFormat('beautify')} className={`h-10 w-10 flex items-center justify-center rounded-full transition-all group relative z-10 ${isDark ? 'text-emerald-400 hover:bg-white/10' : 'text-emerald-600 hover:bg-emerald-50'}`} title="Beautify JSON">
                                     <Icons.AlignLeft size={16} className="transition-transform group-hover:scale-110" />
@@ -792,9 +801,9 @@
 
                                 <div className={`w-px h-6 lg:w-6 lg:h-px mx-1 my-1 ${isDark ? 'bg-white/10' : 'bg-slate-200'}`}></div>
 
-                                <button onClick={swap} disabled={isLockMode} className={`h-12 w-12 flex items-center justify-center rounded-full shadow-lg transition-all active:scale-95 group relative overflow-hidden z-20 ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-brand-panel border-2 border-[#27272a] text-slate-200 hover:text-white hover:border-emerald-500 hover:shadow-neon-emerald' : 'bg-slate-800 border-2 border-slate-700 text-white hover:shadow-xl hover:bg-slate-900'}`} title="Swap Input & Output">
+                                <button onClick={swap} disabled={isLockMode} className={`h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center rounded-full shadow-lg transition-all active:scale-95 group relative overflow-hidden z-20 ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-brand-panel border-2 border-[#27272a] text-slate-200 hover:text-white hover:border-emerald-500 hover:shadow-neon-emerald' : 'bg-slate-800 border-2 border-slate-700 text-white hover:shadow-xl hover:bg-slate-900'}`} title="Swap Input & Output">
                                     <div className={`relative z-10 transition-transform duration-500 ${animating ? 'rotate-180 scale-75' : ''}`}>
-                                        <Icons.ArrowRightLeft size={18} strokeWidth={2.5} />
+                                        <Icons.ArrowRightLeft size={16} strokeWidth={2.5} className="sm:w-[18px] sm:h-[18px]" />
                                     </div>
                                 </button>
 
@@ -807,16 +816,16 @@
                         </div>
 
                         {/* OUTPUT PANEL */}
-                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group ${errorMsg ? (isDark ? 'border-red-500/50 shadow-neon-red' : 'border-red-400 shadow-lg') : (isDark ? 'border-white/5 focus-within:border-blue-500/50 focus-within:shadow-neon-blue' : 'border-black/5 focus-within:border-blue-400 focus-within:shadow-lg')}`}>
+                        <div className={`flex flex-col rounded-2xl glass-panel border overflow-hidden transition-all duration-300 group shadow-sm ${errorMsg ? (isDark ? 'border-red-500/50 shadow-neon-red' : 'border-red-400 shadow-lg') : (isDark ? 'border-white/5 focus-within:border-blue-500/50 focus-within:shadow-neon-blue' : 'border-black/5 focus-within:border-blue-400 focus-within:shadow-lg')}`}>
                             <PanelHeader title="Processed Output" stats={outStats} isOutput={true} copyVal={output} />
-                            <div className="relative flex-grow flex flex-col h-[450px]">
+                            <div className="relative flex-grow flex flex-col min-h-[250px] h-[300px] md:h-[400px] lg:h-[450px]">
                                 {isJsonOutput ? (
-                                    <div className={`w-full h-full p-5 overflow-auto font-mono text-[13px] custom-scrollbar relative ${isDark ? 'bg-brand-bg text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
+                                    <div className={`w-full h-full p-4 sm:p-5 overflow-auto font-mono text-[12px] sm:text-[13px] custom-scrollbar relative ${isDark ? 'bg-brand-bg text-slate-300' : 'bg-slate-50 text-slate-700'}`}>
                                         <div className={`absolute left-0 top-4 bottom-4 w-[3px] rounded-r-md transition-colors ${isDark ? 'bg-cyan-500/50 group-focus-within:bg-cyan-400' : 'bg-cyan-500/30 group-focus-within:bg-cyan-500'}`}></div>
                                         <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(formattedJsonOutput) }} className="whitespace-pre-wrap pl-3 m-0 editor-pre leading-relaxed"></pre>
                                     </div>
                                 ) : (
-                                    <textarea value={errorMsg || output} readOnly placeholder={errorMsg ? '' : "Result awaits..."} className={`w-full h-full p-5 bg-transparent resize-none outline-none font-mono text-[13px] custom-scrollbar overflow-auto leading-relaxed ${errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-blue-50' : 'text-slate-800')}`} />
+                                    <textarea value={errorMsg || output} readOnly placeholder={errorMsg ? '' : "Result awaits..."} className={`w-full h-full p-4 sm:p-5 bg-transparent resize-none outline-none font-mono text-[12px] sm:text-[13px] custom-scrollbar overflow-auto leading-relaxed ${errorMsg ? (isDark ? 'text-red-400' : 'text-red-600') : (isDark ? 'text-blue-50' : 'text-slate-800')}`} />
                                 )}
                                 
                                 {showQR && (
@@ -834,6 +843,75 @@
                 </div>
             );
         });
+
+        // ==========================================
+        // COMPONENT: WORKSPACE TAB (EDITABLE & POLISHED)
+        // ==========================================
+        const WorkspaceTab = ({ ws, isActive, onSelect, onClose, onRename, isDark, isOnlyTab }) => {
+            const [isEditing, setIsEditing] = useState(false);
+            const [editName, setEditName] = useState(ws.name);
+            const inputRef = useRef(null);
+
+            // Auto-focus input when edit mode is toggled
+            useEffect(() => {
+                if (isEditing && inputRef.current) {
+                    inputRef.current.focus();
+                    inputRef.current.select();
+                }
+            }, [isEditing]);
+
+            const handleRenameSubmit = () => {
+                setIsEditing(false);
+                if (editName.trim() && editName.trim() !== ws.name) {
+                    onRename(ws.id, editName.trim());
+                } else {
+                    setEditName(ws.name); // Revert to original if empty
+                }
+            };
+
+            const handleKeyDown = (e) => {
+                if (e.key === 'Enter') handleRenameSubmit();
+                if (e.key === 'Escape') { setIsEditing(false); setEditName(ws.name); }
+            };
+
+            return (
+                <div 
+                    onClick={() => !isEditing && onSelect(ws.id)}
+                    onDoubleClick={() => setIsEditing(true)}
+                    className={`group flex items-center gap-2 px-3.5 py-2 min-w-[140px] max-w-[220px] cursor-pointer rounded-xl transition-all duration-300 border shadow-sm flex-shrink-0 relative ${
+                        isActive 
+                            ? (isDark ? 'bg-brand-panel border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'bg-emerald-50/80 border-emerald-300 text-emerald-700 shadow-[0_0_15px_rgba(16,185,129,0.1)]') 
+                            : (isDark ? 'bg-black/20 border-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200' : 'bg-white border-slate-200/60 text-slate-500 hover:bg-slate-50 hover:text-slate-800')
+                    }`}
+                >
+                    <Icons.Folder size={14} className={`flex-shrink-0 ${isActive ? '' : 'opacity-60'}`} />
+                    
+                    {isEditing ? (
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            onBlur={handleRenameSubmit}
+                            onKeyDown={handleKeyDown}
+                            className={`text-xs font-bold w-full bg-transparent outline-none flex-grow ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}
+                        />
+                    ) : (
+                        <span className="text-xs font-bold truncate flex-grow select-none" title="Double-click to rename">{ws.name}</span>
+                    )}
+
+                    {!isOnlyTab && !isEditing && (
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onClose(ws.id); }}
+                            className={`p-1 rounded-md opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 ml-1 ${isDark ? 'hover:bg-red-500/20 hover:text-red-400' : 'hover:bg-red-100 hover:text-red-600'}`}
+                            title="Close Workspace"
+                        >
+                            <Icons.X size={12} />
+                        </button>
+                    )}
+                </div>
+            );
+        };
 
         // ==========================================
         // MAIN APP SHELL
@@ -886,7 +964,6 @@
                 stringUtils: (s, mode) => { if(mode === 'upper') return s.toUpperCase(); if(mode === 'lower') return s.toLowerCase(); return s.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substring(1).toLowerCase()); }
             };
 
-            // Workspace Management Functions
             const addWorkspace = () => {
                 if (workspaces.length >= 10) {
                     setToast("Max 10 workspaces allowed!");
@@ -908,6 +985,10 @@
                 }
             };
 
+            const renameWorkspace = (id, newName) => {
+                setWorkspaces(workspaces.map(ws => ws.id === id ? { ...ws, name: newName } : ws));
+            };
+
             return (
                 <div className="min-h-screen flex flex-col relative font-sans">
                     <div className="fixed inset-0 pointer-events-none z-0">
@@ -917,31 +998,11 @@
                         {isDark && <div className="scanline opacity-30"></div>}
                     </div>
 
-                    <main className="flex-grow w-full max-w-[100rem] mx-auto p-4 md:p-6 lg:p-8 relative z-10 flex flex-col gap-6">
-                        {/* MAIN HEADER */}
-                        <header className={`glass-panel border rounded-2xl p-4 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-500 animate-slide-up ${isDark ? 'bg-brand-bg/60 border-white/5' : 'bg-white/80 border-slate-200'}`}>
-                            <div className="flex items-center gap-3 pl-2 w-full lg:w-1/3">
-                                <div className="relative">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-blue-500 blur-[8px] opacity-40 rounded-xl"></div>
-                                    <div className={`relative p-2 rounded-xl border shadow-sm ${isDark ? 'bg-brand-panel border-white/10 text-white' : 'bg-white border-slate-100 text-slate-800'}`}>
-                                        <Icons.Shield size={20} strokeWidth={2.5} className="text-emerald-500" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-gradient-primary leading-none">DecoderX</h1>
-                                    <p className={`text-[10px] font-bold tracking-[0.2em] uppercase mt-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Pro Suite</p>
-                                </div>
-                            </div>
-
-                            <div className={`flex p-1.5 rounded-xl w-full lg:w-auto shadow-inner border ${isDark ? 'bg-black/60 border-white/5' : 'bg-slate-100 border-slate-200/50'}`}>
-                                <button onClick={() => setActiveTab('decoderx')} className={`flex-1 flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${activeTab === 'decoderx' ? (isDark ? 'bg-brand-panel text-emerald-400 shadow-md border border-white/5' : 'bg-white text-emerald-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
-                                    <Icons.Terminal size={16}/> Essential Tools
-                                </button>
-                                <button onClick={() => setActiveTab('curl')} className={`flex-1 flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${activeTab === 'curl' ? (isDark ? 'bg-brand-panel text-blue-400 shadow-md border border-white/5' : 'bg-white text-blue-600 shadow-sm border border-slate-200') : 'text-slate-500 hover:text-slate-300'}`}>
-                                    <Icons.Layers size={16}/> Deep cURL Parse
-                                </button>
-                            </div>
-
+                    <main className="flex-grow w-full max-w-[100rem] mx-auto p-3 sm:p-6 lg:p-8 relative z-10 flex flex-col gap-5 sm:gap-8 overflow-x-hidden">
+                        
+                        {/* HEADER - FULLY RESPONSIVE */}
+                        <header className={`glass-panel border rounded-2xl p-3 sm:p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-500 animate-slide-up ${isDark ? 'bg-brand-bg/60 border-white/5' : 'bg-white/80 border-slate-200'}`}>
+                            
                             <div className="flex justify-end w-full lg:w-1/3 pr-2">
                                 <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} className={`h-10 w-10 flex items-center justify-center rounded-xl border outline-none transition-all hover:scale-105 active:scale-95 shadow-sm ${isDark ? 'bg-brand-panel border-white/10 text-yellow-400 hover:border-yellow-500/50 hover:shadow-neon-emerald' : 'bg-white border-slate-200 text-slate-500 hover:text-blue-500'}`}>
                                     {isDark ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
@@ -951,38 +1012,68 @@
 
                         {/* WORKSPACE TAB MANAGER (Only visible in 'decoderx' tab) */}
                         {activeTab === 'decoderx' && (
-                            <div className={`flex items-center gap-2 py-1 px-1 overflow-x-auto custom-scrollbar animate-slide-up rounded-xl border glass-panel ${isDark ? 'border-white/5 bg-brand-bg/40' : 'border-slate-200 bg-white/40'}`}>
+                            <div className={`flex items-center gap-3 py-3 px-4 overflow-x-auto tab-scroll-container animate-slide-up rounded-2xl border glass-panel shadow-sm w-full transition-all duration-500 ${isDark ? 'border-white/5 bg-brand-bg/60' : 'border-slate-200 bg-white/80'}`}>
                                 {workspaces.map(ws => (
-                                    <div 
-                                        key={ws.id} 
-                                        onClick={() => setActiveWorkspaceId(ws.id)}
-                                        className={`group flex items-center gap-2 px-4 py-2 min-w-[140px] max-w-[200px] cursor-pointer rounded-lg transition-all duration-300 border ${activeWorkspaceId === ws.id ? (isDark ? 'bg-brand-panel border-emerald-500/30 text-emerald-400 shadow-md' : 'bg-white border-emerald-200 text-emerald-700 shadow-sm') : (isDark ? 'bg-transparent border-transparent text-slate-400 hover:bg-white/5' : 'bg-transparent border-transparent text-slate-500 hover:bg-white/60')}`}
-                                    >
-                                        <Icons.Folder size={14} className={activeWorkspaceId === ws.id ? '' : 'opacity-60'} />
-                                        <span className="text-xs font-bold truncate flex-grow">{ws.name}</span>
-                                        {workspaces.length > 1 && (
-                                            <button 
-                                                onClick={(e) => { e.stopPropagation(); removeWorkspace(ws.id); }}
-                                                className={`p-1 rounded-md opacity-0 group-hover:opacity-100 transition-all ${isDark ? 'hover:bg-red-500/20 hover:text-red-400' : 'hover:bg-red-100 hover:text-red-600'}`}
-                                                title="Close Workspace"
-                                            >
-                                                <Icons.X size={12} />
-                                            </button>
-                                        )}
-                                    </div>
+                                    <WorkspaceTab
+                                        key={ws.id}
+                                        ws={ws}
+                                        isActive={activeWorkspaceId === ws.id}
+                                        onSelect={setActiveWorkspaceId}
+                                        onClose={removeWorkspace}
+                                        onRename={renameWorkspace}
+                                        isDark={isDark}
+                                        isOnlyTab={workspaces.length === 1}
+                                    />
                                 ))}
                                 
-                                <button onClick={addWorkspace} className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all border border-dashed ${isDark ? 'border-white/20 text-slate-400 hover:bg-white/5 hover:text-emerald-400 hover:border-emerald-500/50' : 'border-slate-300 text-slate-500 hover:bg-white/80 hover:text-emerald-600 hover:border-emerald-300'}`}>
-                                    <Icons.Plus size={14} /> New
+                                <div className={`w-px h-6 flex-shrink-0 mx-1 ${isDark ? 'bg-white/10' : 'bg-slate-200'}`}></div>
+
+                                <button onClick={addWorkspace} className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-dashed flex-shrink-0 group ${isDark ? 'border-white/20 text-slate-400 hover:bg-white/10 hover:text-white hover:border-white/40' : 'border-slate-300 text-slate-500 hover:bg-slate-100 hover:text-slate-800 hover:border-slate-400'}`}>
+                                    <Icons.Plus size={14} className="transition-transform group-hover:scale-110" /> New Tab
                                 </button>
+                                
+                                <div className="flex-grow"></div>
+                                <div className={`hidden md:flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase px-2 opacity-50 select-none flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    <Icons.Wand size={12} /> Double-Click Tab to Rename
+                                </div>
                             </div>
                         )}
 
                         {/* WORKSPACE CONTENT AREA */}
                         <div className="flex-grow flex flex-col w-full relative">
                             {activeTab === 'decoderx' ? (
-                                <div className="w-full">
-                                    {/* Map through all workspaces but only show the active one. This preserves state without complex state lifting! */}
+                                <div className="w-full flex flex-col gap-4 sm:gap-6">
+                                    
+                                    {/* WORKSPACE MANAGER (TABS) - POLISHED */}
+                                    <div className={`flex items-center gap-2 py-2 px-2 overflow-x-auto hide-scrollbar animate-slide-up rounded-2xl border shadow-sm glass-panel w-full ${isDark ? 'border-white/5 bg-brand-panel/40' : 'border-slate-200/60 bg-white/60'}`}>
+                                        {workspaces.map(ws => (
+                                            <div 
+                                                key={ws.id} 
+                                                onClick={() => setActiveWorkspaceId(ws.id)}
+                                                className={`group flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 min-w-max cursor-pointer rounded-xl transition-all duration-300 border ${activeWorkspaceId === ws.id ? (isDark ? 'bg-brand-panel border-emerald-500/30 text-emerald-400 shadow-[0_4px_12px_rgba(16,185,129,0.15)]' : 'bg-white border-emerald-200 text-emerald-700 shadow-sm') : (isDark ? 'bg-black/20 border-white/5 text-slate-400 hover:bg-white/5' : 'bg-slate-50/50 border-slate-200 text-slate-500 hover:bg-white')}`}
+                                            >
+                                                <Icons.Folder size={14} className={activeWorkspaceId === ws.id ? '' : 'opacity-60'} />
+                                                <span className="text-[11px] sm:text-xs font-bold whitespace-nowrap">{ws.name}</span>
+                                                {workspaces.length > 1 && (
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); removeWorkspace(ws.id); }}
+                                                        className={`p-1 rounded-md opacity-0 group-hover:opacity-100 transition-all ml-1 ${isDark ? 'hover:bg-red-500/20 hover:text-red-400' : 'hover:bg-red-100 hover:text-red-600'}`}
+                                                        title="Close Workspace"
+                                                    >
+                                                        <Icons.X size={12} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                        
+                                        <div className={`w-px h-6 mx-1 ${isDark ? 'bg-white/10' : 'bg-slate-200'}`}></div>
+
+                                        <button onClick={addWorkspace} className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all border border-dashed ${isDark ? 'border-white/20 text-slate-400 hover:bg-white/10 hover:text-emerald-400 hover:border-emerald-500/50' : 'border-slate-300 text-slate-500 hover:bg-white hover:text-emerald-600 hover:border-emerald-300 shadow-sm'}`}>
+                                            <Icons.Plus size={14} /> <span className="hidden sm:inline">New Tab</span><span className="sm:hidden">New</span>
+                                        </button>
+                                    </div>
+
+                                    {/* WORKSPACE CONTENTS */}
                                     {workspaces.map(ws => (
                                         <div key={ws.id} className={activeWorkspaceId === ws.id ? 'block animate-fade-in' : 'hidden'}>
                                             <StandardDecoderTab isDark={isDark} setToast={setToast} AlgorithmsLib={algosLib} workspaceId={ws.id} />
@@ -995,9 +1086,9 @@
                         </div>
 
                         <footer className="mt-auto pt-4 pb-2 animate-fade-in text-center">
-                            <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border glass-panel ${isDark ? 'border-white/5' : 'border-black/5'}`}>
-                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-glow shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                                <span className={`text-[11px] font-bold tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border glass-panel shadow-sm ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse-glow shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                                <span className={`text-[10px] sm:text-[11px] font-bold tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                     Engineered by <span className="text-gradient-primary">Mr Shiva</span>
                                 </span>
                             </div>
@@ -1005,10 +1096,10 @@
                     </main>
 
                     {toast && (
-                        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
-                            <div className={`flex items-center gap-3 px-6 py-4 rounded-2xl shadow-floating border font-bold text-sm tracking-wide glass-panel ${isDark ? 'border-emerald-500/30 text-emerald-400 bg-brand-bg/90' : 'border-emerald-200 text-emerald-700 bg-white/95'}`}>
-                                <div className={`p-1.5 rounded-full ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100'}`}><Icons.Check size={16} /></div>
-                                {toast}
+                        <div className="fixed bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-50 animate-slide-up w-[90%] sm:w-auto max-w-sm">
+                            <div className={`flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-floating border font-bold text-[13px] sm:text-sm tracking-wide glass-panel ${isDark ? 'border-emerald-500/30 text-emerald-400 bg-brand-bg/95' : 'border-emerald-200 text-emerald-700 bg-white/95'}`}>
+                                <div className={`p-1.5 rounded-full shrink-0 ${isDark ? 'bg-emerald-500/20' : 'bg-emerald-100'}`}><Icons.Check size={16} /></div>
+                                <span className="truncate">{toast}</span>
                             </div>
                         </div>
                     )}
