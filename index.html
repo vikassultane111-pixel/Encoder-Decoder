@@ -259,16 +259,26 @@
 
         const computeClientIdentity = async () => {
             let ipAddr = 'local';
-            try {
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 2500);
-                const res = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
-                clearTimeout(timeout);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.ip) ipAddr = data.ip;
-                }
-            } catch (e) {}
+            const ipEndpoints = [
+                'https://api.ipify.org?format=json',
+                'https://api64.ipify.org?format=json',
+                'https://ipwho.is/'
+            ];
+            for (const url of ipEndpoints) {
+                try {
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 2200);
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timeout);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.ip) { ipAddr = data.ip; break; }
+                    }
+                } catch (e) {}
+            }
+
+            const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+            const deviceType = isMobile ? 'Mobile' : 'Desktop';
 
             const rawTraits = [
                 ipAddr,
@@ -286,7 +296,34 @@
                 hash = Math.imul(hash, 16777619);
             }
             const fpHex = (hash >>> 0).toString(16).padStart(8, '0');
-            return { identityKey: `id_${fpHex}`, ipMasked: ipAddr !== 'local' ? ipAddr.replace(/(\d+)\.(\d+)\.\d+\.\d+/, '$1.$2.*.*') : 'local' };
+
+            // Ensure each distinct browser/device instance gets a persistent unique node ID
+            // without colliding when two devices share the same account or Wi-Fi IP
+            let deviceId = '';
+            try {
+                if (window.name && window.name.startsWith('dx_node_')) {
+                    deviceId = window.name;
+                } else {
+                    const randArr = new Uint32Array(2);
+                    crypto.getRandomValues(randArr);
+                    const randHex = Array.from(randArr).map(n => (n >>> 0).toString(16).padStart(8, '0')).join('').slice(0, 10);
+                    deviceId = `dx_node_${fpHex}_${randHex}`;
+                    window.name = deviceId;
+                }
+            } catch (e) {
+                deviceId = `dx_node_${fpHex}_${Math.random().toString(16).slice(2, 10)}`;
+            }
+
+            const ipMasked = ipAddr !== 'local'
+                ? (ipAddr.includes(':') ? ipAddr.split(':').slice(0, 3).join(':') + '::*' : ipAddr.replace(/(\d+)\.(\d+)\.\d+\.\d+/, '$1.$2.*.*'))
+                : 'Net-Node';
+
+            return {
+                deviceId,
+                fingerprint: `fp_${fpHex}`,
+                ipMasked,
+                deviceType
+            };
         };
 
         const algorithms = [
@@ -1628,6 +1665,7 @@
             const [isCmdOpen, setIsCmdOpen] = useState(false);
 
             const [liveUsersCount, setLiveUsersCount] = useState(1);
+            const [liveNodesList, setLiveNodesList] = useState([]);
             const [currentUserId, setCurrentUserId] = useState('');
             const [showPresenceInfo, setShowPresenceInfo] = useState(false);
             const activeRecordsRef = useRef([]);
@@ -1648,51 +1686,170 @@
                 let userDocRef = null;
                 let currentAuthUser = null;
                 let bc = null;
-                const localPeers = new Map();
+                let globalWs = null;
+                let wsReconnectTimer = null;
+                let lastHereReplyTs = 0;
 
-                const recalculateLiveCount = () => {
+                const ACTIVE_TTL = 65000; // 65 seconds active window
+                const GLOBAL_TOPIC = 'dx_pro_suite_shiva_live_v4';
+                const peerRegistry = new Map(); // deviceId -> { deviceId, userId, ipMasked, deviceType, lastSeen }
+
+                const recalculateLiveCount = (selfDeviceId) => {
                     if (!isMounted) return;
                     const now = Date.now();
-                    const ACTIVE_TTL = 65000; // 65 seconds window
-                    const uniqueIdentities = new Set();
+                    const mergedMap = new Map();
 
+                    // 1. Include Firestore records
                     activeRecordsRef.current.forEach(rec => {
+                        const key = rec?.deviceId || rec?.identityKey || rec?.userId;
+                        if (key && rec.lastSeen && (now - rec.lastSeen < ACTIVE_TTL)) {
+                            mergedMap.set(key, {
+                                deviceId: key,
+                                userId: rec.userId || key,
+                                ipMasked: rec.ipMasked || 'Active',
+                                deviceType: rec.deviceType || 'Device',
+                                lastSeen: rec.lastSeen
+                            });
+                        }
+                    });
+
+                    // 2. Include Global WebSocket & BroadcastChannel peers
+                    peerRegistry.forEach((rec, key) => {
                         if (rec && rec.lastSeen && (now - rec.lastSeen < ACTIVE_TTL)) {
-                            uniqueIdentities.add(rec.identityKey || rec.userId);
+                            const existing = mergedMap.get(key);
+                            if (!existing || rec.lastSeen > existing.lastSeen) {
+                                mergedMap.set(key, rec);
+                            }
+                        } else {
+                            peerRegistry.delete(key);
                         }
                     });
 
-                    localPeers.forEach((lastSeen, peerKey) => {
-                        if (now - lastSeen < ACTIVE_TTL) {
-                            uniqueIdentities.add(peerKey);
-                        }
-                    });
-
-                    setLiveUsersCount(Math.max(1, uniqueIdentities.size));
+                    const nodes = Array.from(mergedMap.values());
+                    setLiveNodesList(nodes);
+                    setLiveUsersCount(Math.max(1, nodes.length));
                 };
 
                 const initLivePresence = async () => {
                     const clientMeta = await computeClientIdentity();
                     if (!isMounted) return;
 
-                    // Local BroadcastChannel fallback/sync
-                    try {
-                        bc = new BroadcastChannel('decoderx_live_presence_v1');
-                        localPeers.set(clientMeta.identityKey, Date.now());
-                        bc.postMessage({ type: 'ping', key: clientMeta.identityKey, ts: Date.now() });
-                        bc.onmessage = (ev) => {
-                            if (ev.data && ev.data.key) {
-                                if (ev.data.type === 'leave') {
-                                    localPeers.delete(ev.data.key);
-                                } else {
-                                    localPeers.set(ev.data.key, Date.now());
+                    const myNodeId = clientMeta.deviceId;
+                    setCurrentUserId(myNodeId);
+
+                    const registerSelfLocally = () => {
+                        peerRegistry.set(myNodeId, {
+                            deviceId: myNodeId,
+                            userId: currentAuthUser?.uid || myNodeId,
+                            ipMasked: clientMeta.ipMasked,
+                            deviceType: clientMeta.deviceType,
+                            lastSeen: Date.now()
+                        });
+                        recalculateLiveCount(myNodeId);
+                    };
+
+                    registerSelfLocally();
+
+                    // Publish to global real-time pub/sub relay so external/cross-network devices sync immediately
+                    const publishGlobalSignal = (signalType) => {
+                        const payload = {
+                            type: signalType,
+                            deviceId: myNodeId,
+                            userId: currentAuthUser?.uid || myNodeId,
+                            ipMasked: clientMeta.ipMasked,
+                            deviceType: clientMeta.deviceType,
+                            ts: Date.now()
+                        };
+                        fetch(`https://ntfy.sh/${GLOBAL_TOPIC}`, {
+                            method: 'POST',
+                            body: JSON.stringify(payload)
+                        }).catch(() => {});
+                    };
+
+                    // Connect to global WebSocket stream for instant worldwide device discovery
+                    const connectGlobalWebSocket = () => {
+                        if (!isMounted) return;
+                        try {
+                            globalWs = new WebSocket(`wss://ntfy.sh/${GLOBAL_TOPIC}/ws?since=60s`);
+                            globalWs.onopen = () => {
+                                publishGlobalSignal('join');
+                            };
+                            globalWs.onmessage = (ev) => {
+                                try {
+                                    const outer = JSON.parse(ev.data);
+                                    if (outer.event !== 'message' || !outer.message) return;
+                                    const eventTimeMs = outer.time ? outer.time * 1000 : Date.now();
+                                    if (Date.now() - eventTimeMs > ACTIVE_TTL) return;
+
+                                    const data = JSON.parse(outer.message);
+                                    if (!data || !data.deviceId) return;
+
+                                    if (data.type === 'leave') {
+                                        peerRegistry.delete(data.deviceId);
+                                        recalculateLiveCount(myNodeId);
+                                        return;
+                                    }
+
+                                    peerRegistry.set(data.deviceId, {
+                                        deviceId: data.deviceId,
+                                        userId: data.userId || data.deviceId,
+                                        ipMasked: data.ipMasked || 'Remote',
+                                        deviceType: data.deviceType || 'Device',
+                                        lastSeen: Date.now()
+                                    });
+                                    recalculateLiveCount(myNodeId);
+
+                                    // If another device just joined, announce our presence back so its counter updates immediately
+                                    if (data.type === 'join' && data.deviceId !== myNodeId) {
+                                        const now = Date.now();
+                                        if (now - lastHereReplyTs > 3500) {
+                                            lastHereReplyTs = now;
+                                            setTimeout(() => {
+                                                if (isMounted) publishGlobalSignal('here');
+                                            }, 150 + Math.floor(Math.random() * 400));
+                                        }
+                                    }
+                                } catch (err) {}
+                            };
+                            globalWs.onclose = () => {
+                                if (isMounted) {
+                                    wsReconnectTimer = setTimeout(connectGlobalWebSocket, 5000);
                                 }
-                                recalculateLiveCount();
+                            };
+                        } catch (e) {}
+                    };
+
+                    connectGlobalWebSocket();
+
+                    // Local BroadcastChannel sync across same-browser tabs
+                    try {
+                        bc = new BroadcastChannel('decoderx_live_presence_v4');
+                        bc.postMessage({
+                            type: 'ping',
+                            deviceId: myNodeId,
+                            ipMasked: clientMeta.ipMasked,
+                            deviceType: clientMeta.deviceType,
+                            ts: Date.now()
+                        });
+                        bc.onmessage = (ev) => {
+                            if (ev.data && ev.data.deviceId) {
+                                if (ev.data.type === 'leave') {
+                                    peerRegistry.delete(ev.data.deviceId);
+                                } else {
+                                    peerRegistry.set(ev.data.deviceId, {
+                                        deviceId: ev.data.deviceId,
+                                        userId: ev.data.userId || ev.data.deviceId,
+                                        ipMasked: ev.data.ipMasked || clientMeta.ipMasked,
+                                        deviceType: ev.data.deviceType || clientMeta.deviceType,
+                                        lastSeen: Date.now()
+                                    });
+                                }
+                                recalculateLiveCount(myNodeId);
                             }
                         };
                     } catch (e) {}
 
-                    // Cloud Firestore Real-Time Presence
+                    // Cloud Firestore Real-Time Presence (using unique myNodeId per device so devices on same account don't overwrite each other)
                     const sdk = window.__DX_FIREBASE_SDK__;
                     if (sdk && typeof __firebase_config !== 'undefined' && __firebase_config) {
                         try {
@@ -1709,62 +1866,100 @@
                             }
 
                             const user = auth.currentUser;
-                            if (!user || !isMounted) return;
-                            currentAuthUser = user;
-                            setCurrentUserId(user.uid);
+                            if (user && isMounted) {
+                                currentAuthUser = user;
+                                setCurrentUserId(`${myNodeId} (${user.uid})`);
 
-                            userDocRef = sdk.doc(db, 'artifacts', appId, 'public', 'data', 'active_users', user.uid);
-                            const usersColRef = sdk.collection(db, 'artifacts', appId, 'public', 'data', 'active_users');
+                                // Keyed by myNodeId so every device gets its own document in active_users
+                                userDocRef = sdk.doc(db, 'artifacts', appId, 'public', 'data', 'active_users', myNodeId);
+                                const usersColRef = sdk.collection(db, 'artifacts', appId, 'public', 'data', 'active_users');
 
-                            const pushHeartbeat = async () => {
-                                if (!currentAuthUser) return;
-                                try {
-                                    await sdk.setDoc(userDocRef, {
-                                        userId: currentAuthUser.uid,
-                                        identityKey: clientMeta.identityKey,
-                                        ipMasked: clientMeta.ipMasked,
-                                        lastSeen: Date.now()
-                                    });
-                                } catch (err) {}
-                            };
+                                const pushFirestoreHeartbeat = async () => {
+                                    if (!currentAuthUser) return;
+                                    try {
+                                        await sdk.setDoc(userDocRef, {
+                                            deviceId: myNodeId,
+                                            userId: currentAuthUser.uid,
+                                            identityKey: myNodeId,
+                                            ipMasked: clientMeta.ipMasked,
+                                            deviceType: clientMeta.deviceType,
+                                            lastSeen: Date.now()
+                                        });
+                                    } catch (err) {}
+                                };
 
-                            await pushHeartbeat();
+                                await pushFirestoreHeartbeat();
 
-                            unsubscribeSnapshot = sdk.onSnapshot(
-                                usersColRef,
-                                (snapshot) => {
-                                    const list = [];
-                                    snapshot.forEach(d => list.push(d.data()));
-                                    activeRecordsRef.current = list;
-                                    recalculateLiveCount();
-                                },
-                                (err) => {}
-                            );
-
-                            heartbeatTimer = setInterval(() => {
-                                pushHeartbeat();
-                                if (bc) bc.postMessage({ type: 'ping', key: clientMeta.identityKey, ts: Date.now() });
-                            }, 22000);
+                                unsubscribeSnapshot = sdk.onSnapshot(
+                                    usersColRef,
+                                    (snapshot) => {
+                                        const list = [];
+                                        snapshot.forEach(d => list.push(d.data()));
+                                        activeRecordsRef.current = list;
+                                        recalculateLiveCount(myNodeId);
+                                    },
+                                    (err) => {}
+                                );
+                            }
                         } catch (e) {}
-                    } else {
-                        setCurrentUserId(clientMeta.identityKey);
-                        heartbeatTimer = setInterval(() => {
-                            localPeers.set(clientMeta.identityKey, Date.now());
-                            if (bc) bc.postMessage({ type: 'ping', key: clientMeta.identityKey, ts: Date.now() });
-                            recalculateLiveCount();
-                        }, 15000);
                     }
 
-                    pruneTimer = setInterval(recalculateLiveCount, 10000);
+                    // Periodic heartbeat across all channels
+                    heartbeatTimer = setInterval(() => {
+                        registerSelfLocally();
+                        publishGlobalSignal('ping');
+                        if (bc) {
+                            try {
+                                bc.postMessage({
+                                    type: 'ping',
+                                    deviceId: myNodeId,
+                                    ipMasked: clientMeta.ipMasked,
+                                    deviceType: clientMeta.deviceType,
+                                    ts: Date.now()
+                                });
+                            } catch (e) {}
+                        }
+                        if (userDocRef && currentAuthUser && window.__DX_FIREBASE_SDK__) {
+                            try {
+                                window.__DX_FIREBASE_SDK__.setDoc(userDocRef, {
+                                    deviceId: myNodeId,
+                                    userId: currentAuthUser.uid,
+                                    identityKey: myNodeId,
+                                    ipMasked: clientMeta.ipMasked,
+                                    deviceType: clientMeta.deviceType,
+                                    lastSeen: Date.now()
+                                });
+                            } catch (e) {}
+                        }
+                    }, 22000);
+
+                    pruneTimer = setInterval(() => recalculateLiveCount(myNodeId), 8000);
+
+                    const handleVisibility = () => {
+                        if (document.visibilityState === 'visible') {
+                            registerSelfLocally();
+                            publishGlobalSignal('join');
+                        }
+                    };
+                    document.addEventListener('visibilitychange', handleVisibility);
 
                     const handleUnload = () => {
+                        try {
+                            if (navigator.sendBeacon) {
+                                navigator.sendBeacon(
+                                    `https://ntfy.sh/${GLOBAL_TOPIC}`,
+                                    JSON.stringify({ type: 'leave', deviceId: myNodeId, ts: Date.now() })
+                                );
+                            }
+                        } catch (e) {}
                         if (bc) {
-                            try { bc.postMessage({ type: 'leave', key: clientMeta.identityKey }); } catch (e) {}
+                            try { bc.postMessage({ type: 'leave', deviceId: myNodeId }); } catch (e) {}
                         }
                         if (userDocRef && currentAuthUser && window.__DX_FIREBASE_SDK__) {
                             try { window.__DX_FIREBASE_SDK__.deleteDoc(userDocRef); } catch (e) {}
                         }
                     };
+                    window.addEventListener('pagehide', handleUnload);
                     window.addEventListener('beforeunload', handleUnload);
                 };
 
@@ -1778,7 +1973,11 @@
                     isMounted = false;
                     if (heartbeatTimer) clearInterval(heartbeatTimer);
                     if (pruneTimer) clearInterval(pruneTimer);
+                    if (wsReconnectTimer) clearTimeout(wsReconnectTimer);
                     if (unsubscribeSnapshot) unsubscribeSnapshot();
+                    if (globalWs) {
+                        try { globalWs.close(); } catch (e) {}
+                    }
                     if (userDocRef && currentAuthUser && window.__DX_FIREBASE_SDK__) {
                         try { window.__DX_FIREBASE_SDK__.deleteDoc(userDocRef); } catch (e) {}
                     }
@@ -1912,16 +2111,24 @@
                                 {showPresenceInfo && (
                                     <div 
                                         onClick={() => setShowPresenceInfo(false)}
-                                        className={`absolute left-0 top-full mt-2 z-50 p-3 rounded-xl border shadow-xl text-[11px] w-64 animate-fade-in ${
+                                        className={`absolute left-0 top-full mt-2 z-50 p-3 rounded-xl border shadow-xl text-[11px] w-72 animate-fade-in ${
                                             isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'
                                         }`}
                                     >
-                                        <div className="flex items-center justify-between font-bold mb-1.5 text-emerald-500">
+                                        <div className="flex items-center justify-between font-bold mb-2 text-emerald-500">
                                             <span>● Live Active Users: {liveUsersCount}</span>
                                             <Icons.X size={12} className="cursor-pointer opacity-60 hover:opacity-100" />
                                         </div>
-                                        <div className="text-[10px] opacity-75 font-mono break-all">
-                                            Session ID: {currentUserId || 'Initializing...'}
+                                        <div className="space-y-1 max-h-32 overflow-y-auto mb-2 pr-1">
+                                            {liveNodesList.map((node, idx) => (
+                                                <div key={node.deviceId || idx} className={`flex items-center justify-between px-2 py-1 rounded text-[10px] font-mono ${isDark ? 'bg-zinc-950/70' : 'bg-zinc-100'}`}>
+                                                    <span className="truncate">{node.deviceType || 'Device'} • {node.ipMasked}</span>
+                                                    <span className="text-emerald-500 ml-2 shrink-0">● Online</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="text-[9px] opacity-60 font-mono break-all border-t pt-1.5 border-zinc-700/40">
+                                            Node ID: {currentUserId || 'Initializing...'}
                                         </div>
                                     </div>
                                 )}
