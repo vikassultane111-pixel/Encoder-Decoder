@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,8 +15,8 @@
     <!-- Babel Standalone -->
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
     
-    <!-- Local Client-Side QR Code Generation -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <!-- Reliable Client-Side QR Code Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
 
     <!-- Professional Fonts: Inter for UI, JetBrains Mono for Data -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,6 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
-                        // Premium IDE Color Palette (Zinc/Gray base, Emerald primary, Indigo accent)
                         surface: {
                             50: '#fafafa',
                             100: '#f4f4f5',
@@ -47,7 +46,7 @@
                             700: '#3f3f46',
                             800: '#27272a',
                             900: '#18181b',
-                            950: '#09090b', // Deepest dark
+                            950: '#09090b',
                         }
                     },
                     boxShadow: {
@@ -57,7 +56,7 @@
                     },
                     animation: {
                         'fade-in': 'fadeIn 0.2s ease-out forwards',
-                        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-up': 'slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
@@ -71,20 +70,19 @@
     </script>
     
     <style>
-        /* CSS Variables for Global Theming */
         :root {
-            --app-bg: #f4f4f5; /* surface-100 */
+            --app-bg: #f4f4f5;
             --panel-bg: #ffffff;
-            --border-color: #e4e4e7; /* surface-200 */
-            --text-primary: #18181b; /* surface-900 */
-            --text-secondary: #52525b; /* surface-600 */
+            --border-color: #e4e4e7;
+            --text-primary: #18181b;
+            --text-secondary: #52525b;
         }
         html.dark {
-            --app-bg: #09090b; /* surface-950 */
-            --panel-bg: #18181b; /* surface-900 */
-            --border-color: #27272a; /* surface-800 */
-            --text-primary: #f4f4f5; /* surface-100 */
-            --text-secondary: #a1a1aa; /* surface-400 */
+            --app-bg: #09090b;
+            --panel-bg: #18181b;
+            --border-color: #27272a;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
             color-scheme: dark; 
         }
 
@@ -92,15 +90,14 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%; /* Force 100vh app style */
-            overflow: hidden; /* Main body doesn't scroll, inner panes do */
+            height: 100%;
+            overflow: hidden;
             background-color: var(--app-bg);
             color: var(--text-primary);
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.25s, color 0.25s;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Brand Gradient Text */
         .text-gradient-primary {
             background-clip: text;
             -webkit-background-clip: text;
@@ -116,72 +113,81 @@
         .dark ::-webkit-scrollbar-thumb { background: rgba(82, 82, 91, 0.5); }
         .dark ::-webkit-scrollbar-thumb:hover { background: rgba(113, 113, 122, 0.7); }
 
-        /* Unified Panel Styling */
         .app-panel {
             background-color: var(--panel-bg);
             border: 1px solid var(--border-color);
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            border-radius: 0.75rem; /* rounded-xl */
+            border-radius: 0.75rem;
         }
         .dark .app-panel {
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
-        /* High-Performance Syntax Highlighting Overlay */
-        .editor-container { position: relative; display: flex; flex-direction: column; flex-grow: 1; min-height: 0; }
+        /* High-Precision Synchronized Syntax Highlighting Overlay */
+        .editor-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0;
+        }
         .editor-textarea, .editor-pre {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px; /* Perfect IDE size */
-            line-height: 1.6;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+            font-variant-ligatures: none !important;
+            line-height: 1.6 !important;
+            letter-spacing: 0px !important;
             white-space: pre-wrap !important;
             word-break: break-all !important;
             overflow-wrap: break-word !important;
-            tab-size: 4;
-            padding: 1rem !important; /* Standardized padding */
-            margin: 0;
-            border: none;
-            width: 100%;
-            height: 100%;
+            tab-size: 4 !important;
+            padding: 1rem 1rem 1rem 1.25rem !important;
+            margin: 0 !important;
+            border: none !important;
+            width: 100% !important;
+            height: 100% !important;
+            box-sizing: border-box !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
         }
         
         .editor-textarea {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            color: transparent !important; /* Hide text, show caret */
+            color: transparent !important;
             background: transparent !important;
-            caret-color: #10b981; /* Emerald caret */
+            caret-color: #10b981 !important;
             resize: none;
             z-index: 10;
         }
-        .editor-textarea.no-highlight {
+        .editor-textarea.plain-mode {
             color: var(--text-primary) !important;
-            caret-color: inherit;
+            caret-color: #10b981 !important;
         }
         
-        /* Sync selections */
-        .editor-textarea::selection { background: rgba(16, 185, 129, 0.2); color: transparent; }
-        .dark .editor-textarea::selection { background: rgba(16, 185, 129, 0.3); color: transparent; }
+        .editor-textarea::selection { background: rgba(16, 185, 129, 0.25); color: transparent; }
+        .dark .editor-textarea::selection { background: rgba(16, 185, 129, 0.32); color: transparent; }
+        .editor-textarea.plain-mode::selection { background: rgba(16, 185, 129, 0.25); color: inherit; }
+        .dark .editor-textarea.plain-mode::selection { background: rgba(16, 185, 129, 0.32); color: inherit; }
 
         .editor-pre {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
             z-index: 1;
-            overflow: auto;
             color: var(--text-primary);
         }
 
-        /* Highlight Colors */
-        .json-key { color: #0284c7; } .dark .json-key { color: #38bdf8; } /* Light Blue */
-        .json-string { color: #059669; } .dark .json-string { color: #34d399; } /* Emerald */
-        .json-number { color: #7c3aed; } .dark .json-number { color: #a78bfa; } /* Violet */
-        .json-boolean { color: #e11d48; font-weight: 600; } .dark .json-boolean { color: #fb7185; } /* Rose */
+        /* Syntax Highlight Colors (Strict normal font-weight to preserve 1:1 caret alignment) */
+        .json-key { color: #0284c7; } .dark .json-key { color: #38bdf8; }
+        .json-string { color: #059669; } .dark .json-string { color: #34d399; }
+        .json-number { color: #7c3aed; } .dark .json-number { color: #a78bfa; }
+        .json-boolean { color: #e11d48; } .dark .json-boolean { color: #fb7185; }
         .json-bracket { color: #94a3b8; } .dark .json-bracket { color: #64748b; }
 
-        /* Workspace Tab specific scrolling */
         .tab-scroll::-webkit-scrollbar { height: 2px; }
 
-        /* Removes ugly default focus rings, applies custom */
         *:focus-visible { outline: 2px solid #10b981; outline-offset: 2px; }
         textarea:focus, input:focus, select:focus { outline: none; }
     </style>
@@ -213,7 +219,7 @@
     </script>
 
     <script type="text/babel" data-presets="react" data-type="module">
-        const { useState, useEffect, useRef, useMemo, memo, useCallback, useLayoutEffect } = React;
+        const { useState, useEffect, useRef, useMemo, memo, useCallback } = React;
 
         const Icons = {
             Shield: ({ size = 20, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> ),
@@ -247,7 +253,6 @@
             Link: ({ size = 16, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> ),
             Layers: ({ size = 16, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> ),
             Plus: ({ size = 14, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> ),
-            Folder: ({ size = 14, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> ),
             X: ({ size = 14, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> ),
             MessageSquare: ({ size = 15, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> ),
             Send: ({ size = 15, className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> ),
@@ -267,7 +272,7 @@
             for (const url of ipEndpoints) {
                 try {
                     const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 2200);
+                    const timeout = setTimeout(() => controller.abort(), 2000);
                     const res = await fetch(url, { signal: controller.signal });
                     clearTimeout(timeout);
                     if (res.ok) {
@@ -297,8 +302,6 @@
             }
             const fpHex = (hash >>> 0).toString(16).padStart(8, '0');
 
-            // Ensure each distinct browser/device instance gets a persistent unique node ID
-            // without colliding when two devices share the same account or Wi-Fi IP
             let deviceId = '';
             try {
                 if (window.name && window.name.startsWith('dx_node_')) {
@@ -327,7 +330,7 @@
         };
 
         const algorithms = [
-            { id: 'magic', category: 'encoders', name: '✨ Magic Auto-Decode', icon: <Icons.Wand size={14} />, desc: 'Automatically unwraps nested Base64, URL, Hex & JSON' },
+            { id: 'magic', category: 'encoders', name: '✨ Magic Auto-Decode', icon: <Icons.Wand size={14} />, desc: 'Automatically unwraps nested Base64, URL, Hex, HTML & JSON' },
             { id: 'base64', category: 'encoders', name: 'Base64', icon: <Icons.Code size={14} />, desc: 'Standard RFC 4648 UTF-8 Base64 encoder & decoder' },
             { id: 'base64url', category: 'encoders', name: 'Base64 (URL Safe)', icon: <Icons.Lock size={14} />, desc: 'URL & filename safe Base64 variant' },
             { id: 'base32', category: 'encoders', name: 'Base32', icon: <Icons.Code size={14} />, desc: 'RFC 4648 Base32 byte encoding' },
@@ -375,24 +378,24 @@
             magic: 'JTdCJTIydXNlciUyMiUzQSUyMmFkbWluX3NoaXZhJTIyJTJDJTIycm9sZSUyMiUzQSUyMnN1cGVydXNlciUyMiU3RA==',
             base64: 'eyJ0b29sIjoiRGVjb2RlclggUHJvIiwiY3JlYXRvciI6Ik1yIFNoaXZhIiwic3RhdHVzIjoiQWN0aXZlIn0=',
             base64url: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-            base32: 'IRSWG33EMVZFoICQOJXSA===',
+            base32: 'IRSWG33EMVZFQICQOJXSAU3VNF2GK===',
             url: 'https%3A%2F%2Fapi.decoderx.pro%2Fv1%2Fauth%3Fredirect%3D%2Fdashboard%26token%3Dsec_9981',
             url_all: 'admin<script>',
             hex: '44 65 63 6f 64 65 72 58 20 50 72 6f 20 53 75 69 74 65',
             binary: '01000100 01100101 01100011 01101111 01100100 01100101 01110010 01011000',
             octal: '\\104\\145\\143\\157\\144\\145\\162\\130',
-            html: '&lt;div class=&quot;alert&quot;&gt;Security Payload &amp; Auth&lt;/div&gt;',
+            html: '&lt;div class=&quot;alert&quot;&gt;Security Payload &amp; Auth &#039;SQLi&#039;&lt;/div&gt;',
             defang: 'hxxps://malicious-c2-server[.]example[.]com:8443/payload.sh',
             rot47: 's64@56C) !C@ $F:E6',
             caesar: 'QrpbqreK Ceb Fhvgr',
-            vigenere: 'NcaunopV Zpy',
-            atbash: 'WvxlwviC Kil',
-            morse: '-.. . -.-. --- -.. . .-. -..-',
+            vigenere: 'NiayhcbB Nbs',
+            atbash: 'WvxlwviC Kil Hfrgv',
+            morse: '-.. . -.-. --- -.. . .-. -..- / .--. .-. ---',
             sha256: 'DecoderX_Secret_Payload_2026',
             sha512: 'DecoderX_Secret_Payload_2026',
             sha1: 'DecoderX_Secret_Payload_2026',
             jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzkwMjEwIiwibmFtZSI6Ik1yIFNoaXZhIiwicm9sZSI6IlNlY3VyaXR5IEFyY2hpdGVjdCIsImlhdCI6MTcxMDAwMDAwMCwiZXhwIjoxOTk5OTk5OTk5fQ.signature_placeholder_hash',
-            json: '{"application":"DecoderX Pro Suite","author":"Mr Shiva","modules":["Encoders","cURL Deep Parser","JWT Inspector"],"security":{"clientSideOnly":true,"zeroTelemetry":true}}',
+            json: '{\n  "iid": 113,\n  "formId": "382\'\'\'\'",\n  "leadId": 9391,\n  "applicationUniqueId": 460,\n  "responseData": {\n    "1696": "Vikas Sultane",\n    "1697": "Vikas"\n  },\n  "sectionId": 1695,\n  "updatedSource": "lead",\n  "InputUserId": 9391,\n  "InputUserRole": "Applicant",\n  "deviceId": "6515649620433515",\n  "apiName": "crm_addApplicationResponse",\n  "moduleName": "studentCrm"\n}',
             urlparse: 'https://portal.target-corp.com:8443/api/v2/users/search?role=admin&active=true&sort=desc#permissions',
             csv2json: 'id,username,role,department\n101,shiva_sec,Admin,AppSec\n102,rahul_dev,Developer,Platform\n103,priya_qa,Analyst,SOC',
             hexdump: 'ELF_HEADER_SAMPLE: DecoderX Pro Binary Inspection Mode [0x7F 0x45 0x4C 0x46]',
@@ -412,8 +415,60 @@
 
         const escapeHTML = (str) => {
             if (typeof str !== 'string') return '';
-            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         };
+
+        const rawHtmlDecode = (str) => {
+            if (!str || typeof str !== 'string') return '';
+            const txt = document.createElement('textarea');
+            txt.innerHTML = str;
+            return txt.value;
+        };
+
+        /**
+         * Tokenizes raw JSON text BEFORE HTML-escaping so quotes, single quotes ('),
+         * HTML entities, and character widths remain 100% intact and aligned with the textarea caret.
+         */
+        function syntaxHighlight(jsonStr) {
+            if (!jsonStr) return "";
+            const tokenRegex = /("(?:\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g;
+            let result = "";
+            let lastIndex = 0;
+            let match;
+
+            while ((match = tokenRegex.exec(jsonStr)) !== null) {
+                if (match.index > lastIndex) {
+                    result += escapeHTML(jsonStr.slice(lastIndex, match.index));
+                }
+                const token = match[0];
+                if (token.startsWith('"')) {
+                    if (match[2] !== undefined) {
+                        const keyPart = token.slice(0, token.length - match[2].length);
+                        const colonPart = match[2];
+                        result += `<span class="json-key">${escapeHTML(keyPart)}</span><span class="opacity-50">${escapeHTML(colonPart)}</span>`;
+                    } else {
+                        result += `<span class="json-string">${escapeHTML(token)}</span>`;
+                    }
+                } else if (token === 'true' || token === 'false') {
+                    result += `<span class="json-boolean">${token}</span>`;
+                } else if (token === 'null') {
+                    result += `<span class="json-bracket opacity-50">${token}</span>`;
+                } else {
+                    result += `<span class="json-number">${escapeHTML(token)}</span>`;
+                }
+                lastIndex = tokenRegex.lastIndex;
+            }
+
+            if (lastIndex < jsonStr.length) {
+                result += escapeHTML(jsonStr.slice(lastIndex));
+            }
+            return result;
+        }
 
         const detectPayloadType = (str) => {
             if (!str || typeof str !== 'string') return null;
@@ -443,7 +498,10 @@
             if (/%[0-9A-Fa-f]{2}/.test(s)) {
                 return { algo: 'url', category: 'encoders', mode: 'decode', label: 'URL Encoding Detected' };
             }
-            if (/^[A-Za-z0-9+/]{12,}={0,2}$/.test(s) && s.length % 4 === 0) {
+            if (/&(?:lt|gt|quot|amp|#0*39|#x0*27);/i.test(s)) {
+                return { algo: 'html', category: 'encoders', mode: 'decode', label: 'HTML Entities Detected' };
+            }
+            if (/^[A-Za-z0-9+/]{8,}={0,2}$/.test(s) && s.length % 4 === 0 && !s.includes(' ')) {
                 return { algo: 'base64', category: 'encoders', mode: 'decode', label: 'Base64 Detected' };
             }
             return null;
@@ -472,6 +530,7 @@
             const textArea = document.createElement("textarea");
             textArea.value = text;
             textArea.style.position = 'fixed'; 
+            textArea.style.opacity = '0';
             document.body.appendChild(textArea);
             textArea.focus(); textArea.select();
             try { document.execCommand("copy") ? setToast('Copied to clipboard! 📋') : setToast('Failed to copy!'); } 
@@ -480,44 +539,34 @@
         };
 
         const copyToClipboard = (text, setToast) => {
-            if(!text) return;
+            if (!text) return;
             try {
                 if (navigator.clipboard && window.isSecureContext) {
                     navigator.clipboard.writeText(text).then(() => setToast('Copied to clipboard! 📋')).catch(() => fallbackCopy(text, setToast));
                 } else {
                     fallbackCopy(text, setToast);
                 }
-            } catch (err) { setToast('Failed to copy!'); }
+            } catch (err) { fallbackCopy(text, setToast); }
         };
 
-        function syntaxHighlight(jsonStr) {
-            if (!jsonStr) return "";
-            let formatted = escapeHTML(jsonStr);
-            return formatted.replace(/(&quot;(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\&quot;])*&quot;(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                let cls = 'json-number';
-                if (/^&quot;/.test(match)) {
-                    if (/:$/.test(match)) {
-                        let keyStr = match.substring(0, match.lastIndexOf(':')).trim();
-                        let colonSpace = match.substring(match.lastIndexOf(':'));
-                        return '<span class="json-key">' + keyStr + '</span><span class="opacity-50">' + colonSpace + '</span>';
-                    } else { cls = 'json-string'; }
-                } else if (/true|false/.test(match)) cls = 'json-boolean';
-                else if (/null/.test(match)) cls = 'json-bracket opacity-50';
-                return '<span class="' + cls + '">' + match + '</span>';
-            });
-        }
-
         function safeUrlDecode(str) { 
-            try { if (str.includes('%')) return decodeURIComponent(str); return str; } 
-            catch(e) { return unescape(str); } 
+            try { if (/%[0-9A-Fa-f]{2}/.test(str)) return decodeURIComponent(str); return str; } 
+            catch(e) { try { return unescape(str); } catch(err) { return str; } } 
         }
 
         function safeFormUrlDecode(str) {
-            try { return decodeURIComponent(str.replace(/\+/g, ' ')); } catch(e) { return str; }
+            try {
+                if (/%[0-9A-Fa-f]{2}/.test(str) || str.includes('+')) {
+                    return decodeURIComponent(str.replace(/\+/g, ' '));
+                }
+                return str;
+            } catch(e) { return safeUrlDecode(str); }
         }
 
         function analyzeData(inputStr, isFormParam = false) {
-            if (!inputStr || typeof inputStr !== 'string') return { original: inputStr, final: inputStr, steps: [], isEncoded: false, b64Count: 0, urlCount: 0, isJson: false };
+            if (!inputStr || typeof inputStr !== 'string') {
+                return { original: inputStr, final: inputStr, steps: [], isEncoded: false, b64Count: 0, urlCount: 0, isJson: false };
+            }
             let current = inputStr.trim();
             let steps = [];
             let b64Count = 0;
@@ -526,48 +575,147 @@
             
             while (loopLimit > 0) {
                 let changed = false;
-                if (current.includes('%') || (isFormParam && current.includes('+'))) {
+                loopLimit--;
+
+                // 1. Check JWT token format
+                if (/^eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*$/.test(current)) {
+                    try {
+                        const parts = current.split('.');
+                        const decPart = (s) => {
+                            let b = s.replace(/-/g, '+').replace(/_/g, '/');
+                            while (b.length % 4) b += '=';
+                            const binStr = atob(b);
+                            const bytes = new Uint8Array(binStr.length);
+                            for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+                            return new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+                        };
+                        const jwtObj = {
+                            Header: JSON.parse(decPart(parts[0])),
+                            Payload: JSON.parse(decPart(parts[1])),
+                            Signature: parts[2] || 'None'
+                        };
+                        current = JSON.stringify(jwtObj, null, 2);
+                        b64Count++;
+                        steps.push({ method: 'JWT Token Decode', value: current });
+                        changed = true;
+                        break;
+                    } catch (e) {}
+                }
+
+                // 2. Check URL Encoding
+                if (/%[0-9A-Fa-f]{2}/.test(current) || (isFormParam && current.includes('+') && current.includes('='))) {
                     let urlDec = isFormParam ? safeFormUrlDecode(current) : safeUrlDecode(current);
                     if (urlDec !== current && urlDec !== "") { 
-                        current = urlDec; urlCount++; steps.push({ method: 'URL Decode', value: current }); changed = true; continue; 
+                        current = urlDec;
+                        urlCount++;
+                        steps.push({ method: 'URL Decode', value: current });
+                        changed = true;
+                        continue; 
                     }
                 }
-                if (/^[A-Za-z0-9\+\/\-\_]+={0,2}$/.test(current) && current.length >= 12) {
+
+                // 3. Check HTML Entities
+                if (/&(?:lt|gt|quot|amp|#0*39|#x0*27);/i.test(current)) {
+                    const htmlDec = rawHtmlDecode(current);
+                    if (htmlDec !== current && htmlDec !== "") {
+                        current = htmlDec;
+                        steps.push({ method: 'HTML Entity Decode', value: current });
+                        changed = true;
+                        continue;
+                    }
+                }
+
+                // 4. Check Spaced or Continuous Hexadecimal
+                if (/^([0-9a-fA-F]{2}\s+){3,}[0-9a-fA-F]{2}$/.test(current) || (/^[0-9a-fA-F]{16,}$/.test(current) && current.length % 2 === 0)) {
+                    try {
+                        const cleanHex = current.replace(/\s+/g, '');
+                        const bytes = new Uint8Array(cleanHex.length / 2);
+                        for (let i = 0; i < cleanHex.length; i += 2) {
+                            bytes[i / 2] = parseInt(cleanHex.substr(i, 2), 16);
+                        }
+                        const decodedHex = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+                        if (decodedHex && /^[\x20-\x7E\r\n\t\u00A0-\uFFFF]+$/.test(decodedHex)) {
+                            current = decodedHex;
+                            steps.push({ method: 'Hexadecimal Decode', value: current });
+                            changed = true;
+                            continue;
+                        }
+                    } catch (e) {}
+                }
+
+                // 5. Check Base64 / Base64URL
+                if (/^[A-Za-z0-9+/\-_]+={0,2}$/.test(current) && current.length >= 8 && !/^\d+$/.test(current)) {
                     try {
                         let b64 = current.replace(/-/g, '+').replace(/_/g, '/');
                         while (b64.length % 4) b64 += '='; 
                         const binStr = atob(b64);
                         const bytes = new Uint8Array(binStr.length);
-                        for(let i=0; i<binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
-                        let decoded = new TextDecoder('utf-8', {fatal: true}).decode(bytes);
+                        for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+                        let decoded = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
                         
-                        if (decoded && decoded !== current && /[\x20-\x7E\n\r\t\u00A0-\uFFFF]/.test(decoded)) {
-                            current = decoded; b64Count++; steps.push({ method: `Base64 Decode (Lvl ${b64Count})`, value: current }); changed = true; continue; 
+                        // Verify printable UTF-8 text
+                        if (decoded && decoded !== current && /^[\x09\x0A\x0D\x20-\x7E\u00A0-\uFFFF]+$/.test(decoded)) {
+                            current = decoded;
+                            b64Count++;
+                            steps.push({ method: `Base64 Decode (Lvl ${b64Count})`, value: current });
+                            changed = true;
+                            continue; 
                         }
-                    } catch(e) {}
+                    } catch (e) {}
                 }
+
                 if (!changed) break; 
-                loopLimit--;
             }
             
             let isJson = false;
             try { 
                 let j = JSON.parse(current); 
-                if (typeof j === 'object' && j !== null) { current = JSON.stringify(j, null, 2); isJson = true; } 
-            } catch(e) {}
+                if (typeof j === 'object' && j !== null) {
+                    current = JSON.stringify(j, null, 2);
+                    isJson = true;
+                } 
+            } catch (e) {}
             
             return { original: inputStr, final: current, steps, b64Count, urlCount, isJson, isEncoded: steps.length > 0 };
         }
 
         function tokenizeCurl(str) {
-            const tokens = []; let current = ''; let inSingle = false, inDouble = false, escapeNext = false;
-            for(let i=0; i<str.length; i++) {
-                const c = str[i];
-                if (escapeNext) { if (c !== '\n' && c !== '\r') current += c; escapeNext = false; continue; }
-                if (c === '\\') { escapeNext = true; continue; }
-                if (c === "'" && !inDouble) { inSingle = !inSingle; continue; }
-                if (c === '"' && !inSingle) { inDouble = !inDouble; continue; }
-                if (/\s/.test(c) && !inSingle && !inDouble) { if (current) { tokens.push(current); current = ''; } continue; }
+            // Normalize line continuations (backslash or Windows caret)
+            const cleaned = str.replace(/\\\r?\n/g, ' ').replace(/\^\r?\n/g, ' ');
+            const tokens = [];
+            let current = '';
+            let inSingle = false, inDouble = false, escapeNext = false;
+
+            for (let i = 0; i < cleaned.length; i++) {
+                const c = cleaned[i];
+                if (escapeNext) {
+                    current += c;
+                    escapeNext = false;
+                    continue;
+                }
+                if (c === '\\' && !inSingle) {
+                    escapeNext = true;
+                    continue;
+                }
+                // Handle bash ANSI-C quoting $'...'
+                if (c === '$' && !inSingle && !inDouble && cleaned[i + 1] === "'") {
+                    continue;
+                }
+                if (c === "'" && !inDouble) {
+                    inSingle = !inSingle;
+                    continue;
+                }
+                if (c === '"' && !inSingle) {
+                    inDouble = !inDouble;
+                    continue;
+                }
+                if (/\s/.test(c) && !inSingle && !inDouble) {
+                    if (current) {
+                        tokens.push(current);
+                        current = '';
+                    }
+                    continue;
+                }
                 current += c;
             }
             if (current) tokens.push(current);
@@ -673,12 +821,24 @@
             const preRef = useRef(null);
             const textRef = useRef(null);
             
-            let isJson = false;
-            let displayHtml = escapeHTML(value);
-            
-            if (value && (value.trim().startsWith('{') || value.trim().startsWith('['))) {
-                try { JSON.parse(value); isJson = true; displayHtml = syntaxHighlight(value); } catch(e) {}
-            }
+            const { isJsonLike, isValidJson, displayHtml } = useMemo(() => {
+                if (!value) {
+                    return { isJsonLike: false, isValidJson: false, displayHtml: '' };
+                }
+                const trimmed = value.trim();
+                const looksLikeJson = trimmed.startsWith('{') || trimmed.startsWith('[');
+                let valid = false;
+                if (looksLikeJson) {
+                    try {
+                        JSON.parse(trimmed);
+                        valid = true;
+                    } catch (e) {}
+                    // Add trailing newline space if value ends with \n so <pre> height matches <textarea>
+                    const highlighted = syntaxHighlight(value) + (value.endsWith('\n') ? ' ' : '');
+                    return { isJsonLike: true, isValidJson: valid, displayHtml: highlighted };
+                }
+                return { isJsonLike: false, isValidJson: false, displayHtml: '' };
+            }, [value]);
             
             const handleScroll = (e) => { 
                 if (preRef.current) { 
@@ -689,14 +849,22 @@
             
             return (
                 <div className="editor-container group bg-transparent">
-                    {isJson && <div className={`absolute left-0 top-4 bottom-4 w-1 rounded-r-md z-0 transition-colors ${isDark ? 'bg-emerald-500/30 group-focus-within:bg-emerald-500' : 'bg-emerald-400/40 group-focus-within:bg-emerald-500'}`}></div>}
+                    {isJsonLike && (
+                        <div className={`absolute left-0 top-3 bottom-3 w-1 rounded-r-md z-20 transition-colors ${
+                            isValidJson
+                                ? (isDark ? 'bg-emerald-500/50 group-focus-within:bg-emerald-500' : 'bg-emerald-500/60 group-focus-within:bg-emerald-600')
+                                : (isDark ? 'bg-amber-500/50' : 'bg-amber-500/60')
+                        }`} title={isValidJson ? "Valid JSON" : "JSON Structure (Editing)"} />
+                    )}
                     
-                    <pre 
-                        ref={preRef} 
-                        className={`editor-pre ${isJson ? 'pl-[2.25rem] !important' : ''} ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`} 
-                        dangerouslySetInnerHTML={{ __html: displayHtml || (value ? ' ' : `<span class="opacity-40 italic">${placeholder}</span>`) }} 
-                        aria-hidden="true"
-                    />
+                    {isJsonLike && (
+                        <pre 
+                            ref={preRef} 
+                            className={`editor-pre ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`} 
+                            dangerouslySetInnerHTML={{ __html: displayHtml }} 
+                            aria-hidden="true"
+                        />
+                    )}
                     
                     <textarea 
                         ref={textRef}
@@ -704,8 +872,12 @@
                         onChange={onChange} 
                         onScroll={handleScroll} 
                         readOnly={readOnly}
-                        className={`editor-textarea custom-scrollbar ${isJson ? 'pl-[2.25rem] !important' : 'no-highlight'}`} 
-                        spellCheck="false" 
+                        placeholder={placeholder}
+                        className={`editor-textarea custom-scrollbar ${isJsonLike ? '' : 'plain-mode'} ${isDark ? 'placeholder-zinc-600' : 'placeholder-zinc-400'}`} 
+                        spellCheck="false"
+                        autoCapitalize="off"
+                        autoComplete="off"
+                        autoCorrect="off"
                     />
                 </div>
             );
@@ -730,16 +902,23 @@
                 let results = { method: 'GET', url: 'No URL found', fullUrl: '', queryParams: [], cookies: [], headers: [], bodyDump: null, bodyParams: [], rawBody: '' };
                 try {
                     const tokens = tokenizeCurl(rawCmd);
-                    if (tokens.length === 0 || !tokens[0].toLowerCase().includes('curl')) return setToast("Error: Doesn't appear to be a valid cURL command.");
+                    if (tokens.length === 0 || !tokens[0].toLowerCase().includes('curl')) {
+                        return setToast("Error: Doesn't appear to be a valid cURL command.");
+                    }
 
                     let skipNext = false;
-                    for(let i = 1; i < tokens.length; i++) {
+                    for (let i = 1; i < tokens.length; i++) {
                         if (skipNext) { skipNext = false; continue; }
                         const t = tokens[i];
                         
-                        if (t === '-X' || t === '--request') { results.method = tokens[i+1]?.toUpperCase() || 'GET'; skipNext = true; }
-                        else if (t === '-H' || t === '--header') {
-                            const header = tokens[i+1]; skipNext = true;
+                        if (t === '-X' || t === '--request') {
+                            results.method = tokens[i + 1]?.toUpperCase() || 'GET';
+                            skipNext = true;
+                        } else if (t.startsWith('-X') && t.length > 2) {
+                            results.method = t.slice(2).toUpperCase();
+                        } else if (t === '-H' || t === '--header') {
+                            const header = tokens[i + 1];
+                            skipNext = true;
                             if (header) {
                                 const splitIdx = header.indexOf(':');
                                 if (splitIdx > -1) {
@@ -748,29 +927,40 @@
                                     if (hName.toLowerCase() === 'cookie') {
                                         hVal.split(';').forEach(pair => { 
                                             let eqIdx = pair.indexOf('='); 
-                                            if(eqIdx > -1) results.cookies.push({ key: pair.substring(0, eqIdx).trim(), analysis: analyzeData(pair.substring(eqIdx + 1).trim(), true) }); 
+                                            if (eqIdx > -1) {
+                                                results.cookies.push({
+                                                    key: pair.substring(0, eqIdx).trim(),
+                                                    analysis: analyzeData(pair.substring(eqIdx + 1).trim(), true)
+                                                });
+                                            }
                                         });
                                     } else {
                                         let an = analyzeData(hVal);
                                         if (hName.toLowerCase() === 'authorization' && hVal.toLowerCase().startsWith('bearer ')) {
-                                            an = analyzeData(hVal.split(' ')[1]); if(an.isEncoded) an.original = hVal; 
+                                            an = analyzeData(hVal.slice(7).trim());
+                                            if (an.isEncoded) an.original = hVal; 
                                         }
                                         results.headers.push({ key: hName, rawVal: hVal, analysis: an });
                                     }
                                 }
                             }
-                        }
-                        else if (t === '-b' || t === '--cookie') {
-                            const cookieString = tokens[i+1]; skipNext = true;
+                        } else if (t === '-b' || t === '--cookie') {
+                            const cookieString = tokens[i + 1];
+                            skipNext = true;
                             if (cookieString) {
                                 cookieString.split(';').forEach(pair => { 
                                     let eqIdx = pair.indexOf('='); 
-                                    if(eqIdx > -1) results.cookies.push({ key: pair.substring(0, eqIdx).trim(), analysis: analyzeData(pair.substring(eqIdx + 1).trim(), true) }); 
+                                    if (eqIdx > -1) {
+                                        results.cookies.push({
+                                            key: pair.substring(0, eqIdx).trim(),
+                                            analysis: analyzeData(pair.substring(eqIdx + 1).trim(), true)
+                                        });
+                                    }
                                 });
                             }
-                        }
-                        else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary' || t === '--data-urlencode') {
-                            const bodyRaw = tokens[i+1]; skipNext = true;
+                        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary' || t === '--data-urlencode') {
+                            const bodyRaw = tokens[i + 1];
+                            skipNext = true;
                             if (results.method === 'GET') results.method = 'POST'; 
                             if (bodyRaw) {
                                 let mergedData = bodyRaw.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
@@ -778,23 +968,49 @@
                                 if ((t === '--data-urlencode' || mergedData.includes('&')) && mergedData.includes('=') && !mergedData.trim().startsWith('{')) {
                                     try {
                                         const params = new URLSearchParams(mergedData);
-                                        for (const [key, value] of params.entries()) results.bodyParams.push({ key, analysis: analyzeData(value, true) });
-                                    } catch(e) { results.bodyDump = analyzeData(mergedData); }
-                                } else { results.bodyDump = analyzeData(mergedData); }
+                                        for (const [key, value] of params.entries()) {
+                                            results.bodyParams.push({ key, analysis: analyzeData(value, true) });
+                                        }
+                                    } catch (e) { results.bodyDump = analyzeData(mergedData); }
+                                } else {
+                                    results.bodyDump = analyzeData(mergedData);
+                                    // Also inspect top-level JSON fields for nested encoded values
+                                    try {
+                                        const parsedJson = JSON.parse(results.bodyDump.final);
+                                        if (parsedJson && typeof parsedJson === 'object' && !Array.isArray(parsedJson)) {
+                                            Object.entries(parsedJson).forEach(([k, v]) => {
+                                                if (typeof v === 'string') {
+                                                    const fieldAn = analyzeData(v, false);
+                                                    if (fieldAn.isEncoded) {
+                                                        results.bodyParams.push({ key: `JSON.${k}`, analysis: fieldAn });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    } catch (e) {}
+                                }
                             }
+                        } else if (t === '--url') {
+                            results.url = tokens[i + 1];
+                            results.fullUrl = tokens[i + 1];
+                            skipNext = true;
+                        } else if (/^https?:\/\//i.test(t)) {
+                            results.url = t;
+                            results.fullUrl = t;
                         }
-                        else if (t === '--url') { results.url = tokens[i+1]; results.fullUrl = tokens[i+1]; skipNext = true; }
-                        else if (t.startsWith('http://') || t.startsWith('https://')) { results.url = t; results.fullUrl = t; }
                     }
 
                     if (results.url && results.url !== 'No URL found') {
                         try {
                             const u = new URL(results.url);
                             results.url = u.origin + u.pathname;
-                            for (const [key, value] of u.searchParams.entries()) results.queryParams.push({ key, analysis: analyzeData(value, true) });
-                        } catch(e) {} 
+                            for (const [key, value] of u.searchParams.entries()) {
+                                results.queryParams.push({ key, analysis: analyzeData(value, true) });
+                            }
+                        } catch (e) {} 
                     }
-                    setParsedResults(results); setToast("Payload Deep-Decoded! 🕵️‍♀️");
+                    setParsedResults(results);
+                    setToast("Payload Deep-Decoded! 🕵️‍♀️");
                 } catch (e) { setToast("Error parsing cURL: " + e.message); }
             };
 
@@ -829,7 +1045,7 @@
                                     ? <div className={`p-3 rounded-lg overflow-x-auto relative border ${isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
                                         <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(analysis.final) }} className="whitespace-pre-wrap leading-relaxed m-0" />
                                       </div>
-                                    : <div className={`break-words ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{escapeHTML(displayFinal)}</div>
+                                    : <div className={`break-words ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{displayFinal}</div>
                                 }
                             </div>
                         </div>
@@ -848,7 +1064,7 @@
                         </div>
                         <div className="md:w-3/4 p-3">
                             <div className="flex items-center gap-2 mb-3">{badge}</div>
-                            <div className={`p-2 rounded-lg text-xs font-mono break-words mb-4 max-h-32 overflow-y-auto ${isDark ? 'bg-zinc-900 text-zinc-400' : 'bg-zinc-100 text-zinc-500'}`}>{escapeHTML(displayOriginal)}</div>
+                            <div className={`p-2 rounded-lg text-xs font-mono break-words mb-4 max-h-32 overflow-y-auto ${isDark ? 'bg-zinc-900 text-zinc-400' : 'bg-zinc-100 text-zinc-500'}`}>{displayOriginal}</div>
                             
                             <div className="space-y-3">
                                 {analysis.steps.map((step, i) => {
@@ -864,7 +1080,7 @@
                                                 </div>
                                             ) : (
                                                 <div className={`p-2 rounded-lg font-mono text-xs break-words ${isDark ? 'bg-zinc-900 text-zinc-300' : 'bg-zinc-50 text-zinc-700'}`}>
-                                                    {escapeHTML(maskValue(itemKey, step.value))}
+                                                    {maskValue(itemKey, step.value)}
                                                 </div>
                                             )}
                                         </div>
@@ -913,7 +1129,7 @@
                             placeholder="curl 'https://api.target.com/data' -H 'Authorization: Bearer eyJhb...' -b 'session=base64_cookie'" spellCheck="false"
                         />
                         <div className={`px-4 py-2 border-t flex justify-between items-center ${isDark ? 'border-zinc-800' : 'border-zinc-100'}`}>
-                            <span className="text-[11px] opacity-60">Auto-unpacks nested Base64, URL-encoded params & JWT headers locally.</span>
+                            <span className="text-[11px] opacity-60">Auto-unpacks nested Base64, URL-encoded params, JSON fields & JWT headers locally.</span>
                             <button onClick={() => processRequest()} className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold py-1.5 px-4 rounded-lg transition-all active:scale-95 flex items-center gap-2 shadow-sm">
                                 <Icons.Cpu size={14} /> Parse & Decode
                             </button>
@@ -951,16 +1167,14 @@
                             <div className="app-panel">
                                 <div className={`px-4 py-2 border-b flex items-center gap-2 font-bold text-xs uppercase tracking-wider ${isDark ? 'border-zinc-800 bg-zinc-800/30' : 'border-zinc-100 bg-zinc-50/50'}`}><Icons.Database size={14} className="text-blue-500"/> Body Payload</div>
                                 <div>
-                                    {parsedResults.bodyParams.length > 0 
-                                        ? parsedResults.bodyParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)
-                                        : parsedResults.bodyDump 
-                                            ? <AnalysisRow itemKey="Raw Body Dump" analysis={parsedResults.bodyDump} />
-                                            : <div className="p-4 text-center text-xs opacity-50">No body payload</div>
-                                    }
+                                    {parsedResults.bodyDump && <AnalysisRow itemKey="Raw Body" analysis={parsedResults.bodyDump} />}
+                                    {parsedResults.bodyParams.length > 0 && parsedResults.bodyParams.map((p, i) => <AnalysisRow key={i} itemKey={p.key} analysis={p.analysis} />)}
+                                    {!parsedResults.bodyDump && parsedResults.bodyParams.length === 0 && (
+                                        <div className="p-4 text-center text-xs opacity-50">No body payload</div>
+                                    )}
                                 </div>
                             </div>
 
-                            {/* cURL to Code Converter (JS Fetch / Python Requests) */}
                             <div className="app-panel">
                                 <div className={`px-4 py-2 border-b flex items-center justify-between ${isDark ? 'border-zinc-800 bg-zinc-800/30' : 'border-zinc-100 bg-zinc-50/50'}`}>
                                     <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
@@ -1003,26 +1217,42 @@
 
             useEffect(() => {
                 if (showQR && qrCanvasRef.current && output) {
-                    try { window.QRCode.toCanvas(qrCanvasRef.current, output, { width: 180, margin: 1, color: { dark: '#000', light: '#fff' } }); } 
-                    catch(e) { setToast("Payload too large for QR."); setShowQR(false); }
+                    if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
+                        window.QRCode.toCanvas(
+                            qrCanvasRef.current,
+                            output,
+                            { width: 180, margin: 1, color: { dark: '#000000', light: '#ffffff' } },
+                            (err) => {
+                                if (err) {
+                                    setToast("Payload too large for QR code.");
+                                    setShowQR(false);
+                                }
+                            }
+                        );
+                    } else {
+                        setToast("QR Code library unavailable.");
+                        setShowQR(false);
+                    }
                 }
             }, [showQR, output, setToast]);
 
             useEffect(() => {
                 let isMounted = true;
                 const process = async () => {
-                    setErrorMsg(null); setShowQR(false); 
+                    setErrorMsg(null);
+                    setShowQR(false); 
                     if (algo === 'uuid') { if (isMounted) setOutput(AlgorithmsLib.uuid()); return; }
                     if (algo === 'passgen') { if (isMounted) setOutput(AlgorithmsLib.passgen()); return; }
-                    if (!input) { if(isMounted) setOutput(''); return; }
+                    if (!input) { if (isMounted) setOutput(''); return; }
                     
                     try {
                         let res = '', effectiveMode = mode;
-                        if (category === 'hashes' || algo === 'url_all') effectiveMode = 'encode';
+                        if (category === 'hashes') effectiveMode = 'encode';
                         if (['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'epoch', 'regex_tester', 'csv2json'].includes(algo)) effectiveMode = 'decode';
 
-                        if (category === 'hashes') { res = await AlgorithmsLib.hash(input, algo); }
-                        else {
+                        if (category === 'hashes') {
+                            res = await AlgorithmsLib.hash(input, algo);
+                        } else {
                             switch (algo) {
                                 case 'magic': {
                                     const analysis = analyzeData(input, true);
@@ -1041,7 +1271,7 @@
                                 case 'base64url': res = effectiveMode === 'encode' ? AlgorithmsLib.b64UrlEncode(input) : AlgorithmsLib.b64UrlDecode(input); break;
                                 case 'base32': res = effectiveMode === 'encode' ? AlgorithmsLib.b32Encode(input) : AlgorithmsLib.b32Decode(input); break;
                                 case 'url': res = effectiveMode === 'encode' ? encodeURIComponent(input) : safeUrlDecode(input); break;
-                                case 'url_all': res = AlgorithmsLib.urlEncodeAll(input); break;
+                                case 'url_all': res = effectiveMode === 'encode' ? AlgorithmsLib.urlEncodeAll(input) : safeUrlDecode(input); break;
                                 case 'urlparse': res = AlgorithmsLib.urlParse(input); break;
                                 case 'hex': res = effectiveMode === 'encode' ? AlgorithmsLib.toHex(input) : AlgorithmsLib.fromHex(input); break;
                                 case 'binary': res = effectiveMode === 'encode' ? AlgorithmsLib.toBin(input) : AlgorithmsLib.fromBin(input); break;
@@ -1050,7 +1280,7 @@
                                 case 'reverse': res = AlgorithmsLib.rev(input); break;
                                 case 'atbash': res = AlgorithmsLib.atbash(input); break;
                                 case 'rot47': res = AlgorithmsLib.rot47(input); break;
-                                case 'caesar': res = AlgorithmsLib.caesarCipher(input, parseInt(caesarShift), effectiveMode === 'decode'); break;
+                                case 'caesar': res = AlgorithmsLib.caesarCipher(input, parseInt(caesarShift) || 13, effectiveMode === 'decode'); break;
                                 case 'vigenere': res = AlgorithmsLib.vigenereCipher(input, vigenereKey, effectiveMode === 'decode'); break;
                                 case 'morse': res = effectiveMode === 'encode' ? AlgorithmsLib.toMorse(input) : AlgorithmsLib.fromMorse(input); break;
                                 case 'json': res = AlgorithmsLib.formatJSON(input, effectiveMode === 'encode'); break;
@@ -1066,39 +1296,67 @@
                             }
                         }
                         if (isMounted) setOutput(res);
-                    } catch (e) { if (isMounted) { setOutput(''); setErrorMsg(e.message || 'Error processing payload.'); } }
+                    } catch (e) {
+                        if (isMounted) {
+                            setOutput('');
+                            setErrorMsg(e.message || 'Error processing payload.');
+                        }
+                    }
                 };
-                const timeoutId = setTimeout(process, 120);
+                const timeoutId = setTimeout(process, 80);
                 return () => { isMounted = false; clearTimeout(timeoutId); };
             }, [input, mode, algo, category, caesarShift, vigenereKey, strUtilMode]);
 
             const applyJsonFormat = (type) => {
-                if (!output) return;
-                try {
-                    const parsed = JSON.parse(output);
-                    if (typeof parsed === 'object' && parsed !== null) {
-                        setOutput(type === 'beautify' ? JSON.stringify(parsed, null, 4) : JSON.stringify(parsed));
-                        setToast(`JSON ${type === 'beautify' ? 'Beautified ✨' : 'Minified 🗜️'}`);
-                    }
-                } catch(e) { setToast('Output is not valid JSON!'); }
+                let formattedAny = false;
+                if (output) {
+                    try {
+                        const parsedOut = JSON.parse(output);
+                        if (typeof parsedOut === 'object' && parsedOut !== null) {
+                            setOutput(type === 'beautify' ? JSON.stringify(parsedOut, null, 4) : JSON.stringify(parsedOut));
+                            formattedAny = true;
+                        }
+                    } catch (e) {}
+                }
+                if (input) {
+                    try {
+                        const parsedIn = JSON.parse(input);
+                        if (typeof parsedIn === 'object' && parsedIn !== null) {
+                            setInput(type === 'beautify' ? JSON.stringify(parsedIn, null, 4) : JSON.stringify(parsedIn));
+                            formattedAny = true;
+                        }
+                    } catch (e) {}
+                }
+                if (formattedAny) {
+                    setToast(`JSON ${type === 'beautify' ? 'Beautified ✨' : 'Minified 🗜️'}`);
+                } else {
+                    setToast('No valid JSON found to format!');
+                }
             };
 
             const downloadFile = () => {
-                if(output && !errorMsg) {
+                if (output && !errorMsg) {
                     const url = URL.createObjectURL(new Blob([output], { type: "text/plain" }));
-                    const a = document.createElement("a"); a.href = url; a.download = `decoderx_${algo}.txt`;
-                    a.click(); URL.revokeObjectURL(url);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `decoderx_${algo}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
                 }
             };
 
             const swap = () => {
-                if(['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'passgen', 'epoch', 'regex_tester', 'csv2json'].includes(algo) || category === 'hashes') return;
-                setInput(output); setMode(mode === 'encode' ? 'decode' : 'encode'); setShowQR(false);
+                if (['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'passgen', 'epoch', 'regex_tester', 'csv2json'].includes(algo) || category === 'hashes') return;
+                updateWorkspace(ws.id, {
+                    input: output,
+                    mode: mode === 'encode' ? 'decode' : 'encode'
+                });
+                setShowQR(false);
             };
 
             const inStats = useMemo(() => getStats(input), [input]);
             const outStats = useMemo(() => getStats(output), [output]);
-            const isLockMode = ['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'passgen', 'epoch', 'url_all', 'string_utils', 'regex_tester', 'csv2json'].includes(algo) || category === 'hashes';
+            const isLockMode = ['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'passgen', 'epoch', 'string_utils', 'regex_tester', 'csv2json'].includes(algo) || category === 'hashes';
             
             let isJsonOutput = false, formattedJsonOutput = '';
             if (!errorMsg && output && (output.trim().startsWith('{') || output.trim().startsWith('['))) {
@@ -1136,7 +1394,10 @@
                         {!isOutput && SAMPLE_PAYLOADS[algo] && (
                             <button
                                 onClick={() => {
-                                    updateWorkspace(ws.id, { input: SAMPLE_PAYLOADS[algo], mode: ['hashes'].includes(category) || ['url_all'].includes(algo) ? 'encode' : 'decode' });
+                                    updateWorkspace(ws.id, {
+                                        input: SAMPLE_PAYLOADS[algo],
+                                        mode: ['hashes'].includes(category) || ['url_all'].includes(algo) ? 'encode' : 'decode'
+                                    });
                                     setToast('Sample payload loaded! ⚡');
                                 }}
                                 className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all flex items-center gap-1 ${
@@ -1159,12 +1420,12 @@
                         )}
                         {isOutput && !errorMsg && output && (
                             <>
-                                <button onClick={()=>setShowQR(!showQR)} className={`p-1 rounded transition-colors ${showQR ? 'bg-zinc-700 text-white' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400'}`} title="Client-Side QR Code"><Icons.QrCode size={14}/></button>
+                                <button onClick={() => setShowQR(!showQR)} className={`p-1 rounded transition-colors ${showQR ? 'bg-zinc-700 text-white' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400'}`} title="Client-Side QR Code"><Icons.QrCode size={14}/></button>
                                 <button onClick={downloadFile} className="p-1 rounded transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400" title="Download Output"><Icons.Download size={14}/></button>
                                 <div className={`w-px h-3 mx-1 ${isDark ? 'bg-zinc-700' : 'bg-zinc-300'}`}></div>
                             </>
                         )}
-                        <button onClick={()=>copyToClipboard(copyVal, setToast)} disabled={!copyVal} className="p-1 rounded transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 disabled:opacity-30" title="Copy to Clipboard"><Icons.Copy size={14}/></button>
+                        <button onClick={() => copyToClipboard(copyVal, setToast)} disabled={!copyVal} className="p-1 rounded transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 disabled:opacity-30" title="Copy to Clipboard"><Icons.Copy size={14}/></button>
                     </div>
                 </div>
             );
@@ -1175,7 +1436,12 @@
                     {/* INPUT PANE */}
                     <div className="app-panel flex flex-col flex-1 h-full min-h-[250px] overflow-hidden">
                         <PaneHeader title="Input Payload" isOutput={false} copyVal={input} />
-                        <HighlightedInput value={input} onChange={e => setInput(e.target.value)} isDark={isDark} placeholder={algo === 'regex_tester' ? "/pattern/gi\n---\ntest string" : "Paste any payload here, or click '⚡ Sample' to test..."} />
+                        <HighlightedInput
+                            value={input}
+                            onChange={e => setInput(e.target.value)}
+                            isDark={isDark}
+                            placeholder={algo === 'regex_tester' ? "/pattern/gi\n---\ntest string" : "Paste any payload here, or click '⚡ Sample' to test..."}
+                        />
                         <div className={`px-4 py-1.5 text-[10px] font-mono border-t flex justify-between items-center shrink-0 ${isDark ? 'border-zinc-800 text-zinc-500' : 'border-zinc-200 text-zinc-400'}`}>
                             <span>Ln: {inStats.lines} | Wd: {inStats.words} | Ch: {inStats.chars}</span>
                             <span className="flex items-center gap-3">
@@ -1219,16 +1485,22 @@
                         <div className="editor-container relative">
                             {isJsonOutput ? (
                                 <div className="absolute inset-0 overflow-auto custom-scrollbar">
-                                    <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(formattedJsonOutput) }} className={`m-0 p-4 font-mono text-[13px] leading-[1.6] whitespace-pre-wrap break-all ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}></pre>
+                                    <pre dangerouslySetInnerHTML={{ __html: syntaxHighlight(formattedJsonOutput) }} className={`m-0 p-4 font-mono text-[13px] leading-[1.6] whitespace-pre-wrap break-all select-text ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}></pre>
                                 </div>
                             ) : (
-                                <textarea value={errorMsg || output} readOnly placeholder="Processed result will appear here..." className={`absolute inset-0 w-full h-full p-4 resize-none outline-none font-mono text-[13px] leading-[1.6] custom-scrollbar bg-transparent ${errorMsg ? 'text-red-500' : (isDark ? 'text-zinc-300' : 'text-zinc-800')}`} />
+                                <textarea
+                                    value={errorMsg || output}
+                                    readOnly
+                                    placeholder="Processed result will appear here..."
+                                    className={`absolute inset-0 w-full h-full p-4 resize-none outline-none font-mono text-[13px] leading-[1.6] custom-scrollbar bg-transparent ${errorMsg ? 'text-red-500' : (isDark ? 'text-zinc-300' : 'text-zinc-800')}`}
+                                    spellCheck="false"
+                                />
                             )}
                             
                             {showQR && (
                                 <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
                                     <div className="bg-white p-3 rounded-xl shadow-2xl relative">
-                                        <button onClick={()=>setShowQR(false)} className="absolute -top-2 -right-2 p-1 bg-zinc-800 text-white rounded-full shadow hover:bg-red-500"><Icons.X size={12}/></button>
+                                        <button onClick={() => setShowQR(false)} className="absolute -top-2 -right-2 p-1 bg-zinc-800 text-white rounded-full shadow hover:bg-red-500"><Icons.X size={12}/></button>
                                         <canvas ref={qrCanvasRef}></canvas>
                                     </div>
                                 </div>
@@ -1269,7 +1541,7 @@
                             ? (isDark ? 'bg-zinc-900 border-zinc-700 text-emerald-400 z-10' : 'bg-white border-zinc-300 text-emerald-600 z-10') 
                             : (isDark ? 'bg-zinc-800/50 border-transparent text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300' : 'bg-zinc-100 border-transparent text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700')
                     }`}
-                    style={{ marginBottom: isActive ? '-1px' : '0', borderBottomColor: isActive ? (isDark?'#18181b':'#ffffff') : 'transparent' }}
+                    style={{ marginBottom: isActive ? '-1px' : '0', borderBottomColor: isActive ? (isDark ? '#18181b' : '#ffffff') : 'transparent' }}
                 >
                     <Icons.FileCode size={12} className={`shrink-0 ${isActive ? '' : 'opacity-60'}`} />
                     {isEditing ? (
@@ -1288,105 +1560,120 @@
         const utf8Decoder = new TextDecoder('utf-8', { fatal: false });
 
         const algosLib = {
-            toHex: s => Array.from(utf8Encoder.encode(s)).map(b => b.toString(16).padStart(2,'0')).join(' '),
+            toHex: s => Array.from(utf8Encoder.encode(s)).map(b => b.toString(16).padStart(2, '0')).join(' '),
             fromHex: h => { 
-                let clean = h.replace(/\s|0x|,|;/g, '');
+                let clean = h.replace(/\s|0x|\\x|,|;|:/gi, '');
                 if (clean.length % 2 !== 0) throw new Error("Invalid Hex String (Odd length)");
                 if (!/^[0-9a-fA-F]*$/.test(clean)) throw new Error("Invalid Hex Characters");
                 let bytes = new Uint8Array(clean.length / 2);
-                for(let i=0; i<clean.length; i+=2) bytes[i/2] = parseInt(clean.substr(i,2), 16);
+                for (let i = 0; i < clean.length; i += 2) bytes[i / 2] = parseInt(clean.substr(i, 2), 16);
                 return utf8Decoder.decode(bytes);
             },
-            toBin: s => Array.from(utf8Encoder.encode(s)).map(b => b.toString(2).padStart(8,'0')).join(' '),
+            toBin: s => Array.from(utf8Encoder.encode(s)).map(b => b.toString(2).padStart(8, '0')).join(' '),
             fromBin: b => { 
                 let clean = b.replace(/[^01]/g, ''); 
-                if(clean.length % 8 !== 0) throw new Error("Invalid Binary String (Not a multiple of 8 bits)");
+                if (clean.length === 0 || clean.length % 8 !== 0) throw new Error("Invalid Binary String (Must be a multiple of 8 bits)");
                 let bytes = new Uint8Array(clean.length / 8);
-                for(let i=0; i<clean.length; i+=8) bytes[i/8] = parseInt(clean.substr(i,8), 2);
+                for (let i = 0; i < clean.length; i += 8) bytes[i / 8] = parseInt(clean.substr(i, 8), 2);
                 return utf8Decoder.decode(bytes);
             },
             toOctal: s => Array.from(utf8Encoder.encode(s)).map(b => '\\' + b.toString(8).padStart(3, '0')).join(''),
             fromOctal: s => {
-                const parts = s.split('\\').filter(Boolean);
+                const parts = s.includes('\\')
+                    ? s.split('\\').map(p => p.trim()).filter(Boolean)
+                    : s.trim().split(/\s+/).filter(Boolean);
                 let bytes = new Uint8Array(parts.length);
-                for(let i=0; i<parts.length; i++) {
-                    let p = parts[i].trim();
-                    if(!/^[0-7]{1,3}$/.test(p)) throw new Error("Invalid Octal formatting (Use \\nnn)");
+                for (let i = 0; i < parts.length; i++) {
+                    let p = parts[i];
+                    if (!/^[0-7]{1,3}$/.test(p)) throw new Error("Invalid Octal formatting (Use \\nnn or space-separated octal)");
                     bytes[i] = parseInt(p, 8);
                 }
                 return utf8Decoder.decode(bytes);
             },
-            htmlDecode: s => new DOMParser().parseFromString(s,'text/html').documentElement.textContent,
+            htmlDecode: s => rawHtmlDecode(s),
             rev: s => Array.from(s).reverse().join(''),
             atbash: s => s.replace(/[a-zA-Z]/g, c => String.fromCharCode((c <= 'Z' ? 90 + 65 : 122 + 97) - c.charCodeAt(0))),
             rot47: s => s.replace(/[!-~]/g, c => String.fromCharCode((c.charCodeAt(0) - 33 + 47) % 94 + 33)),
-            defang: s => s.replace(/\./g, '[.]').replace(/http/gi, 'hxxp'),
-            refang: s => s.replace(/\[\.\]/g, '.').replace(/hxxp/gi, 'http'),
-            caesarCipher: (str, shift, dec) => str.replace(/[a-zA-Z]/g, c => String.fromCharCode(((c.charCodeAt(0)-(c<='Z'?65:97)+(dec?(26-(shift%26)):(shift%26)))%26)+(c<='Z'?65:97))),
+            defang: s => s.replace(/\./g, '[.]').replace(/http/gi, 'hxxp').replace(/:\/\//g, '[://]'),
+            refang: s => s.replace(/\[\.\]/g, '.').replace(/\(dot\)/gi, '.').replace(/hxxp/gi, 'http').replace(/\[:\/\/\]/g, '://').replace(/\[:\]/g, ':'),
+            caesarCipher: (str, shift, dec) => {
+                const s = ((shift % 26) + 26) % 26;
+                return str.replace(/[a-zA-Z]/g, c => {
+                    const base = c <= 'Z' ? 65 : 97;
+                    return String.fromCharCode(((c.charCodeAt(0) - base + (dec ? (26 - s) : s)) % 26) + base);
+                });
+            },
             vigenereCipher: (str, key, dec) => { 
-                let k=key.toUpperCase().replace(/[^A-Z]/g,'')||'A', ki=0; 
+                let k = (key || 'KEY').toUpperCase().replace(/[^A-Z]/g, '') || 'A', ki = 0; 
                 return str.replace(/[a-zA-Z]/g, c => { 
-                    const shift = k.charCodeAt(ki%k.length)-65; ki++; 
-                    return String.fromCharCode(((c.charCodeAt(0)-(c<='Z'?65:97)+(dec?(26-shift):shift))%26)+(c<='Z'?65:97));
+                    const shift = k.charCodeAt(ki % k.length) - 65;
+                    ki++; 
+                    const base = c <= 'Z' ? 65 : 97;
+                    return String.fromCharCode(((c.charCodeAt(0) - base + (dec ? (26 - shift) : shift)) % 26) + base);
                 }); 
             },
-            toMorse: s => s.toUpperCase().split('').map(c => ({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}[c]||c)).join(' '),
+            toMorse: s => s.toUpperCase().split('').map(c => ({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}[c] || c)).join(' '),
             fromMorse: s => { 
-                const d = Object.entries({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}).reduce((a,[k,v])=>(a[v]=k,a),{}); 
-                return s.trim().split(' ').map(c=>d[c]||c).join('').replace(/\//g,' '); 
+                const d = Object.entries({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}).reduce((a, [k, v]) => (a[v] = k, a), {}); 
+                return s.trim().split(/\s+/).map(c => d[c] || c).join('').replace(/\//g, ' '); 
             },
             formatJSON: (str, min) => { 
-                if(!str.trim()) return ''; 
+                if (!str.trim()) return ''; 
                 try { return min ? JSON.stringify(JSON.parse(str)) : JSON.stringify(JSON.parse(str), null, 4); } 
-                catch(e){ throw new Error("Invalid JSON Format"); } 
+                catch (e) { throw new Error("Invalid JSON Format: " + e.message); } 
             },
             parseJWT: t => { 
                 try { 
-                    const p=t.trim().split('.'); if(p.length < 2) throw new Error("Invalid JWT Format"); 
+                    const p = t.trim().split('.');
+                    if (p.length < 2) throw new Error("Token must have at least Header and Payload segments"); 
                     const dec = s => { 
-                        let b=s.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='='; 
-                        const binStr = atob(b); const bytes = new Uint8Array(binStr.length);
-                        for(let i=0; i<binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+                        let b = s.replace(/-/g, '+').replace(/_/g, '/');
+                        while (b.length % 4) b += '='; 
+                        const binStr = atob(b);
+                        const bytes = new Uint8Array(binStr.length);
+                        for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
                         return utf8Decoder.decode(bytes);
                     }; 
                     const header = JSON.parse(dec(p[0]));
                     const payload = JSON.parse(dec(p[1]));
-                    const sigInfo = p.length === 3 ? "Present (Verification requires secret/key)" : "None";
+                    const sigInfo = p.length >= 3 && p[2] ? `${p[2]} (Verification requires secret/public key)` : "None (Unsigned Token)";
                     
                     let notes = [];
                     const now = Math.floor(Date.now() / 1000);
-                    if(payload.exp) { notes.push(`Expires: ${new Date(payload.exp*1000).toISOString()} (${payload.exp < now ? 'EXPIRED' : 'Valid'})`); }
-                    if(payload.nbf) { notes.push(`Not Before: ${new Date(payload.nbf*1000).toISOString()} (${payload.nbf > now ? 'NOT YET ACTIVE' : 'Active'})`); }
+                    if (payload.iat) notes.push(`Issued At: ${new Date(payload.iat * 1000).toISOString()}`);
+                    if (payload.exp) notes.push(`Expires: ${new Date(payload.exp * 1000).toISOString()} (${payload.exp < now ? 'EXPIRED' : 'Valid'})`);
+                    if (payload.nbf) notes.push(`Not Before: ${new Date(payload.nbf * 1000).toISOString()} (${payload.nbf > now ? 'NOT YET ACTIVE' : 'Active'})`);
 
-                    return JSON.stringify({Header: header, Payload: payload, Signature: sigInfo, Security_Notes: notes.length ? notes : "None"}, null, 4); 
-                } catch(e){ throw new Error("Invalid or Corrupted JWT: " + e.message); } 
+                    return JSON.stringify({ Header: header, Payload: payload, Signature: sigInfo, Security_Notes: notes.length ? notes : "None" }, null, 4); 
+                } catch (e) { throw new Error("Invalid or Corrupted JWT: " + e.message); } 
             },
             b64Encode: (str) => {
                 const bytes = utf8Encoder.encode(str);
                 let binStr = "";
-                for(let i=0; i<bytes.byteLength; i++) binStr += String.fromCharCode(bytes[i]);
+                for (let i = 0; i < bytes.byteLength; i++) binStr += String.fromCharCode(bytes[i]);
                 return btoa(binStr);
             },
             b64Decode: (b64) => {
-                b64 = b64.replace(/\s+/g, '');
-                if (!/^[A-Za-z0-9+/]*={0,2}$/.test(b64) || b64.length % 4 !== 0) throw new Error("Invalid Base64 formatting");
-                const binStr = atob(b64);
+                let clean = b64.trim().replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
+                while (clean.length % 4 !== 0) clean += '=';
+                if (!/^[A-Za-z0-9+/]*={0,2}$/.test(clean)) throw new Error("Invalid Base64 characters detected");
+                const binStr = atob(clean);
                 const bytes = new Uint8Array(binStr.length);
-                for(let i=0; i<binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+                for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
                 return utf8Decoder.decode(bytes);
             },
             b64UrlEncode: (str) => algosLib.b64Encode(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
-            b64UrlDecode: (b64u) => {
-                let b = b64u.replace(/-/g, '+').replace(/_/g, '/');
-                while (b.length % 4) b += '=';
-                return algosLib.b64Decode(b);
-            },
+            b64UrlDecode: (b64u) => algosLib.b64Decode(b64u),
             b32Encode: (s) => { 
                 const bytes = utf8Encoder.encode(s);
                 let bits = 0, value = 0, output = ''; 
                 for (let i = 0; i < bytes.length; i++) { 
-                    value = (value << 8) | bytes[i]; bits += 8; 
-                    while (bits >= 5) { output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value >>> (bits - 5)) & 31]; bits -= 5; } 
+                    value = (value << 8) | bytes[i];
+                    bits += 8; 
+                    while (bits >= 5) {
+                        output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value >>> (bits - 5)) & 31];
+                        bits -= 5;
+                    } 
                 } 
                 if (bits > 0) output += "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"[(value << (5 - bits)) & 31]; 
                 while (output.length % 8 !== 0) output += '='; 
@@ -1398,9 +1685,13 @@
                 let bytes = [];
                 for (let i = 0; i < s.length; i++) { 
                     let val = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".indexOf(s[i]); 
-                    if (val === -1) throw new Error("Invalid Base32 char"); 
-                    value = (value << 5) | val; bits += 5; 
-                    if (bits >= 8) { bytes.push((value >>> (bits - 8)) & 255); bits -= 8; } 
+                    if (val === -1) throw new Error(`Invalid Base32 character: '${s[i]}'`); 
+                    value = (value << 5) | val;
+                    bits += 5; 
+                    if (bits >= 8) {
+                        bytes.push((value >>> (bits - 8)) & 255);
+                        bits -= 8;
+                    } 
                 } 
                 return utf8Decoder.decode(new Uint8Array(bytes)); 
             },
@@ -1411,7 +1702,7 @@
                 return all.length ? all.join('\n') : 'No IPs found.'; 
             },
             extractURLs: (s) => { 
-                const urls = s.match(/https?:\/\/[^\s"'<>]+/gi) || []; 
+                const urls = s.match(/https?:\/\/[^\s"'<>`]+/gi) || []; 
                 return urls.length ? [...new Set(urls)].join('\n') : 'No URLs found.'; 
             },
             hexdump: (s) => { 
@@ -1427,32 +1718,37 @@
             },
             epochConvert: (s) => { 
                 s = s.trim(); 
-                if(!/^-?\d+(\.\d+)?$/.test(s)) throw new Error("Invalid Unix Timestamp format"); 
+                if (!/^-?\d+(\.\d+)?$/.test(s)) throw new Error("Invalid Unix Timestamp format"); 
                 let num = parseFloat(s);
-                let ms = num < 10000000000 ? num * 1000 : num;
+                let ms = Math.abs(num) < 10000000000 ? num * 1000 : num;
                 let d = new Date(ms);
-                if(isNaN(d.getTime())) throw new Error("Date out of range");
-                return `UTC:   ${d.toUTCString()}\nLocal: ${d.toString()}\nISO:   ${d.toISOString()}`; 
+                if (isNaN(d.getTime())) throw new Error("Date out of range");
+                return `UTC:   ${d.toUTCString()}\nLocal: ${d.toString()}\nISO:   ${d.toISOString()}\nEpoch (sec): ${Math.floor(ms / 1000)}\nEpoch (ms):  ${Math.floor(ms)}`; 
             },
             urlEncodeAll: (s) => {
                 return Array.from(utf8Encoder.encode(s)).map(b => '%' + b.toString(16).padStart(2, '0').toUpperCase()).join('');
             },
             urlParse: (s) => {
                 try {
-                    const u = new URL(s.startsWith('http') ? s : `https://${s}`); 
+                    const cleanUrl = s.trim();
+                    const u = new URL(/^https?:\/\//i.test(cleanUrl) ? cleanUrl : `https://${cleanUrl}`); 
+                    const paramsObj = {};
+                    for (const [k, v] of u.searchParams.entries()) {
+                        paramsObj[k] = v;
+                    }
                     return JSON.stringify({ 
-                        Protocol: u.protocol.replace(':',''), 
-                        Host: u.host, 
+                        Protocol: u.protocol.replace(':', ''), 
+                        Host: u.hostname, 
                         Port: u.port || (u.protocol === 'https:' ? '443' : '80'),
                         Path: u.pathname, 
-                        Hash: u.hash,
-                        Parameters: Object.keys(Object.fromEntries(u.searchParams)).length ? Object.fromEntries(u.searchParams) : "None" 
+                        Hash: u.hash || "None",
+                        Parameters: Object.keys(paramsObj).length ? paramsObj : "None" 
                     }, null, 4);
-                } catch(e) { throw new Error("Invalid URL Format"); }
+                } catch (e) { throw new Error("Invalid URL Format"); }
             },
             stringUtils: (s, mode) => { 
-                if(mode === 'upper') return s.toUpperCase(); 
-                if(mode === 'lower') return s.toLowerCase(); 
+                if (mode === 'upper') return s.toUpperCase(); 
+                if (mode === 'lower') return s.toLowerCase(); 
                 return s.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substring(1).toLowerCase()); 
             },
             uuid: () => {
@@ -1462,7 +1758,7 @@
                         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
                     );
                 }
-                throw new Error("Secure random generation is not supported in this environment context.");
+                throw new Error("Secure random generation is unavailable.");
             },
             passgen: () => {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+';
@@ -1478,45 +1774,61 @@
                 }, null, 4);
             },
             hash: async (s, algo) => {
-                if(typeof crypto === 'undefined' || !crypto.subtle) throw new Error("Web Crypto API unavailable. Requires HTTPS/Localhost.");
+                if (typeof crypto === 'undefined' || !crypto.subtle) throw new Error("Web Crypto API unavailable.");
                 const name = algo === 'sha512' ? 'SHA-512' : algo === 'sha1' ? 'SHA-1' : 'SHA-256';
                 const hashBuffer = await crypto.subtle.digest(name, utf8Encoder.encode(s));
                 return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
             },
             regexTester: (s) => {
                 let parts = s.split('\n---\n');
-                if(parts.length < 2) throw new Error("Format must be:\n/pattern/flags\n---\nTarget string");
+                if (parts.length < 2) throw new Error("Format must be:\n/pattern/flags\n---\nTarget string");
                 let patternStr = parts[0].trim();
                 let target = parts.slice(1).join('\n---\n');
                 
-                let m = patternStr.match(/^\/(.*?)\/([a-z]*)$/i);
-                if(!m) throw new Error("Invalid Regex format. Use /pattern/flags");
-                
-                let regex = new RegExp(m[1], m[2]);
+                let m = patternStr.match(/^\/(.*)\/([a-z]*)$/i);
+                const regex = m ? new RegExp(m[1], m[2]) : new RegExp(patternStr, 'g');
                 let results = [], match;
                 
                 if (!regex.global) {
                     let r = regex.exec(target);
-                    if(r) return JSON.stringify({ matches: [r[0]], captureGroups: r.slice(1), index: r.index }, null, 2);
+                    if (r) return JSON.stringify({ matches: [r[0]], captureGroups: r.slice(1), index: r.index }, null, 4);
                     return "No Match Found.";
                 }
 
                 while ((match = regex.exec(target)) !== null) {
                     results.push({ match: match[0], captureGroups: match.slice(1), index: match.index });
-                    if(match.index === regex.lastIndex) regex.lastIndex++;
+                    if (match.index === regex.lastIndex) regex.lastIndex++;
                 }
-                return results.length ? JSON.stringify(results, null, 2) : "No Matches Found.";
+                return results.length ? JSON.stringify(results, null, 4) : "No Matches Found.";
             },
             csv2json: (s) => {
-                let lines = s.trim().split('\n');
-                if(lines.length < 2) throw new Error("CSV must have a header row and data.");
-                let headers = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+                const parseCSVLine = (line) => {
+                    const res = [];
+                    let cur = '', inQuotes = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const c = line[i];
+                        if (c === '"') {
+                            if (inQuotes && line[i + 1] === '"') { cur += '"'; i++; }
+                            else inQuotes = !inQuotes;
+                        } else if (c === ',' && !inQuotes) {
+                            res.push(cur.trim());
+                            cur = '';
+                        } else {
+                            cur += c;
+                        }
+                    }
+                    res.push(cur.trim());
+                    return res;
+                };
+                let lines = s.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
+                if (lines.length < 2) throw new Error("CSV must have a header row and at least one data row.");
+                let headers = parseCSVLine(lines[0]);
                 let res = [];
-                for(let i=1; i<lines.length; i++) {
+                for (let i = 1; i < lines.length; i++) {
                     let obj = {};
-                    let currentLine = lines[i].split(',');
-                    for(let j=0; j<headers.length; j++) {
-                        obj[headers[j]] = currentLine[j] ? currentLine[j].trim().replace(/^"|"$/g,'') : '';
+                    let currentLine = parseCSVLine(lines[i]);
+                    for (let j = 0; j < headers.length; j++) {
+                        obj[headers[j]] = currentLine[j] !== undefined ? currentLine[j] : '';
                     }
                     res.push(obj);
                 }
@@ -1670,7 +1982,9 @@
             const [showPresenceInfo, setShowPresenceInfo] = useState(false);
             const activeRecordsRef = useRef([]);
 
-            const [workspaces, setWorkspaces] = useState([{ id: 1, name: 'Main Payload', input: '', output: '', mode: 'decode', category: 'encoders', algo: 'base64', caesarShift: 13, vigenereKey: 'KEY', strUtilMode: 'upper', expectedHash: '' }]);
+            const [workspaces, setWorkspaces] = useState([
+                { id: 1, name: 'Main Payload', input: '', output: '', mode: 'decode', category: 'encoders', algo: 'base64', caesarShift: 13, vigenereKey: 'KEY', strUtilMode: 'upper', expectedHash: '' }
+            ]);
             const [activeWorkspaceId, setActiveWorkspaceId] = useState(1);
             const [nextWorkspaceId, setNextWorkspaceId] = useState(2);
 
@@ -1690,16 +2004,15 @@
                 let wsReconnectTimer = null;
                 let lastHereReplyTs = 0;
 
-                const ACTIVE_TTL = 65000; // 65 seconds active window
+                const ACTIVE_TTL = 65000;
                 const GLOBAL_TOPIC = 'dx_pro_suite_shiva_live_v4';
-                const peerRegistry = new Map(); // deviceId -> { deviceId, userId, ipMasked, deviceType, lastSeen }
+                const peerRegistry = new Map();
 
-                const recalculateLiveCount = (selfDeviceId) => {
+                const recalculateLiveCount = () => {
                     if (!isMounted) return;
                     const now = Date.now();
                     const mergedMap = new Map();
 
-                    // 1. Include Firestore records
                     activeRecordsRef.current.forEach(rec => {
                         const key = rec?.deviceId || rec?.identityKey || rec?.userId;
                         if (key && rec.lastSeen && (now - rec.lastSeen < ACTIVE_TTL)) {
@@ -1713,7 +2026,6 @@
                         }
                     });
 
-                    // 2. Include Global WebSocket & BroadcastChannel peers
                     peerRegistry.forEach((rec, key) => {
                         if (rec && rec.lastSeen && (now - rec.lastSeen < ACTIVE_TTL)) {
                             const existing = mergedMap.get(key);
@@ -1745,12 +2057,11 @@
                             deviceType: clientMeta.deviceType,
                             lastSeen: Date.now()
                         });
-                        recalculateLiveCount(myNodeId);
+                        recalculateLiveCount();
                     };
 
                     registerSelfLocally();
 
-                    // Publish to global real-time pub/sub relay so external/cross-network devices sync immediately
                     const publishGlobalSignal = (signalType) => {
                         const payload = {
                             type: signalType,
@@ -1766,7 +2077,6 @@
                         }).catch(() => {});
                     };
 
-                    // Connect to global WebSocket stream for instant worldwide device discovery
                     const connectGlobalWebSocket = () => {
                         if (!isMounted) return;
                         try {
@@ -1786,7 +2096,7 @@
 
                                     if (data.type === 'leave') {
                                         peerRegistry.delete(data.deviceId);
-                                        recalculateLiveCount(myNodeId);
+                                        recalculateLiveCount();
                                         return;
                                     }
 
@@ -1797,9 +2107,8 @@
                                         deviceType: data.deviceType || 'Device',
                                         lastSeen: Date.now()
                                     });
-                                    recalculateLiveCount(myNodeId);
+                                    recalculateLiveCount();
 
-                                    // If another device just joined, announce our presence back so its counter updates immediately
                                     if (data.type === 'join' && data.deviceId !== myNodeId) {
                                         const now = Date.now();
                                         if (now - lastHereReplyTs > 3500) {
@@ -1821,7 +2130,6 @@
 
                     connectGlobalWebSocket();
 
-                    // Local BroadcastChannel sync across same-browser tabs
                     try {
                         bc = new BroadcastChannel('decoderx_live_presence_v4');
                         bc.postMessage({
@@ -1844,12 +2152,11 @@
                                         lastSeen: Date.now()
                                     });
                                 }
-                                recalculateLiveCount(myNodeId);
+                                recalculateLiveCount();
                             }
                         };
                     } catch (e) {}
 
-                    // Cloud Firestore Real-Time Presence (using unique myNodeId per device so devices on same account don't overwrite each other)
                     const sdk = window.__DX_FIREBASE_SDK__;
                     if (sdk && typeof __firebase_config !== 'undefined' && __firebase_config) {
                         try {
@@ -1870,7 +2177,6 @@
                                 currentAuthUser = user;
                                 setCurrentUserId(`${myNodeId} (${user.uid})`);
 
-                                // Keyed by myNodeId so every device gets its own document in active_users
                                 userDocRef = sdk.doc(db, 'artifacts', appId, 'public', 'data', 'active_users', myNodeId);
                                 const usersColRef = sdk.collection(db, 'artifacts', appId, 'public', 'data', 'active_users');
 
@@ -1896,15 +2202,14 @@
                                         const list = [];
                                         snapshot.forEach(d => list.push(d.data()));
                                         activeRecordsRef.current = list;
-                                        recalculateLiveCount(myNodeId);
+                                        recalculateLiveCount();
                                     },
-                                    (err) => {}
+                                    () => {}
                                 );
                             }
                         } catch (e) {}
                     }
 
-                    // Periodic heartbeat across all channels
                     heartbeatTimer = setInterval(() => {
                         registerSelfLocally();
                         publishGlobalSignal('ping');
@@ -1933,34 +2238,7 @@
                         }
                     }, 22000);
 
-                    pruneTimer = setInterval(() => recalculateLiveCount(myNodeId), 8000);
-
-                    const handleVisibility = () => {
-                        if (document.visibilityState === 'visible') {
-                            registerSelfLocally();
-                            publishGlobalSignal('join');
-                        }
-                    };
-                    document.addEventListener('visibilitychange', handleVisibility);
-
-                    const handleUnload = () => {
-                        try {
-                            if (navigator.sendBeacon) {
-                                navigator.sendBeacon(
-                                    `https://ntfy.sh/${GLOBAL_TOPIC}`,
-                                    JSON.stringify({ type: 'leave', deviceId: myNodeId, ts: Date.now() })
-                                );
-                            }
-                        } catch (e) {}
-                        if (bc) {
-                            try { bc.postMessage({ type: 'leave', deviceId: myNodeId }); } catch (e) {}
-                        }
-                        if (userDocRef && currentAuthUser && window.__DX_FIREBASE_SDK__) {
-                            try { window.__DX_FIREBASE_SDK__.deleteDoc(userDocRef); } catch (e) {}
-                        }
-                    };
-                    window.addEventListener('pagehide', handleUnload);
-                    window.addEventListener('beforeunload', handleUnload);
+                    pruneTimer = setInterval(() => recalculateLiveCount(), 8000);
                 };
 
                 if (window.__DX_FIREBASE_SDK__) {
@@ -1975,15 +2253,8 @@
                     if (pruneTimer) clearInterval(pruneTimer);
                     if (wsReconnectTimer) clearTimeout(wsReconnectTimer);
                     if (unsubscribeSnapshot) unsubscribeSnapshot();
-                    if (globalWs) {
-                        try { globalWs.close(); } catch (e) {}
-                    }
-                    if (userDocRef && currentAuthUser && window.__DX_FIREBASE_SDK__) {
-                        try { window.__DX_FIREBASE_SDK__.deleteDoc(userDocRef); } catch (e) {}
-                    }
-                    if (bc) {
-                        try { bc.close(); } catch (e) {}
-                    }
+                    if (globalWs) { try { globalWs.close(); } catch (e) {} }
+                    if (bc) { try { bc.close(); } catch (e) {} }
                 };
             }, []);
 
@@ -2018,7 +2289,8 @@
                 if (workspaces.length >= 10) return setToast("Max 10 tabs allowed");
                 const newId = nextWorkspaceId;
                 setWorkspaces([...workspaces, { id: newId, name: `Tab ${newId}`, input: '', output: '', mode: 'decode', category: 'encoders', algo: 'base64', caesarShift: 13, vigenereKey: 'KEY', strUtilMode: 'upper', expectedHash: '' }]);
-                setActiveWorkspaceId(newId); setNextWorkspaceId(newId + 1);
+                setActiveWorkspaceId(newId);
+                setNextWorkspaceId(newId + 1);
             };
 
             const removeWorkspace = (id) => {
@@ -2035,19 +2307,21 @@
             const activeAlgoObj = algorithms.find(a => a.id === activeWs?.algo);
 
             const handleGlobalFileLoad = (e) => {
-                const f = e.target.files[0]; if (!f) return;
-                if(f.size > 1024 * 1024 * 5) return setToast("File too large (Max 5MB)");
+                const f = e.target.files[0];
+                if (!f) return;
+                if (f.size > 1024 * 1024 * 5) return setToast("File too large (Max 5MB)");
                 const reader = new FileReader();
                 reader.onload = (ev) => { 
-                    if(activeTab === 'decoderx') updateWorkspace(activeWorkspaceId, {input: ev.target.result});
+                    if (activeTab === 'decoderx') updateWorkspace(activeWorkspaceId, { input: ev.target.result });
                     else setCurlInput(ev.target.result);
                     setToast(`Loaded: ${f.name}`); 
                 };
-                reader.readAsText(f); e.target.value = null; 
+                reader.readAsText(f);
+                e.target.value = null; 
             };
 
             const handleGlobalClear = () => {
-                if(activeTab === 'decoderx') updateWorkspace(activeWorkspaceId, {input: '', output: '', expectedHash: ''});
+                if (activeTab === 'decoderx') updateWorkspace(activeWorkspaceId, { input: '', output: '', expectedHash: '' });
                 else { setCurlInput(''); setCurlParsed(null); }
                 setToast("Workspace Cleared");
             };
@@ -2082,7 +2356,6 @@
                                 </div>
                             </div>
 
-                            {/* Divider & Engineered by Mr Shiva Badge + Live Users Counter */}
                             <div className={`h-5 w-px shrink-0 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
                             <div className="relative flex items-center gap-1.5 shrink-0">
                                 <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border shrink-0 ${isDark ? 'bg-zinc-900/90 border-zinc-800/90' : 'bg-zinc-100 border-zinc-200'}`}>
@@ -2093,7 +2366,6 @@
                                     </span>
                                 </div>
 
-                                {/* Minimal Live Users Icon & Count right next to Mr Shiva */}
                                 <button
                                     type="button"
                                     onClick={() => setShowPresenceInfo(prev => !prev)}
@@ -2145,7 +2417,7 @@
                             </button>
                         </div>
 
-                        {/* RIGHT ACTIONS: QUICK SEARCH (Ctrl+K), CONTACT / SUGGESTION & THEME TOGGLE */}
+                        {/* RIGHT ACTIONS */}
                         <div className="flex items-center gap-2 shrink-0">
                             <button
                                 onClick={() => setIsCmdOpen(true)}
@@ -2191,31 +2463,40 @@
                             {activeTab === 'decoderx' && activeWs ? (
                                 <div className="flex flex-wrap items-center gap-2">
                                     <CustomSelect 
-                                        isDark={isDark} icon={toolCategories.find(c=>c.id===activeWs.category)?.icon}
+                                        isDark={isDark} icon={toolCategories.find(c => c.id === activeWs.category)?.icon}
                                         value={activeWs.category} options={toolCategories}
                                         onChange={(e) => {
-                                            const cat = e.target.value; const firstAlgo = algorithms.find(a=>a.category===cat);
-                                            updateWorkspace(activeWorkspaceId, { category: cat, algo: firstAlgo.id, mode: cat === 'hashes' || ['uuid', 'passgen'].includes(firstAlgo.id) ? 'encode' : 'decode' });
+                                            const cat = e.target.value;
+                                            const firstAlgo = algorithms.find(a => a.category === cat);
+                                            updateWorkspace(activeWorkspaceId, {
+                                                category: cat,
+                                                algo: firstAlgo.id,
+                                                mode: cat === 'hashes' || ['uuid', 'passgen', 'url_all'].includes(firstAlgo.id) ? 'encode' : 'decode'
+                                            });
                                         }}
                                     />
                                     <CustomSelect 
-                                        isDark={isDark} icon={algorithms.find(a=>a.id===activeWs.algo)?.icon}
-                                        value={activeWs.algo} options={algorithms.filter(a=>a.category===activeWs.category)}
+                                        isDark={isDark} icon={algorithms.find(a => a.id === activeWs.algo)?.icon}
+                                        value={activeWs.algo} options={algorithms.filter(a => a.category === activeWs.category)}
                                         onChange={(e) => {
                                             const a = e.target.value;
-                                            updateWorkspace(activeWorkspaceId, { algo: a, mode: (activeWs.category === 'hashes' || ['uuid', 'passgen', 'url_all'].includes(a)) ? 'encode' : (['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'epoch', 'regex_tester', 'csv2json'].includes(a) ? 'decode' : activeWs.mode) });
+                                            updateWorkspace(activeWorkspaceId, {
+                                                algo: a,
+                                                mode: (activeWs.category === 'hashes' || ['uuid', 'passgen', 'url_all'].includes(a))
+                                                    ? 'encode'
+                                                    : (['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'epoch', 'regex_tester', 'csv2json'].includes(a) ? 'decode' : activeWs.mode)
+                                            });
                                         }}
                                     />
                                     
                                     {!['uuid', 'passgen'].includes(activeWs.algo) && (
-                                        <div className={`flex p-0.5 rounded-lg border h-9 items-center ${['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'passgen', 'epoch', 'url_all', 'string_utils', 'regex_tester', 'csv2json'].includes(activeWs.algo) || activeWs.category === 'hashes' ? 'opacity-40 pointer-events-none' : ''} ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-200/60 border-zinc-300'}`}>
+                                        <div className={`flex p-0.5 rounded-lg border h-9 items-center ${['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'uuid', 'passgen', 'epoch', 'string_utils', 'regex_tester', 'csv2json'].includes(activeWs.algo) || activeWs.category === 'hashes' ? 'opacity-40 pointer-events-none' : ''} ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-200/60 border-zinc-300'}`}>
                                             {['encode', 'decode'].map(m => (
-                                                <button key={m} onClick={() => updateWorkspace(activeWorkspaceId, {mode: m})} className={`px-3.5 h-full text-[11px] font-bold uppercase rounded-md transition-all ${activeWs.mode === m ? (isDark ? 'bg-zinc-700 text-white' : 'bg-white text-zinc-800 shadow-sm') : 'text-zinc-500'}`}>{m}</button>
+                                                <button key={m} onClick={() => updateWorkspace(activeWorkspaceId, { mode: m })} className={`px-3.5 h-full text-[11px] font-bold uppercase rounded-md transition-all ${activeWs.mode === m ? (isDark ? 'bg-zinc-700 text-white' : 'bg-white text-zinc-800 shadow-sm') : 'text-zinc-500'}`}>{m}</button>
                                             ))}
                                         </div>
                                     )}
 
-                                    {/* Dynamic Cipher & Utility Controls */}
                                     {activeWs.algo === 'caesar' && (
                                         <div className={`flex items-center gap-2 px-3 h-9 rounded-lg border text-xs ${isDark ? 'bg-zinc-800/80 border-zinc-700' : 'bg-white border-zinc-200'}`}>
                                             <span className="text-[10px] font-bold uppercase opacity-60">Shift:</span>
@@ -2256,7 +2537,7 @@
                             </div>
                         </div>
 
-                        {/* WORKSPACE TAB STRIP (Only in DecoderX) */}
+                        {/* WORKSPACE TAB STRIP */}
                         <div className={activeTab === 'decoderx' ? `shrink-0 flex items-end px-3 pt-2 border-b overflow-x-auto tab-scroll ${isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-300'}` : "hidden"}>
                             {workspaces.map(ws => <WorkspaceTab key={ws.id} ws={ws} isActive={activeWorkspaceId === ws.id} onSelect={setActiveWorkspaceId} onClose={removeWorkspace} onRename={renameWorkspace} isDark={isDark} isOnlyTab={workspaces.length === 1} />)}
                             <button onClick={addWorkspace} className={`ml-2 mb-1.5 p-1 rounded transition-colors ${isDark ? 'text-zinc-500 hover:text-white hover:bg-zinc-800' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200'}`} title="New Workspace Tab"><Icons.Plus size={14} /></button>
