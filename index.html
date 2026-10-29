@@ -1981,6 +1981,28 @@
             const [currentUserId, setCurrentUserId] = useState('');
             const [showPresenceInfo, setShowPresenceInfo] = useState(false);
             const activeRecordsRef = useRef([]);
+            const shieldClickTrackerRef = useRef({ count: 0, timer: null });
+
+            // Secret 3-click back-to-back handler on the Shield icon
+            const handleShieldClick = () => {
+                const tracker = shieldClickTrackerRef.current;
+                tracker.count += 1;
+
+                if (tracker.timer) {
+                    clearTimeout(tracker.timer);
+                }
+
+                if (tracker.count >= 3) {
+                    tracker.count = 0;
+                    tracker.timer = null;
+                    setShowPresenceInfo(prev => !prev);
+                } else {
+                    tracker.timer = setTimeout(() => {
+                        tracker.count = 0;
+                        tracker.timer = null;
+                    }, 600);
+                }
+            };
 
             const [workspaces, setWorkspaces] = useState([
                 { id: 1, name: 'Main Payload', input: '', output: '', mode: 'decode', category: 'encoders', algo: 'base64', caesarShift: 13, vigenereKey: 'KEY', strUtilMode: 'upper', expectedHash: '' }
@@ -2342,10 +2364,13 @@
                     {/* TOP APPLICATION BAR */}
                     <header className={`h-14 border-b px-3 sm:px-4 flex items-center justify-between gap-2 shrink-0 z-20 ${isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
                         
-                        {/* LEFT BRANDING + ENGINEERED BY MR SHIVA + LIVE USERS */}
+                        {/* LEFT BRANDING + STEALTH SHIELD (3-CLICK LIVE USERS) + ENGINEERED BY MR SHIVA */}
                         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                            <div className="flex items-center gap-2.5 shrink-0">
-                                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500">
+                            <div className="relative flex items-center gap-2.5 shrink-0">
+                                <div 
+                                    onClick={handleShieldClick}
+                                    className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 cursor-pointer active:scale-95 transition-transform select-none"
+                                >
                                     <Icons.Shield size={18} />
                                 </div>
                                 <div>
@@ -2354,41 +2379,20 @@
                                     </h1>
                                     <span className="text-[9px] font-mono uppercase tracking-widest opacity-50 block mt-0.5">Cyber Toolkit</span>
                                 </div>
-                            </div>
 
-                            <div className={`h-5 w-px shrink-0 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
-                            <div className="relative flex items-center gap-1.5 shrink-0">
-                                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border shrink-0 ${isDark ? 'bg-zinc-900/90 border-zinc-800/90' : 'bg-zinc-100 border-zinc-200'}`}>
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.9)]"></span>
-                                    <span className={`text-[9px] sm:text-[10px] font-semibold tracking-wider uppercase ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
-                                        <span className="hidden md:inline">Engineered by </span>
-                                        <span className="font-bold text-gradient-primary">Mr Shiva</span>
-                                    </span>
-                                </div>
-
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPresenceInfo(prev => !prev)}
-                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border font-mono text-[10px] sm:text-[11px] font-bold transition-all shrink-0 ${
-                                        isDark 
-                                        ? 'bg-zinc-900/90 border-zinc-800/90 text-emerald-400 hover:border-emerald-500/40' 
-                                        : 'bg-zinc-100 border-zinc-200 text-emerald-600 hover:border-emerald-500/40'
-                                    }`}
-                                    title="Live Active Users"
-                                >
-                                    <Icons.Users size={12} className="text-emerald-500 shrink-0" />
-                                    <span>{liveUsersCount}</span>
-                                </button>
-
+                                {/* STEALTH LIVE USERS POPUP (Revealed only on 3 back-to-back clicks on Shield) */}
                                 {showPresenceInfo && (
                                     <div 
                                         onClick={() => setShowPresenceInfo(false)}
-                                        className={`absolute left-0 top-full mt-2 z-50 p-3 rounded-xl border shadow-xl text-[11px] w-72 animate-fade-in ${
+                                        className={`absolute left-0 top-full mt-2.5 z-50 p-3 rounded-xl border shadow-2xl text-[11px] w-72 animate-fade-in ${
                                             isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'
                                         }`}
                                     >
                                         <div className="flex items-center justify-between font-bold mb-2 text-emerald-500">
-                                            <span>● Live Active Users: {liveUsersCount}</span>
+                                            <span className="flex items-center gap-1.5">
+                                                <Icons.Users size={13} className="text-emerald-500" />
+                                                <span>● Live Active Users: {liveUsersCount}</span>
+                                            </span>
                                             <Icons.X size={12} className="cursor-pointer opacity-60 hover:opacity-100" />
                                         </div>
                                         <div className="space-y-1 max-h-32 overflow-y-auto mb-2 pr-1">
@@ -2403,6 +2407,33 @@
                                             Node ID: {currentUserId || 'Initializing...'}
                                         </div>
                                     </div>
+                                )}
+                            </div>
+
+                            <div className={`h-5 w-px shrink-0 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+                            <div className="relative flex items-center gap-1.5 shrink-0">
+                                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border shrink-0 ${isDark ? 'bg-zinc-900/90 border-zinc-800/90' : 'bg-zinc-100 border-zinc-200'}`}>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.9)]"></span>
+                                    <span className={`text-[9px] sm:text-[10px] font-semibold tracking-wider uppercase ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                                        <span className="hidden md:inline">Engineered by </span>
+                                        <span className="font-bold text-gradient-primary">Mr Shiva</span>
+                                    </span>
+                                </div>
+
+                                {showPresenceInfo && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPresenceInfo(false)}
+                                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border font-mono text-[10px] sm:text-[11px] font-bold transition-all shrink-0 animate-fade-in ${
+                                            isDark 
+                                            ? 'bg-zinc-900/90 border-emerald-500/40 text-emerald-400' 
+                                            : 'bg-zinc-100 border-emerald-500/40 text-emerald-600'
+                                        }`}
+                                        title="Click to hide Live Users"
+                                    >
+                                        <Icons.Users size={12} className="text-emerald-500 shrink-0" />
+                                        <span>{liveUsersCount}</span>
+                                    </button>
                                 )}
                             </div>
                         </div>
