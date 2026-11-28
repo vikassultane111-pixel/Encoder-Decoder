@@ -344,9 +344,7 @@
                 deviceId = `dx_node_${fpHex}_${Math.random().toString(16).slice(2, 10)}`;
             }
 
-            const ipMasked = ipAddr !== 'local'
-                ? (ipAddr.includes(':') ? ipAddr.split(':').slice(0, 3).join(':') + '::*' : ipAddr.replace(/(\d+)\.(\d+)\.\d+\.\d+/, '$1.$2.*.*'))
-                : 'Net-Node';
+            const ipMasked = ipAddr !== 'local' ? ipAddr : 'Local-Node';
 
             return {
                 deviceId,
@@ -360,6 +358,8 @@
             { id: 'magic', category: 'encoders', name: '✨ Auto-Decode', icon: <Icons.Wand size={14} />, desc: 'Automatically unwraps nested Base64, URL, Hex, HTML & JSON' },
             { id: 'base64', category: 'encoders', name: 'Base64', icon: <Icons.Code size={14} />, desc: 'Standard RFC 4648 UTF-8 Base64 encoder & decoder' },
             { id: 'base64url', category: 'encoders', name: 'Base64 (URL Safe)', icon: <Icons.Lock size={14} />, desc: 'URL & filename safe Base64 variant' },
+            { id: 'gzip', category: 'encoders', name: 'Gzip (Base64)', icon: <Icons.Layers size={14} />, desc: 'Compress/Decompress using Gzip' },
+            { id: 'deflate', category: 'encoders', name: 'Deflate (Base64)', icon: <Icons.Layers size={14} />, desc: 'Compress/Decompress using Deflate' },
             { id: 'base32', category: 'encoders', name: 'Base32', icon: <Icons.Code size={14} />, desc: 'RFC 4648 Base32 byte encoding' },
             { id: 'url', category: 'encoders', name: 'URL / URI', icon: <Icons.Globe size={14} />, desc: 'Percent-encoding for URI components' },
             { id: 'url_all', category: 'encoders', name: 'URL Encode All (WAF)', icon: <Icons.Globe size={14} />, desc: 'Force percent-encode every character for WAF bypass testing' },
@@ -392,6 +392,7 @@
             { id: 'uuid', category: 'utilities', name: 'UUID v4 Generator', icon: <Icons.Shield size={14} />, desc: 'Generate cryptographically random RFC 4122 UUIDs' },
             { id: 'passgen', category: 'utilities', name: 'Key Generator', icon: <Icons.Lock size={14} />, desc: 'Generate high-entropy secrets & passwords via Web Crypto' },
             { id: 'string_utils', category: 'utilities', name: 'String Utils', icon: <Icons.Type size={14} />, desc: 'Convert text between UPPERCASE, lowercase, and Title Case' },
+            { id: 'waf_tamper', category: 'utilities', name: 'WAF Tamper (SQLi)', icon: <Icons.Shield size={14} />, desc: 'Replace spaces with /**/ for basic WAF evasion' },
             { id: 'reverse', category: 'utilities', name: 'Reverse Text', icon: <Icons.AlignLeft size={14} />, desc: 'Unicode-aware string reversal' },
             { id: 'regex_tester', category: 'utilities', name: 'Regex Tester', icon: <Icons.Search size={14} />, desc: 'Test regular expressions and inspect capture groups' },
         ];
@@ -410,6 +411,8 @@
             magic: 'JTdCJTIydXNlciUyMiUzQSUyMmFkbWluX3NoaXZhJTIyJTJDJTIycm9sZSUyMiUzQSUyMnN1cGVydXNlciUyMiU3RA==',
             base64: 'eyJ0b29sIjoiRGVjb2RlclggUHJvIiwiY3JlYXRvciI6Ik1yIFNoaXZhIiwic3RhdHVzIjoiQWN0aXZlIn0=',
             base64url: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+            gzip: 'H4sIAAAAAAAAAw3IMQ0AAAzDoGg28q85Jwe8GzUAAAA=',
+            deflate: 'eJzLSM3JyVcIzy/KSQEAG1EELw==',
             base32: 'IRSWG33EMVZFQICQOJXSAU3VNF2GK===',
             url: 'https%3A%2F%2Fapi.decoderx.pro%2Fv1%2Fauth%3Fredirect%3D%2Fdashboard%26token%3Dsec_9981',
             url_all: 'admin<script>',
@@ -440,6 +443,7 @@
             extract_secrets: 'Config dump:\nadmin_email = "secops@decoderx.pro"\naws_key = "AKIAIOSFODNN7EXAMPLE"\nauth_header = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.sig"\nslack_lead = "shiva.architect@cyberops.in"',
             epoch: '1792411620',
             string_utils: 'decoderx pro suite engineered by mr shiva',
+            waf_tamper: 'SELECT * FROM users WHERE id = 1 UNION SELECT 1,2,3',
             reverse: 'avihS rM yb dereenignE — PoxredoceD',
             regex_tester: '/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z0-9_-]+)/gi\n---\nContact security@decoderx.pro or admin.shiva@cyberops.in for bug bounty reports.',
         };
@@ -511,6 +515,9 @@
             if (!str || typeof str !== 'string') return null;
             const s = str.trim();
             if (s.length < 4) return null;
+            if (/^H4sI/.test(s)) {
+                return { algo: 'gzip', category: 'encoders', mode: 'decode', label: 'Gzip Base64' };
+            }
             if (/^DX_AES1:[A-Za-z0-9+/=]+:[A-Za-z0-9+/=]+:[A-Za-z0-9+/=]+$/.test(s)) {
                 return { algo: 'aes_gcm', category: 'ciphers', mode: 'decode', label: 'AES-GCM Ciphertext' };
             }
@@ -1003,7 +1010,7 @@
                         <div className="app-panel flex flex-col h-56 sm:h-64 overflow-hidden">
                             <div className={`px-3 py-1.5 border-b flex items-center justify-between text-xs font-semibold ${isDark ? 'border-slate-800 bg-slate-800/40 text-slate-300' : 'border-slate-200 bg-slate-50 text-slate-600'}`}>
                                 <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> Original</span>
-                                <button onClick={() => copyToClipboard(leftText, setToast)} className="opacity-60 hover:opacity-100"><Icons.Copy size={13}/></button>
+                                <button onClick={() => copyToClipboard(leftText, setToast)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 opacity-60 hover:opacity-100 transition-colors" title="Copy Original"><Icons.Copy size={15}/></button>
                             </div>
                             <textarea
                                 value={leftText}
@@ -1016,7 +1023,7 @@
                         <div className="app-panel flex flex-col h-56 sm:h-64 overflow-hidden">
                             <div className={`px-3 py-1.5 border-b flex items-center justify-between text-xs font-semibold ${isDark ? 'border-slate-800 bg-slate-800/40 text-slate-300' : 'border-slate-200 bg-slate-50 text-slate-600'}`}>
                                 <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Modified</span>
-                                <button onClick={() => copyToClipboard(rightText, setToast)} className="opacity-60 hover:opacity-100"><Icons.Copy size={13}/></button>
+                                <button onClick={() => copyToClipboard(rightText, setToast)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 opacity-60 hover:opacity-100 transition-colors" title="Copy Modified"><Icons.Copy size={15}/></button>
                             </div>
                             <textarea
                                 value={rightText}
@@ -1396,7 +1403,7 @@
                                                 </button>
                                             ))}
                                         </div>
-                                        <button onClick={() => copyToClipboard(generateCodeSnippet(), setToast)} className="p-1.5 rounded-md border border-slate-700/50 hover:bg-slate-800 text-slate-400 hover:text-white" title="Copy Code"><Icons.Copy size={14}/></button>
+                                        <button onClick={() => copyToClipboard(generateCodeSnippet(), setToast)} className="p-2 rounded-md border border-slate-700/50 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors" title="Copy Code"><Icons.Copy size={16}/></button>
                                     </div>
                                 </div>
                                 <pre className={`p-4 font-mono text-[13px] overflow-x-auto m-0 ${isDark ? 'text-slate-300' : 'text-slate-800'}`}>
@@ -1491,6 +1498,8 @@
                                 case 'cidr': res = AlgorithmsLib.cidrCalc(input); break;
                                 case 'base64': res = effectiveMode === 'encode' ? AlgorithmsLib.b64Encode(input) : AlgorithmsLib.b64Decode(input); break;
                                 case 'base64url': res = effectiveMode === 'encode' ? AlgorithmsLib.b64UrlEncode(input) : AlgorithmsLib.b64UrlDecode(input); break;
+                                case 'gzip': res = effectiveMode === 'encode' ? await AlgorithmsLib.gzipCompress(input) : await AlgorithmsLib.gzipDecompress(input); break;
+                                case 'deflate': res = effectiveMode === 'encode' ? await AlgorithmsLib.deflateCompress(input) : await AlgorithmsLib.deflateDecompress(input); break;
                                 case 'base32': res = effectiveMode === 'encode' ? AlgorithmsLib.b32Encode(input) : AlgorithmsLib.b32Decode(input); break;
                                 case 'url': res = effectiveMode === 'encode' ? encodeURIComponent(input) : safeUrlDecode(input); break;
                                 case 'url_all': res = effectiveMode === 'encode' ? AlgorithmsLib.urlEncodeAll(input) : safeUrlDecode(input); break;
@@ -1514,6 +1523,7 @@
                                 case 'extract_secrets': res = AlgorithmsLib.extractSecrets(input); break;
                                 case 'epoch': res = AlgorithmsLib.epochConvert(input); break;
                                 case 'string_utils': res = AlgorithmsLib.stringUtils(input, strUtilMode); break;
+                                case 'waf_tamper': res = AlgorithmsLib.wafTamper(input); break;
                                 case 'regex_tester': res = AlgorithmsLib.regexTester(input); break;
                                 default: res = input;
                             }
@@ -1595,7 +1605,7 @@
 
             const inStats = useMemo(() => getStats(input), [input]);
             const outStats = useMemo(() => getStats(output), [output]);
-            const isLockMode = ['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'extract_secrets', 'uuid', 'passgen', 'epoch', 'string_utils', 'regex_tester', 'csv2json', 'cidr'].includes(algo) || category === 'hashes';
+            const isLockMode = ['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'extract_secrets', 'uuid', 'passgen', 'epoch', 'string_utils', 'waf_tamper', 'regex_tester', 'csv2json', 'cidr'].includes(algo) || category === 'hashes';
             
             let isJsonOutput = false, formattedJsonOutput = '';
             if (!errorMsg && output && (output.trim().startsWith('{') || output.trim().startsWith('['))) {
@@ -1634,7 +1644,7 @@
                                 onClick={() => {
                                     updateWorkspace(ws.id, {
                                         input: SAMPLE_PAYLOADS[algo],
-                                        mode: ['hashes'].includes(category) || ['url_all', 'aes_gcm'].includes(algo) ? 'encode' : 'decode'
+                                        mode: ['hashes'].includes(category) || ['url_all', 'aes_gcm', 'gzip', 'deflate'].includes(algo) ? 'encode' : 'decode'
                                     });
                                     setToast('Sample payload loaded');
                                 }}
@@ -1684,7 +1694,7 @@
                         >
                             {expandedPane === paneKey ? <Icons.Minimize2 size={13} /> : <Icons.Maximize2 size={13} />}
                         </button>
-                        <button onClick={() => copyToClipboard(copyVal, setToast)} disabled={!copyVal} className="p-1 rounded transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 disabled:opacity-30"><Icons.Copy size={13}/></button>
+                        <button onClick={() => copyToClipboard(copyVal, setToast)} disabled={!copyVal} className="p-1.5 rounded transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 disabled:opacity-30"><Icons.Copy size={15}/></button>
                     </div>
                 </div>
             );
@@ -1713,7 +1723,7 @@
                         </div>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row flex-1 min-h-0 gap-3">
+                    <div className="flex flex-col lg:flex-row flex-1 min-h-0 gap-2 lg:gap-3">
                         {/* INPUT PANE */}
                         {showInputPane && (
                             <div className="app-panel flex flex-col flex-1 min-h-[210px] sm:min-h-[240px] lg:min-h-0 overflow-hidden">
@@ -1735,14 +1745,31 @@
 
                         {/* ACTION TOOLBAR (Vertical on desktop) */}
                         {expandedPane === null && mobileView === 'both' && (
-                            <div className="flex flex-row lg:flex-col items-center justify-center gap-2 shrink-0 py-0.5 lg:py-1">
-                                <button onClick={() => applyJsonFormat('beautify')} className={`p-1.5 rounded-md transition-all ${isDark ? 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700' : 'bg-white text-slate-500 hover:text-slate-800 shadow-sm border border-slate-200'}`} title="Format JSON"><Icons.AlignLeft size={14} /></button>
-                                
-                                <button onClick={swap} disabled={isLockMode} className={`p-2 rounded-full transition-all group ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-slate-800 text-slate-300 hover:text-white border border-slate-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-300'}`} title="Swap">
-                                    <Icons.ArrowRightLeft size={14} className="transition-transform group-hover:scale-110" />
+                            <div className={`flex flex-row lg:flex-col items-center justify-center gap-3 shrink-0 py-2 lg:py-0`}>
+                                <button 
+                                    onClick={() => applyJsonFormat('beautify')} 
+                                    className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all shadow-sm ${isDark ? 'bg-slate-800 text-slate-300 hover:text-white hover:bg-blue-600/20 border border-slate-700 hover:border-blue-500/50' : 'bg-white text-slate-600 hover:text-blue-700 hover:bg-blue-50 border border-slate-200 hover:border-blue-300'}`} 
+                                    title="Beautify JSON"
+                                >
+                                    <Icons.AlignLeft size={14} />
                                 </button>
                                 
-                                <button onClick={() => applyJsonFormat('minify')} className={`p-1.5 rounded-md transition-all ${isDark ? 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700' : 'bg-white text-slate-500 hover:text-slate-800 shadow-sm border border-slate-200'}`} title="Minify JSON"><Icons.FileCode size={14} /></button>
+                                <button 
+                                    onClick={swap} 
+                                    disabled={isLockMode} 
+                                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all group shadow-md ${isLockMode ? 'opacity-30 cursor-not-allowed' : ''} ${isDark ? 'bg-blue-600 text-white hover:bg-blue-500 border border-blue-500' : 'bg-blue-600 text-white hover:bg-blue-700 border border-blue-700'}`} 
+                                    title="Swap Input & Output"
+                                >
+                                    <Icons.ArrowRightLeft size={15} className="transition-transform group-hover:rotate-180 duration-300" />
+                                </button>
+                                
+                                <button 
+                                    onClick={() => applyJsonFormat('minify')} 
+                                    className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all shadow-sm ${isDark ? 'bg-slate-800 text-slate-300 hover:text-white hover:bg-blue-600/20 border border-slate-700 hover:border-blue-500/50' : 'bg-white text-slate-600 hover:text-blue-700 hover:bg-blue-50 border border-slate-200 hover:border-blue-300'}`} 
+                                    title="Minify JSON"
+                                >
+                                    <Icons.FileCode size={14} />
+                                </button>
                             </div>
                         )}
 
@@ -1802,7 +1829,7 @@
             );
         });
 
-        const WorkspaceTab = memo(({ ws, isActive, onSelect, onClose, onRename, isDark, isOnlyTab }) => {
+        const WorkspaceTab = memo(({ ws, isActive, onSelect, onClose, onRename, isDark, isMainTab }) => {
             const [isEditing, setIsEditing] = useState(false);
             const [editName, setEditName] = useState(ws.name);
             const inputRef = useRef(null);
@@ -1831,8 +1858,8 @@
                     ) : (
                         <span className="text-[11px] font-medium truncate flex-grow select-none" title="Double-click to rename">{ws.name}</span>
                     )}
-                    {!isOnlyTab && !isEditing && (
-                        <button onClick={(e) => { e.stopPropagation(); onClose(ws.id); }} className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all"><Icons.X size={10} /></button>
+                    {!isMainTab && !isEditing && (
+                        <button onClick={(e) => { e.stopPropagation(); onClose(ws.id); }} className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-all"><Icons.X size={10} /></button>
                     )}
                 </div>
             );
@@ -1878,6 +1905,7 @@
             rot47: s => s.replace(/[!-~]/g, c => String.fromCharCode((c.charCodeAt(0) - 33 + 47) % 94 + 33)),
             defang: s => s.replace(/\./g, '[.]').replace(/http/gi, 'hxxp').replace(/:\/\//g, '[://]'),
             refang: s => s.replace(/\[\.\]/g, '.').replace(/\(dot\)/gi, '.').replace(/hxxp/gi, 'http').replace(/\[:\/\/\]/g, '://').replace(/\[:\]/g, ':'),
+            wafTamper: s => s.replace(/ /g, '/**/'),
             cidrCalc: (s) => {
                 const m = s.trim().match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\/(\d{1,2})$/);
                 if (!m) throw new Error("Invalid CIDR format. Example: 192.168.1.10/24");
@@ -1957,6 +1985,44 @@
                 } catch (e) {
                     throw new Error("Decryption failed.");
                 }
+            },
+            gzipCompress: async (str) => {
+                try {
+                    const stream = new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'));
+                    const buffer = await new Response(stream).arrayBuffer();
+                    let binStr = "";
+                    const bytes = new Uint8Array(buffer);
+                    for (let i = 0; i < bytes.byteLength; i++) binStr += String.fromCharCode(bytes[i]);
+                    return btoa(binStr);
+                } catch(e) { throw new Error("Gzip Compression Failed"); }
+            },
+            gzipDecompress: async (b64) => {
+                try {
+                    const binStr = atob(b64.replace(/\s+/g, ''));
+                    const bytes = new Uint8Array(binStr.length);
+                    for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+                    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+                    return await new Response(stream).text();
+                } catch(e) { throw new Error("Invalid Gzip Base64 / Decompression Failed"); }
+            },
+            deflateCompress: async (str) => {
+                try {
+                    const stream = new Blob([str]).stream().pipeThrough(new CompressionStream('deflate'));
+                    const buffer = await new Response(stream).arrayBuffer();
+                    let binStr = "";
+                    const bytes = new Uint8Array(buffer);
+                    for (let i = 0; i < bytes.byteLength; i++) binStr += String.fromCharCode(bytes[i]);
+                    return btoa(binStr);
+                } catch(e) { throw new Error("Deflate Compression Failed"); }
+            },
+            deflateDecompress: async (b64) => {
+                try {
+                    const binStr = atob(b64.replace(/\s+/g, ''));
+                    const bytes = new Uint8Array(binStr.length);
+                    for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+                    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+                    return await new Response(stream).text();
+                } catch(e) { throw new Error("Invalid Deflate Base64 / Decompression Failed"); }
             },
             toMorse: s => s.toUpperCase().split('').map(c => ({'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/','.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'}[c] || c)).join(' '),
             fromMorse: s => { 
@@ -2352,6 +2418,7 @@
             const [toast, setToast] = useState(null);
             const [isContactOpen, setIsContactOpen] = useState(false);
             const [isCmdOpen, setIsCmdOpen] = useState(false);
+            const [globalClearKey, setGlobalClearKey] = useState(0);
 
             const [liveUsersCount, setLiveUsersCount] = useState(1);
             const [liveNodesList, setLiveNodesList] = useState([]);
@@ -2710,7 +2777,6 @@
             const updateWorkspace = useCallback((id, updates) => setWorkspaces(ws => ws.map(w => w.id === id ? { ...w, ...updates } : w)), []);
             
             const activeWs = workspaces.find(w => w.id === activeWorkspaceId) || workspaces[0];
-            const activeAlgoObj = algorithms.find(a => a.id === activeWs?.algo);
 
             const handleGlobalFileLoad = (e) => {
                 const f = e.target.files[0];
@@ -2732,12 +2798,22 @@
                 setToast("Cleared");
             };
 
+            const handleGlobalClearAll = () => {
+                try {
+                    // Wipe local storage data related to workspaces
+                    localStorage.removeItem('dx_workspaces_v3');
+                } catch (e) {}
+                
+                // Force a hard reload of the application
+                window.location.reload();
+            };
+
             const handleSelectToolFromPalette = (tool) => {
                 setActiveTab('decoderx');
                 updateWorkspace(activeWorkspaceId, {
                     category: tool.category,
                     algo: tool.id,
-                    mode: (tool.category === 'hashes' || ['uuid', 'passgen', 'url_all', 'aes_gcm'].includes(tool.id)) ? 'encode' : (['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'extract_secrets', 'epoch', 'regex_tester', 'csv2json', 'cidr'].includes(tool.id) ? 'decode' : activeWs.mode)
+                    mode: (tool.category === 'hashes' || ['uuid', 'passgen', 'url_all', 'aes_gcm', 'gzip', 'deflate'].includes(tool.id)) ? 'encode' : (['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'extract_secrets', 'epoch', 'regex_tester', 'csv2json', 'cidr'].includes(tool.id) ? 'decode' : activeWs.mode)
                 });
                 setToast(`Selected: ${tool.name}`);
             };
@@ -2853,6 +2929,19 @@
                         {/* RIGHT ACTIONS */}
                         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
                             <button
+                                onClick={handleGlobalClearAll}
+                                className={`px-2.5 sm:px-3 py-1.5 rounded-md text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+                                    isDark 
+                                    ? 'bg-red-900/40 text-red-400 hover:bg-red-900/60 border border-red-900/50' 
+                                    : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                                }`}
+                                title="Clear All Workspaces & Data"
+                            >
+                                <Icons.Trash2 size={14} />
+                                <span className="hidden sm:inline whitespace-nowrap">Clear All</span>
+                            </button>
+
+                            <button
                                 onClick={() => setIsCmdOpen(true)}
                                 className={`px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors ${
                                     isDark ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -2904,7 +2993,7 @@
                                             updateWorkspace(activeWorkspaceId, {
                                                 category: cat,
                                                 algo: firstAlgo.id,
-                                                mode: cat === 'hashes' || ['uuid', 'passgen', 'url_all', 'aes_gcm'].includes(firstAlgo.id) ? 'encode' : 'decode'
+                                                mode: cat === 'hashes' || ['uuid', 'passgen', 'url_all', 'aes_gcm', 'gzip', 'deflate'].includes(firstAlgo.id) ? 'encode' : 'decode'
                                             });
                                         }}
                                     />
@@ -2923,7 +3012,7 @@
                                     />
                                     
                                     {!['uuid', 'passgen'].includes(activeWs.algo) && (
-                                        <div className={`flex p-0.5 rounded-md border h-8 items-center ${['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'extract_secrets', 'uuid', 'passgen', 'epoch', 'string_utils', 'regex_tester', 'csv2json', 'cidr'].includes(activeWs.algo) || activeWs.category === 'hashes' ? 'opacity-40 pointer-events-none' : ''} ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
+                                        <div className={`flex p-0.5 rounded-md border h-8 items-center ${['magic', 'jwt', 'urlparse', 'hexdump', 'extract_ips', 'extract_urls', 'extract_secrets', 'uuid', 'passgen', 'epoch', 'string_utils', 'waf_tamper', 'regex_tester', 'csv2json', 'cidr'].includes(activeWs.algo) || activeWs.category === 'hashes' ? 'opacity-40 pointer-events-none' : ''} ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
                                             {['encode', 'decode'].map(m => (
                                                 <button key={m} onClick={() => updateWorkspace(activeWorkspaceId, { mode: m })} className={`px-3 h-full text-[11px] font-semibold uppercase rounded transition-colors ${activeWs.mode === m ? (isDark ? 'bg-slate-700 text-white' : 'bg-white text-slate-800 shadow-sm') : 'text-slate-500'}`}>{m}</button>
                                             ))}
@@ -2986,32 +3075,34 @@
 
                         {/* WORKSPACE TAB STRIP */}
                         <div className={activeTab === 'decoderx' ? `shrink-0 flex items-end pt-1.5 overflow-x-auto tab-scroll ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}` : "hidden"}>
-                            {workspaces.map(ws => <WorkspaceTab key={ws.id} ws={ws} isActive={activeWorkspaceId === ws.id} onSelect={setActiveWorkspaceId} onClose={removeWorkspace} onRename={renameWorkspace} isDark={isDark} isOnlyTab={workspaces.length === 1} />)}
+                            {workspaces.map((ws, index) => <WorkspaceTab key={ws.id} ws={ws} isActive={activeWorkspaceId === ws.id} onSelect={setActiveWorkspaceId} onClose={removeWorkspace} onRename={renameWorkspace} isDark={isDark} isMainTab={index === 0} />)}
                             <button onClick={addWorkspace} className={`ml-1 mb-1 p-1 rounded transition-colors shrink-0 ${isDark ? 'text-slate-500 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200'}`} title="New Tab"><Icons.Plus size={14} /></button>
                         </div>
 
                         {/* CONTENT SCROLL AREA */}
-                        <div className={`flex-1 overflow-y-auto p-3 sm:p-4 lg:p-5 ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
-                            <div className={activeTab === 'decoderx' ? "block h-full" : "hidden"}>
-                                {workspaces.map(ws => (
-                                    <div key={ws.id} className={activeWorkspaceId === ws.id ? 'block h-full animate-fade-in' : 'hidden'}>
-                                        <StandardDecoderTab isDark={isDark} setToast={setToast} AlgorithmsLib={algosLib} ws={ws} updateWorkspace={updateWorkspace} />
-                                    </div>
-                                ))}
-                            </div>
-                            <div className={activeTab === 'curl' ? "block h-full animate-fade-in" : "hidden"}>
-                                <CurlDecoderTab
-                                    isDark={isDark}
-                                    setToast={setToast}
-                                    curlInput={curlInput}
-                                    setCurlInput={setCurlInput}
-                                    parsedResults={curlParsed}
-                                    setParsedResults={setCurlParsed}
-                                    onSendToEditor={handleSendFromCurlToEditor}
-                                />
-                            </div>
-                            <div className={activeTab === 'diff' ? "block h-full animate-fade-in" : "hidden"}>
-                                <DiffCheckerTab isDark={isDark} setToast={setToast} />
+                        <div className={`flex-1 overflow-y-auto flex justify-center w-full ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
+                            <div className="w-full max-w-[1600px] h-full p-3 sm:p-4 lg:p-5">
+                                <div className={activeTab === 'decoderx' ? "block h-full" : "hidden"}>
+                                    {workspaces.map(ws => (
+                                        <div key={ws.id} className={activeWorkspaceId === ws.id ? 'block h-full animate-fade-in' : 'hidden'}>
+                                            <StandardDecoderTab isDark={isDark} setToast={setToast} AlgorithmsLib={algosLib} ws={ws} updateWorkspace={updateWorkspace} />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={activeTab === 'curl' ? "block h-full animate-fade-in" : "hidden"}>
+                                    <CurlDecoderTab
+                                        isDark={isDark}
+                                        setToast={setToast}
+                                        curlInput={curlInput}
+                                        setCurlInput={setCurlInput}
+                                        parsedResults={curlParsed}
+                                        setParsedResults={setCurlParsed}
+                                        onSendToEditor={handleSendFromCurlToEditor}
+                                    />
+                                </div>
+                                <div className={activeTab === 'diff' ? "block h-full animate-fade-in" : "hidden"}>
+                                    <DiffCheckerTab key={globalClearKey} isDark={isDark} setToast={setToast} />
+                                </div>
                             </div>
                         </div>
                         
